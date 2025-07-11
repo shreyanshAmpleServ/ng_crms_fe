@@ -2,10 +2,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  addCallPurpose,
-  updateCallPurpose,
-} from "../../../../redux/callPurpose";
+import { addCallPurpose, updateCallPurpose } from "../../../../redux/callPurpose";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.callPurposes);
@@ -19,13 +16,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
-  useEffect(() => {
+  // initialize or reset form
+  const initializeForm = () => {
     if (mode === "edit" && initialData) {
       reset({
         name: initialData.name || "",
         description: initialData.description || "",
-        is_active: initialData.is_active,
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
@@ -34,14 +31,24 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         is_active: "Y",
       });
     }
-  }, [mode, initialData, reset]);
+  };
+
+  useEffect(() => {
+    initializeForm();
+  }, [mode, initialData]);
+
+  const closeModal = () => {
+    initializeForm(); // reset form on close
+    document
+      .getElementById("close_btn_add_edit_call_status_modal")
+      ?.click();
+  };
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
       "close_btn_add_edit_call_status_modal"
     );
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addCallPurpose({
           name: data.name,
@@ -50,7 +57,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateCallPurpose({
           id: initialData.id,
@@ -62,8 +68,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         })
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
+    closeModal(); // Close and reset form
   };
 
   return (
@@ -86,9 +91,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               <i className="ti ti-x" />
             </button>
           </div>
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Call Purpose Name */}
+
+              {/* Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Name <span className="text-danger">*</span>
@@ -108,13 +115,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
-              {/* Call Purpose Description */}
+
+              {/* Description */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Description (max 255 characters)
                 </label>
                 <textarea
-                  type="text"
                   rows="4"
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
                   {...register("description", {
@@ -142,7 +149,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       id="active"
                       value="Y"
                       {...register("is_active", {
-                        required: "Status is required !",
+                        required: "Status is required!",
                       })}
                     />
                     <label htmlFor="active">Active</label>
@@ -158,8 +165,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     <label htmlFor="inactive">Inactive</label>
                   </div>
                 </div>
-                {errors.status && (
-                  <small className="text-danger">{errors.status.message}</small>
+                {errors.is_active && (
+                  <small className="text-danger">{errors.is_active.message}</small>
                 )}
               </div>
             </div>
