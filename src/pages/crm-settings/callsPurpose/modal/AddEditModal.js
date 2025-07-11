@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addCallPurpose, updateCallPurpose } from "../../../../redux/callPurpose";
 
-
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.callPurposes);
 
@@ -17,13 +16,13 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
-  useEffect(() => {
+  // initialize or reset form
+  const initializeForm = () => {
     if (mode === "edit" && initialData) {
       reset({
         name: initialData.name || "",
         description: initialData.description || "",
-        is_active: initialData.is_active,
+        is_active: initialData.is_active || "Y",
       });
     } else {
       reset({
@@ -32,14 +31,21 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         is_active: "Y",
       });
     }
-  }, [mode, initialData, reset]);
+  };
+
+  useEffect(() => {
+    initializeForm();
+  }, [mode, initialData]);
+
+  const closeModal = () => {
+    initializeForm(); // reset form on close
+    document
+      .getElementById("close_btn_add_edit_call_status_modal")
+      ?.click();
+  };
 
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_call_status_modal",
-    );
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addCallPurpose({
           name: data.name,
@@ -48,16 +54,18 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         }),
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateCallPurpose({
           id: initialData.id,
-          callPurposeData: { name: data.name, description: data.description, is_active: data.is_active },
+          callPurposeData: {
+            name: data.name,
+            description: data.description,
+            is_active: data.is_active,
+          },
         }),
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
+    closeModal(); // Close and reset form
   };
 
   return (
@@ -73,13 +81,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_call_status_modal"
+              onClick={initializeForm} // also reset when X is clicked
             >
               <i className="ti ti-x" />
             </button>
           </div>
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Call Purpose Name */}
+
+              {/* Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Call Purpose Name <span className="text-danger">*</span>
@@ -88,10 +99,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Call status name is required !",
+                    required: "Call purpose name is required!",
                     minLength: {
                       value: 3,
-                      message: "Call status name must be at least 3 characters !",
+                      message: "Call purpose name must be at least 3 characters!",
                     },
                   })}
                 />
@@ -99,24 +110,20 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
-              {/* Call Purpose Description */}
+
+              {/* Description */}
               <div className="mb-3">
-                <label className="col-form-label">
-                  Description
-                </label>
+                <label className="col-form-label">Description <span className="text-danger">*</span></label>
                 <textarea
-                  type="text"
                   rows="4"
-                  className={`form-control ${errors.desctiption ? "is-invalid" : ""}`}
-                  {...register("description", {
-                    // required: "Call status name is required !",
-                    // minLength: {
-                    //   value: 3,
-                    //   message: "Call status name must be at least 3 characters !",
-                    // },
-                  })}
+                  className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                  {...register("description",{
+                  required: "Call purpose description is required!",
+                  }
+                    
+                  )}
                 />
-                {errors.name && (
+                {errors.description && (
                   <small className="text-danger">{errors.description.message}</small>
                 )}
               </div>
@@ -132,7 +139,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       id="active"
                       value="Y"
                       {...register("is_active", {
-                        required: "Status is required !",
+                        required: "Status is required!",
                       })}
                     />
                     <label htmlFor="active">Active</label>
@@ -148,8 +155,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     <label htmlFor="inactive">Inactive</label>
                   </div>
                 </div>
-                {errors.status && (
-                  <small className="text-danger">{errors.status.message}</small>
+                {errors.is_active && (
+                  <small className="text-danger">{errors.is_active.message}</small>
                 )}
               </div>
             </div>
@@ -161,6 +168,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={closeModal}
                 >
                   Cancel
                 </Link>

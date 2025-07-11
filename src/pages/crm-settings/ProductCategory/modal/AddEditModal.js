@@ -49,7 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       dispatch(
         updateProductCategory({
           id: initialData.id,
-          industryData: { name: data.name, is_active: data.is_active },
+          categoryData: { name: data.name, is_active: data.is_active },
         }),
       );
     }
