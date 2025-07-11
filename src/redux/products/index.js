@@ -7,14 +7,16 @@ export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/products?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`);
+      const response = await apiClient.get(
+        `/v1/products?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`
+      );
       return response.data; // Returns a list of product
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch product",
+        error.response?.data || "Failed to fetch product"
       );
     }
-  },
+  }
 );
 
 // Add a product
@@ -25,21 +27,20 @@ export const addProduct = createAsyncThunk(
       const response = await toast.promise(
         apiClient.post("/v1/products", productData),
         {
-            loading: " Product adding...",
-            success: (res) => res.data.message || "Product added successfully!",
-            error: "Failed to add product",
+          loading: " Product adding...",
+          success: (res) => res.data.message || "Product added successfully!",
+          error: "Failed to add product",
         }
-    );
+      );
       // const response = await apiClient.post("/v1/products", productData);
       // toast.success(response.data.message || "product created successfully");
       return response.data; // Returns the newly added product
     } catch (error) {
-      toast.error(error.response?.data || "Failed to add product");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add product",
+        error.response?.data.message || "Failed to add product"
       );
     }
-  },
+  }
 );
 
 // Update a product
@@ -66,12 +67,12 @@ export const updateProduct = createAsyncThunk(
           message: "product not found",
         });
       }
-      toast.error(error.response?.data || "Failed to update product");
+      toast.error(error.response?.data.message || "Failed to update product");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update product",
+        error.response?.data.message || "Failed to update product"
       );
     }
-  },
+  }
 );
 
 // Delete a product
@@ -86,12 +87,12 @@ export const deleteProduct = createAsyncThunk(
         message: response.data.message || "product deleted successfully",
       };
     } catch (error) {
-      toast.error( error.response?.data || "Failed to delete product");
+      toast.error(error.response?.data.message || "Failed to delete product");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete product",
+        error.response?.data.message || "Failed to delete product"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single product by ID
@@ -103,10 +104,10 @@ export const fetchProductById = createAsyncThunk(
       return response.data; // Returns the product details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch product",
+        error.response?.data.message || "Failed to fetch product"
       );
     }
-  },
+  }
 );
 
 const productsSlice = createSlice({
@@ -144,7 +145,10 @@ const productsSlice = createSlice({
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products =  {...state.products , data: [ action.payload.data ,...state.products.data]};
+        state.products = {
+          ...state.products,
+          data: [action.payload.data, ...state.products.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addProduct.rejected, (state, action) => {
@@ -158,7 +162,7 @@ const productsSlice = createSlice({
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.products.data?.findIndex(
-          (user) => user.id === action.payload.data.id,
+          (user) => user.id === action.payload.data.id
         );
         if (index !== -1) {
           state.products.data[index] = action.payload.data;
@@ -177,10 +181,10 @@ const productsSlice = createSlice({
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.loading = false;
-       const filterData = state.products.data.filter(
-          (user) => user.id !== action.payload.data.id,
+        const filterData = state.products.data.filter(
+          (user) => user.id !== action.payload.data.id
         );
-        state.products = {...state.products , data:filterData}
+        state.products = { ...state.products, data: filterData };
         state.success = action.payload.message;
       })
       .addCase(deleteProduct.rejected, (state, action) => {

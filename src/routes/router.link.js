@@ -40,12 +40,11 @@ import CountriesList from "../pages/crm-settings/country";
 import CurrencyList from "../pages/crm-settings/currency";
 import StateList from "../pages/crm-settings/state";
 
-// USER MANAGEMENT 
+// USER MANAGEMENT
 import Manageusers from "../pages/user-management/manage-users";
 import UserDetail from "../pages/user-management/manage-users/UserDetail";
 
 import RolesPermissions from "../pages/user-management/roles";
-
 
 // SETTINGS //
 import ConnectedApps from "../pages/settings/general-settings/ConnectedApp";
@@ -59,7 +58,6 @@ import Language from "../pages/settings/website-settings/LanguageWeb";
 import Localization from "../pages/settings/website-settings/Localization";
 import Preference from "../pages/settings/website-settings/Preference";
 import Prefixes from "../pages/settings/website-settings/Prefixes";
-
 
 import CustomFields from "../pages/settings/app-settings/CustomFields";
 import InvoiceSettings from "../pages/settings/app-settings/InvoiceSettings";
@@ -76,7 +74,6 @@ import TaxRates from "../pages/settings/financial-settings/TaxRates";
 
 import BanIpAddress from "../pages/settings/other-settings/BanIpAddress";
 import Storage from "../pages/settings/other-settings/Storage";
-
 
 import Activities from "../pages/Activities";
 import MeetingTypes from "../pages/crm-settings/meetingType";
@@ -112,7 +109,6 @@ import NoPermissionPage from "../components/common/noPermission";
 
 // // Export components individually
 
-
 export { Dashboard, Login };
 const route = all_routes;
 
@@ -127,13 +123,13 @@ export const privateRoutes = [
     path: route.leadsDashboard,
     element: <LeadsDashboard />,
     route: Route,
-    title: 'Leads Dashboard'
+    title: "Leads Dashboard",
   },
   {
     path: route.leads,
     element: <LeadsList />,
     route: Route,
-    title: 'Leads'
+    title: "Leads",
   },
   {
     path: route.contacts,
@@ -152,18 +148,18 @@ export const privateRoutes = [
     element: <DealList />,
     route: Route,
     title: "Deals",
-  },  
+  },
   {
     path: route.activities,
     element: <Activities />,
     route: Route,
-    title: 'Activities'
+    title: "Activities",
   },
   {
-    path:`${route.activities}/:name`,
+    path: `${route.activities}/:name`,
     element: <Activities />,
     route: Route,
-    title: 'Activities'
+    title: "Activities",
   },
   {
     path: route.calls,
@@ -303,7 +299,7 @@ export const privateRoutes = [
     route: Route,
     title: "Manufacturer",
   },
-  
+
   {
     path: route.taxSetUp,
     element: <TaxSetUpList />,
@@ -332,55 +328,55 @@ export const privateRoutes = [
     path: route.modules,
     element: <Modules />,
     route: Route,
-    title: 'Modules'
+    title: "Modules",
   },
   {
     path: route.leadReport,
     element: <LeadReport />,
     route: Route,
-    title: 'Leads Report'
+    title: "Leads Report",
   },
   {
     path: route.dealReport,
     element: <DealReport />,
     route: Route,
-    title: 'Deals Report'
+    title: "Deals Report",
   },
   {
     path: route.contactReport,
     element: <ContactReport />,
     route: Route,
-    title: 'Contacts Report'
+    title: "Contacts Report",
   },
   {
     path: route.companyReport,
     element: <CompanyReport />,
     route: Route,
-    title: 'Companies Report'
+    title: "Companies Report",
   },
   {
     path: route.projectReport,
     element: <ProjectReport />,
     route: Route,
-    title: 'Projects Report'
+    title: "Projects Report",
   },
   {
     path: route.taskReport,
     element: <TaskReport />,
     route: Route,
-    title: 'Task Report'
+    title: "Task Report",
   },
   {
     path: route.manageusers,
     element: <Manageusers />,
     route: Route,
-    title: 'Manage Users'
+    title: "Manage Users",
   },
   {
     path: route.rolesPermissions,
     element: <RolesPermissions />,
     route: Route,
-    title: 'Roles & Permission'
+    title: "Roles & Permission",
   },
   {
     path: route.VendorDetail,
@@ -423,13 +419,13 @@ export const privateRoutes = [
     path: route.leadsDetail,
     element: <LeadsDetail />,
     route: Route,
-    title: 'Leads Detail'
+    title: "Leads Detail",
   },
   {
     path: route.leadskanban,
     element: <LeadsKanban />,
     route: Route,
-    title: "Leads Kanban",
+    title: "Leads",
   },
   {
     path: route.pipelineDetail,
@@ -447,12 +443,12 @@ export const privateRoutes = [
     path: route.manageusersDetails,
     element: <UserDetail />,
     route: Route,
-    title: 'Manage Users Details'
+    title: "Manage Users Details",
   },
 
   {
     path: route.activityKanban,
-    element: <ActivitiesKanban  />,
+    element: <ActivitiesKanban />,
     route: Route,
     title: "Activities",
   },
@@ -466,7 +462,7 @@ export const privateRoutes = [
     path: route.dealsKanban,
     element: <DealsKanban />,
     route: Route,
-    title: "Deals Kanban",
+    title: "Deals",
   },
 
   // Settings //
@@ -474,50 +470,50 @@ export const privateRoutes = [
     path: route.connectedApps,
     element: <ConnectedApps />,
     route: Route,
-    title: 'ConnectedApps'
+    title: "ConnectedApps",
   },
   {
     path: route.notification,
     element: <Notifications />,
     route: Route,
-    title: 'Notifications'
+    title: "Notifications",
   },
   {
     path: route.noPermission,
     element: <NoPermissionPage />,
     route: Route,
-    title: 'NO Permission'
+    title: "NO Permission",
   },
   {
     path: route.profile,
     element: <Profile />,
     route: Route,
-    title: 'Profile'
+    title: "Profile",
   },
   {
     path: route.security,
     element: <Security />,
     route: Route,
-    title: 'Security'
+    title: "Security",
   },
 
   {
     path: route.appearance,
     element: <Appearance />,
     route: Route,
-    title: 'Appearance'
+    title: "Appearance",
   },
   {
     path: route.companySettings,
     element: <CompanySettings />,
     route: Route,
-    title: 'Companies Settings'
+    title: "Companies Settings",
   },
   {
     path: route.language,
     element: <Language />,
     route: Route,
-    title: 'Language'
+    title: "Language",
   },
   {
     path: route.localization,
@@ -528,91 +524,89 @@ export const privateRoutes = [
     path: route.preference,
     element: <Preference />,
     route: Route,
-    title: 'Preference'
+    title: "Preference",
   },
   {
     path: route.prefixes,
     element: <Prefixes />,
     route: Route,
-    title: 'Prefixes'
+    title: "Prefixes",
   },
-
 
   {
     path: route.customFields,
     element: <CustomFields />,
     route: Route,
-    title: 'Custom Fields'
+    title: "Custom Fields",
   },
   {
     path: route.invoiceSettings,
     element: <InvoiceSettings />,
     route: Route,
-    title: 'Invoice Settings'
+    title: "Invoice Settings",
   },
   {
     path: route.printers,
     element: <Printers />,
     route: Route,
-    title: 'Printers'
+    title: "Printers",
   },
 
   {
     path: route.emailSettings,
     element: <EmailSettings />,
     route: Route,
-    title: 'Email Settings'
+    title: "Email Settings",
   },
   {
     path: route.gdprCookies,
     element: <GdprCookies />,
     route: Route,
-    title: 'Gdpr Cookies'
+    title: "Gdpr Cookies",
   },
   {
     path: route.smsGateways,
     element: <SmsGateways />,
     route: Route,
-    title: 'Sms Gateways'
+    title: "Sms Gateways",
   },
 
   {
     path: route.bankAccounts,
     element: <BankAccounts />,
     route: Route,
-    title: 'Bank Accounts'
+    title: "Bank Accounts",
   },
   {
     path: route.currencies,
     element: <Currencies />,
     route: Route,
-    title: 'Currencies'
+    title: "Currencies",
   },
   {
     path: route.paymentGateways,
     element: <PaymentGateways />,
     route: Route,
-    title: 'PaymentGateways'
+    title: "PaymentGateways",
   },
   {
     path: route.taxRates,
     element: <TaxRates />,
     route: Route,
-    title: 'TaxRates'
+    title: "TaxRates",
   },
-
 
   {
     path: route.banIpAddrress,
     element: <BanIpAddress />,
     route: Route,
-    title: 'BanIpAddress'
+    title: "BanIpAddress",
   },
   {
     path: route.storage,
     element: <Storage />,
     route: Route,
-    title: 'Storage'
+    title: "Storage",
   },
   /////////// Settings /////////////////////
 
@@ -627,19 +621,19 @@ export const privateRoutes = [
     path: route.dealsDashboard,
     element: <DealsDashboard />,
     route: Route,
-    title: 'Deals Dashboard'
+    title: "Deals Dashboard",
   },
   {
     path: route.leadsDashboard,
     element: <LeadsDashboard />,
     route: Route,
-    title: 'Leads Dashboard'
+    title: "Leads Dashboard",
   },
   {
     path: route.projectDashboard,
     element: <ProjectDashboard />,
     route: Route,
-    title: 'Projects Dashboard'
+    title: "Projects Dashboard",
   },
 ];
 

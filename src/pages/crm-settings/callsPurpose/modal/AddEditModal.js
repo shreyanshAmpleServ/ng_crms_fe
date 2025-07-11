@@ -72,7 +72,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Call Purpose" : "Edit Call Purpose"}
+              {mode === "add" ? "Add Call Purpose" : "Edit Call Purpose"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -91,17 +91,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Call Purpose Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Call Purpose Name <span className="text-danger">*</span>
+                  Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Call status name is required !",
+                    required: "Name is required !",
                     minLength: {
                       value: 3,
-                      message:
-                        "Call status name must be at least 3 characters !",
+                      message: "Name must be at least 3 characters !",
                     },
                   })}
                 />
@@ -111,22 +110,23 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
               {/* Call Purpose Description */}
               <div className="mb-3">
-                <label className="col-form-label">Description</label>
+                <label className="col-form-label">
+                  Description (max 255 characters)
+                </label>
                 <textarea
                   type="text"
                   rows="4"
-                  className={`form-control ${errors.desctiption ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.description ? "is-invalid" : ""}`}
                   {...register("description", {
-                    // required: "Call status name is required !",
-                    // minLength: {
-                    //   value: 3,
-                    //   message: "Call status name must be at least 3 characters !",
-                    // },
+                    maxLength: {
+                      value: 255,
+                      message: "Description must be less than 255 characters !",
+                    },
                   })}
                 />
-                {errors.name && (
+                {errors.description && (
                   <small className="text-danger">
-                    {errors.description.message}
+                    {errors?.description?.message}
                   </small>
                 )}
               </div>
