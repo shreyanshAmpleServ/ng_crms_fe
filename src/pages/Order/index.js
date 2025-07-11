@@ -18,7 +18,7 @@ import SearchBar from "../../components/datatable/SearchBar";
 import {
   clearMessages
 } from "../../redux/manage-user";
-import { deleteOrder, fetchorders } from "../../redux/order/index.js";
+import { deleteOrder, fetchorders, syncOrderToInvoice } from "../../redux/order/index.js";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddOrderModal from "./modal/AddOrderModal.js";
 import PreviewOrder from "./modal/PreviewOrder.js";
@@ -186,7 +186,7 @@ const Orders = () => {
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_preview_order"
+              // data-bs-target="#offcanvas_preview_order"
               onClick={() => syncInvoiceData(record)}
             >
               <i className="ti ti-file-diff text-blue"></i> Create Invoice
@@ -309,7 +309,7 @@ const Orders = () => {
     }
   };
   const syncInvoiceData = () => {
-      dispatch(deleteOrder(selectedOrder.id));  };
+      dispatch(syncOrderToInvoice());  };
 
   return (
     <div className="page-wrapper">
