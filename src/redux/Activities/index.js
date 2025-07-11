@@ -20,16 +20,30 @@ export const fetchActivities = createAsyncThunk(
   "activities/fetchActivities",
   async (reqBody, thunkAPI) => {
     try {
-      const params = {}
-      if(reqBody?.search){  params.search = reqBody.search}
-      if(reqBody?.filter){ params.filter = reqBody.filter}
-      if(reqBody?.filter2){ params.filter2 = reqBody.filter2}
-      if(reqBody?.startDate){ params.startDate = reqBody?.startDate?.toISOString()}
-      if(reqBody?.endDate){ params.endDate = reqBody?.endDate?.toISOString()}
-      if(reqBody?.page){ params.page = reqBody?.page}
-      if(reqBody?.size){ params.size = reqBody?.size}
+      const params = {};
+      if (reqBody?.search) {
+        params.search = reqBody.search;
+      }
+      if (reqBody?.filter) {
+        params.filter = reqBody.filter;
+      }
+      if (reqBody?.filter2) {
+        params.filter2 = reqBody.filter2;
+      }
+      if (reqBody?.startDate) {
+        params.startDate = reqBody?.startDate?.toISOString();
+      }
+      if (reqBody?.endDate) {
+        params.endDate = reqBody?.endDate?.toISOString();
+      }
+      if (reqBody?.page) {
+        params.page = reqBody?.page;
+      }
+      if (reqBody?.size) {
+        params.size = reqBody?.size;
+      }
 
-      const response = await apiClient.get(`/v1/activities`,{params});
+      const response = await apiClient.get(`/v1/activities`, { params });
       return response.data; // Returns a list of activities
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -52,7 +66,9 @@ export const fetchGroupedActivities = createAsyncThunk(
       if (data?.orderBy) params.orderBy = data.orderBy;
       if (data?.sortBy) params.sortBy = data.sortBy;
       if (data?.search) params.search = data.search;
-      const response = await apiClient.get( `/v1/grouped-activities`,{params} );
+      const response = await apiClient.get(`/v1/grouped-activities`, {
+        params,
+      });
       return response.data; // Returns a list of activities
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -154,7 +170,10 @@ const acticitiesSlice = createSlice({
       })
       .addCase(addActivities.fulfilled, (state, action) => {
         state.loading = false;
-        state.activities ={...state.activities, data: [action.payload.data ,...state.activities.data]};
+        state.activities = {
+          ...state.activities,
+          data: [action.payload.data, ...state.activities.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addActivities.rejected, (state, action) => {
@@ -173,7 +192,10 @@ const acticitiesSlice = createSlice({
         if (index !== -1) {
           state.activities.data[index] = action.payload.data;
         } else {
-          state.activities ={...state.activities, data: [ action.payload.data ,...state.activities]};
+          state.activities = {
+            ...state.activities,
+            data: [action.payload.data, ...state.activities],
+          };
         }
         state.success = action.payload.message;
       })
@@ -190,7 +212,7 @@ const acticitiesSlice = createSlice({
         const filteredData = state.activities.data.filter(
           (activity) => activity.id !== action.payload.data.id
         );
-        state.activities = {...state.activities,data:filteredData}
+        state.activities = { ...state.activities, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteActivities.rejected, (state, action) => {

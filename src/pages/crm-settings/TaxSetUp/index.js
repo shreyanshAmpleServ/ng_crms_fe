@@ -18,29 +18,31 @@ import { Helmet } from "react-helmet-async";
 
 const TaxSetUpList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
-  const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Tax Setup")?.[0]?.permissions
- const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+
+  const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Tax Setup"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("user")
+    ? atob(localStorage.getItem("user")).includes("admin")
+    : null;
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "S. No.",      
+      title: "S. No.",
       width: 50,
-      render: (text,record,index) =>index+1 ,
+      render: (text, record, index) => index + 1,
       // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+    },
     {
       title: "Tax Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <div>{record.name}</div>
-      ),
+      render: (text, record) => <div>{record.name}</div>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
@@ -52,9 +54,9 @@ const TaxSetUpList = () => {
       sorter: (a, b) => a.category.localeCompare(b.category),
     },
     {
-      title: "Rate",
+      title: "Rate (%)",
       dataIndex: "rate",
-      sorter: (a, b) =>  a.rate - b.rate,
+      sorter: (a, b) => a.rate - b.rate,
     },
     // {
     //   title: "Account",
@@ -67,7 +69,7 @@ const TaxSetUpList = () => {
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      sorter: (a, b) =>  new Date(a.validFrom) - new Date(b.validFrom),
+      sorter: (a, b) => new Date(a.validFrom) - new Date(b.validFrom),
     },
     {
       title: "Valid To",
@@ -75,17 +77,17 @@ const TaxSetUpList = () => {
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      sorter: (a, b) =>  new Date(a.validTo) - new Date(b.validTo),
+      sorter: (a, b) => new Date(a.validTo) - new Date(b.validTo),
     },
 
-    {
-      title: "Created Date",
-      dataIndex: "createdate",
-      render: (text) => (
-        <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
-    },
+    // {
+    //   title: "Created Date",
+    //   dataIndex: "createdate",
+    //   render: (text) => (
+    //     <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
+    //   ),
+    //   sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+    // },
     {
       title: "Status",
       dataIndex: "is_active",
@@ -104,48 +106,54 @@ const TaxSetUpList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-   ...((isUpdate || isDelete) ?[ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-             className="dropdown-item edit-popup"
-             to="#"
-             data-bs-toggle="offcanvas"
-             data-bs-target="#offcanvas_add_edit_tax_setup"
-              onClick={() => {
-                setSelectedTax(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteTax(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_add_edit_tax_setup"
+                      onClick={() => {
+                        setSelectedTax(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteTax(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
-  const { taxs, loading, error, success } = useSelector(
-    (state) => state.taxs
-  );
+  const { taxs, loading, error, success } = useSelector((state) => state.taxs);
 
   React.useEffect(() => {
     dispatch(fetchTaxSetup());
@@ -204,21 +212,6 @@ const TaxSetUpList = () => {
         <meta name="Tax Setup" content="This is Tax Setup page of DCC CRMS." />
       </Helmet>
       <div className="content">
-        {error && (
-          <FlashMessage
-            type="error"
-            message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            type="success"
-            message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-
         <div className="row">
           <div className="col-md-12">
             <div className="page-header d-none">
@@ -226,9 +219,7 @@ const TaxSetUpList = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Tax Setup
-                    <span className="count-title">
-                      {taxs?.length || 0}
-                    </span>
+                    <span className="count-title">{taxs?.length || 0}</span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -246,9 +237,10 @@ const TaxSetUpList = () => {
                     handleSearch={handleSearch}
                     label="Search Tax"
                   />
-                   {isCreate &&
+                  {isCreate && (
                     <div className="col-8">
-                       <div className="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end"><Link
+                      <div className="d-flex align-items-center flex-wrap row-gap-2 justify-content-sm-end">
+                        <Link
                           to="#"
                           className="btn btn-primary"
                           data-bs-toggle="offcanvas"
@@ -256,10 +248,10 @@ const TaxSetUpList = () => {
                         >
                           <i className="ti ti-square-rounded-plus me-2" />
                           Add
-                        </Link> </div>
-                        </div>}
-                
-                 
+                        </Link>{" "}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -287,7 +279,7 @@ const TaxSetUpList = () => {
       </div>
 
       {/* <AddEditModal mode={mode} initialData={selectedTax} /> */}
-      <ManageTaxModal tax={selectedTax}  setTax={setSelectedTax} />
+      <ManageTaxModal tax={selectedTax} setTax={setSelectedTax} />
       <DeleteAlert
         label="Tax"
         showModal={showDeleteModal}

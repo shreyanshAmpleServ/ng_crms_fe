@@ -8,20 +8,20 @@ export const fetchCampaign = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const params = {
-        search:datas?.search || "",
+        search: datas?.search || "",
         page: datas?.page || "",
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
-        endDate : datas?.endDate?.toISOString() || "",
-      }
-      const response = await apiClient.get("/v1/campaign",{params});
+        endDate: datas?.endDate?.toISOString() || "",
+      };
+      const response = await apiClient.get("/v1/campaign", { params });
       return response.data; // Returns a list of campaign
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch campaign",
+        error.response?.data || "Failed to fetch campaign"
       );
     }
-  },
+  }
 );
 
 // Add a campaign
@@ -41,10 +41,10 @@ export const createCampaign = createAsyncThunk(
       return response.data; // Returns the newly added campaign
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add campaign",
+        error.response?.data || "Failed to add campaign"
       );
     }
-  },
+  }
 );
 
 // Update a campaign
@@ -57,7 +57,8 @@ export const updateCampaign = createAsyncThunk(
         apiClient.put(`/v1/campaign/${id}`, campaignData),
         {
           loading: "Campaign updating...",
-          success: (res) => res.data.message || "Campaign updated successfully!",
+          success: (res) =>
+            res.data.message || "Campaign updated successfully!",
           error: "Failed to update campaign",
         }
       );
@@ -70,10 +71,10 @@ export const updateCampaign = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update campaign",
+        error.response?.data || "Failed to update campaign"
       );
     }
-  },
+  }
 );
 
 // Delete a campaign
@@ -88,10 +89,10 @@ export const deleteCampaign = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete campaign",
+        error.response?.data || "Failed to delete campaign"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single campaign by ID
@@ -103,12 +104,11 @@ export const fetchCampaignById = createAsyncThunk(
       return response.data; // Returns the campaign details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch campaign",
+        error.response?.data || "Failed to fetch campaign"
       );
     }
-  },
+  }
 );
-
 
 const campaignsSlice = createSlice({
   name: "campaigns",
@@ -145,7 +145,10 @@ const campaignsSlice = createSlice({
       })
       .addCase(createCampaign.fulfilled, (state, action) => {
         state.loading = false;
-        state.campaigns ={...state.campaigns,data: [...state.campaigns.data,action.payload.data]};
+        state.campaigns = {
+          ...state.campaigns,
+          data: [action.payload.data, ...state.campaigns.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(createCampaign.rejected, (state, action) => {
@@ -159,12 +162,15 @@ const campaignsSlice = createSlice({
       .addCase(updateCampaign.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.campaigns.data?.findIndex(
-          (campaign) => campaign.id === action.payload.data.id,
+          (campaign) => campaign.id === action.payload.data.id
         );
         if (index !== -1) {
           state.campaigns.data[index] = action.payload.data;
         } else {
-          state.campaigns ={...state.campaigns , data: [...state.campaigns.data,action.payload.data]};
+          state.campaigns = {
+            ...state.campaigns,
+            data: [action.payload.data, ...state.campaigns.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -179,9 +185,9 @@ const campaignsSlice = createSlice({
       .addCase(deleteCampaign.fulfilled, (state, action) => {
         state.loading = false;
         const filterData = state.campaigns.data.filter(
-          (campaign) => campaign.id !== action.payload.data.id,
+          (campaign) => campaign.id !== action.payload.data.id
         );
-        state.campaigns = {...state.campaigns,data:filterData}
+        state.campaigns = { ...state.campaigns, data: filterData };
         state.success = action.payload.message;
       })
       .addCase(deleteCampaign.rejected, (state, action) => {

@@ -28,7 +28,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     } else {
       reset({
         name: "",
-        code:"",
+        code: "",
         is_active: "Y",
       });
     }
@@ -36,7 +36,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_lost_reason_modal",
+      "close_btn_add_edit_lost_reason_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -45,15 +45,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           name: data.name,
           code: data.code,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
       dispatch(
         updateCountry({
           id: initialData.id,
-          countryData: { name: data.name,code: data.code, is_active: data.is_active },
-        }),
+          countryData: {
+            name: data.name,
+            code: data.code,
+            is_active: data.is_active,
+          },
+        })
       );
     }
     reset(); // Clear the form
@@ -61,8 +65,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   };
 
   return (
-    <div className="modal fade" id="add_edit_country_modal"
-      role="dialog">
+    <div className="modal fade" id="add_edit_country_modal" role="dialog">
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
@@ -74,6 +77,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_lost_reason_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -100,10 +106,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     },
                     validate: (value) => {
                       const trimmed = value.trim();
-                      if (trimmed.length === 0) return "State cannot be empty or spaces only !";
-                      if (trimmed.length < 2) return "Must be at least 2 characters !";
+                      if (trimmed.length === 0)
+                        return "State cannot be empty or spaces only !";
+                      if (trimmed.length < 2)
+                        return "Must be at least 2 characters !";
                       return true;
-                    }
+                    },
                   })}
                   onBlur={(e) => setValue("code", e.target.value.trim())}
                 />
@@ -113,7 +121,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               </div>
               <div className="mb-3">
                 <label className="col-form-label">
-                  Country  Name<span className="text-danger">*</span>
+                  Country Name<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
@@ -126,10 +134,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     },
                     validate: (value) => {
                       const trimmed = value.trim();
-                      if (trimmed.length === 0) return "Country name cannot be empty or spaces only !";
-                      if (trimmed.length < 3) return "Must be at least 3 characters !";
+                      if (trimmed.length === 0)
+                        return "Country name cannot be empty or spaces only !";
+                      if (trimmed.length < 3)
+                        return "Must be at least 3 characters !";
                       return true;
-                    }
+                    },
                   })}
                   onBlur={(e) => setValue("name", e.target.value.trim())}
                 />
@@ -166,7 +176,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>
@@ -178,6 +190,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

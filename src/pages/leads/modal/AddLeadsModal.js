@@ -161,18 +161,19 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
     }
   };
   React.useEffect(() => {
-    dispatch(fetchLostReasons({is_active:"Y"}));
-    dispatch(fetchIndustries({is_active:"Y"}));
-    dispatch(fetchSources({is_active:"Y"}));
+    dispatch(fetchLostReasons({ is_active: "Y" }));
+    dispatch(fetchIndustries({ is_active: "Y" }));
+    dispatch(fetchSources({ is_active: "Y" }));
     dispatch(fetchUsers());
     dispatch(fetchCompanies());
-    dispatch(fetchCountries({is_active:"Y"}));
-    dispatch(fetchCurrencies({is_active:"Y"}));
+    dispatch(fetchCountries({ is_active: "Y" }));
+    dispatch(fetchCurrencies({ is_active: "Y" }));
   }, [dispatch]);
 
   const country_id = watch("country");
   React.useEffect(() => {
-    country_id && dispatch(fetchMappedStates({country_code:country_id,is_active:"Y"}));
+    country_id &&
+      dispatch(fetchMappedStates({ country_code: country_id, is_active: "Y" }));
   }, [dispatch, country_id]);
 
   const { countries } = useSelector((state) => state.countries);
@@ -254,6 +255,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
     } finally {
       setSelectedLogo(null);
       setSelectedLead();
+      reset();
     }
   };
   React.useEffect(() => {
@@ -262,6 +264,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
       const handleModalClose = () => {
         setSelectedLogo(null);
         setSelectedLead();
+        reset();
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -401,18 +404,17 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Last Name 
-                        </label>
+                        <label className="col-form-label">Last Name</label>
                         <input
                           type="text"
                           placeholder="Enter Last Name"
                           className="form-control"
-                          {...register("last_name",
-                          //    {
-                          //   required: "Last name is required !",
-                          // }
-                        )}
+                          {...register(
+                            "last_name"
+                            //    {
+                            //   required: "Last name is required !",
+                            // }
+                          )}
                         />
                         {errors.last_name && (
                           <small className="text-danger">
@@ -424,8 +426,9 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     <div className="col-md-12">
                       <div className="mb-3">
                         <div className="d-flex align-items-center justify-content-between">
-                          <label className="col-form-label">Companies  <span className="text-danger">*</span></label>
-                         
+                          <label className="col-form-label">
+                            Companies <span className="text-danger">*</span>
+                          </label>
                         </div>
                         <Controller
                           name="company_id"
@@ -459,11 +462,11 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             );
                           }}
                         />
-                      {errors.company_id && (
-                        <small className="text-danger">
-                          {errors.company_id.message}
-                        </small>
-                      )}
+                        {errors.company_id && (
+                          <small className="text-danger">
+                            {errors.company_id.message}
+                          </small>
+                        )}
                       </div>
                     </div>
                     {/* <div className="col-md-12">
@@ -488,13 +491,16 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div> */}
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">Title<span className="text-danger">*</span></label>
+                        <label className="col-form-label">
+                          Title<span className="text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           placeholder="Enter Title"
                           className="form-control"
-                          {...register("title" ,{
-                            required: "Title is required !"})}
+                          {...register("title", {
+                            required: "Title is required !",
+                          })}
                         />
                         {errors.title && (
                           <small className="text-danger">
@@ -558,18 +564,18 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Secondary Email 
+                          Secondary Email
                         </label>
                         <input
                           type="email"
                           className="form-control"
                           placeholder="Enter Secondary Email"
-                          {...register("secondary_email",
-                             { pattern: {
+                          {...register("secondary_email", {
+                            pattern: {
                               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                               message: "Invalid email format",
-                            },}
-                        )}
+                            },
+                          })}
                         />
                         {errors.secondary_email && (
                           <small className="text-danger">
@@ -580,29 +586,30 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">Mobile<span className="text-danger">*</span></label>
+                        <label className="col-form-label">
+                          Mobile<span className="text-danger">*</span>
+                        </label>
                         <input
                           type="number"
                           placeholder="Enter Mobile"
                           className="form-control"
-                          {...register("mobile",
-                            {
-                              required:"Mobile no. is required !",
-                              minLength: {
+                          {...register("mobile", {
+                            required: "Mobile no. is required !",
+                            minLength: {
                               value: 9,
-                              message: "Mobile must be at least 9 digits !"
+                              message: "Mobile must be at least 9 digits !",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Mobile must be at most 12 digits !"
+                              message: "Mobile must be at most 12 digits !",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Mobile must contain only numbers !"
-                            }}
-                          )}
+                              message: "Mobile must contain only numbers !",
+                            },
+                          })}
                         />
-                         {errors.mobile && (
+                        {errors.mobile && (
                           <small className="text-danger">
                             {errors.mobile.message}
                           </small>
@@ -611,9 +618,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Phone
-                        </label>
+                        <label className="col-form-label">Phone</label>
                         <input
                           type="number"
                           placeholder="Enter Phone"
@@ -622,16 +627,16 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             // required: "Phone is required !",
                             minLength: {
                               value: 9,
-                              message: "Phone must be at least 9 digits"
+                              message: "Phone must be at least 9 digits",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Phone must be at most 12 digits"
+                              message: "Phone must be at most 12 digits",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Phone must contain only numbers"
-                            }
+                              message: "Phone must contain only numbers",
+                            },
                           })}
                         />
                         {errors.phone && (
@@ -641,7 +646,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         )}
                       </div>
                     </div>
-                  
+
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">Fax</label>
@@ -780,10 +785,13 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                               placeholder="Choose"
                               className="select"
                               classNamePrefix="react-select"
-                              onChange={(selectedOption) =>{
-                                field.onChange(selectedOption?.value || null)
-                                setValue("lead_owner_name",selectedOption?.label)
-                             } } // Send only value
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || null);
+                                setValue(
+                                  "lead_owner_name",
+                                  selectedOption?.label
+                                );
+                              }} // Send only value
                               value={usersList?.find(
                                 (option) => option.value === watch("lead_owner")
                               )}

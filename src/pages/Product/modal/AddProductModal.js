@@ -93,22 +93,26 @@ const AddProductModal = ({ product, setProduct }) => {
     if (searchVendor) dispatch(fetchVendors({ search: searchVendor }));
   }, [searchVendor]);
   React.useEffect(() => {
-    if (searchManufacturer) dispatch(fetchManufacturer({ search: searchManufacturer }));
+    if (searchManufacturer)
+      dispatch(fetchManufacturer({ search: searchManufacturer }));
   }, [searchManufacturer]);
   React.useEffect(() => {
-    if (searchProductCategory) dispatch(fetchProductCategory({ search: searchProductCategory }));
+    if (searchProductCategory)
+      dispatch(fetchProductCategory({ search: searchProductCategory }));
   }, [searchProductCategory]);
   React.useEffect(() => {
-    if (searchCurrency) dispatch(fetchCurrencies({ search: searchCurrency,is_active:"Y" }));
+    if (searchCurrency)
+      dispatch(fetchCurrencies({ search: searchCurrency, is_active: "Y" }));
   }, [searchCurrency]);
   React.useEffect(() => {
-    if (searchTax) dispatch(fetchTaxSetup({ search: searchTax ,is_active:"Y"}));
+    if (searchTax)
+      dispatch(fetchTaxSetup({ search: searchTax, is_active: "Y" }));
   }, [searchTax]);
   useEffect(() => {
     dispatch(fetchVendors());
     dispatch(fetchManufacturer());
-    dispatch(fetchCurrencies({is_active:"Y"}));
-    dispatch(fetchTaxSetup({is_active:"Y"}));
+    dispatch(fetchCurrencies({ is_active: "Y" }));
+    dispatch(fetchTaxSetup({ is_active: "Y" }));
     dispatch(fetchProductCategory());
   }, [dispatch]);
 
@@ -190,6 +194,7 @@ const AddProductModal = ({ product, setProduct }) => {
       const handleModalClose = () => {
         setSelectedAvatar(null);
         setProduct();
+        reset();
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -318,7 +323,7 @@ const AddProductModal = ({ product, setProduct }) => {
                     <Select
                       {...field}
                       options={CategoryList}
-                       isLoading={loadingCat}
+                      isLoading={loadingCat}
                       onInputChange={(e) => setSearchProductCategory(e)}
                       placeholder="Choose"
                       className="select2"
@@ -407,7 +412,7 @@ const AddProductModal = ({ product, setProduct }) => {
                     <Select
                       {...field}
                       options={manufacturerList}
-                       isLoading={loadingMnf}
+                      isLoading={loadingMnf}
                       onInputChange={(e) => setSearchManufacturer(e)}
                       placeholder="Choose"
                       className="select2"
@@ -473,7 +478,7 @@ const AddProductModal = ({ product, setProduct }) => {
                     <Select
                       {...field}
                       options={CurrencyList}
-                       isLoading={loadingCurrency}
+                      isLoading={loadingCurrency}
                       onInputChange={(e) => setSearchCurrency(e)}
                       placeholder="Choose"
                       className="select2"
@@ -528,7 +533,7 @@ const AddProductModal = ({ product, setProduct }) => {
                     <Select
                       {...field}
                       options={TaxList}
-                       isLoading={loadingTAx}
+                      isLoading={loadingTAx}
                       onInputChange={(e) => setSearchTax(e)}
                       placeholder="Choose"
                       className="select2"

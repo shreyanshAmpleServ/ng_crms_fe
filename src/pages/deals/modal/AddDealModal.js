@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Select from "react-select";
-import {DatePicker } from "antd";
+import { DatePicker } from "antd";
 import { TagsInput } from "react-tag-input-component";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,24 +31,32 @@ const AddDealModel = () => {
   React.useEffect(() => {
     dispatch(fetchContacts());
     dispatch(fetchPipelines());
-    dispatch(fetchCurrencies({is_active:"Y"}))
-        dispatch(fetchSources({is_active:"Y"}));
+    dispatch(fetchCurrencies({ is_active: "Y" }));
+    dispatch(fetchSources({ is_active: "Y" }));
   }, [dispatch]);
   const [tags, setTags] = useState([]);
-  
+
   const [dueDate, setDueDate] = useState(new Date());
   const [expectedCloseDate, setExpectedCloseDate] = useState(new Date());
   const [followUpDate, setFollowUpDate] = useState(new Date());
   const { loading: dealsLoading } = useSelector((state) => state.deals);
   const { contacts } = useSelector((state) => state.contacts);
   const { sources } = useSelector((state) => state.sources);
-   const { currencies } = useSelector( (state) => state.currency);
-  
-  const currencyLists = currencies?.map(i => i?.is_active === "Y" ? ({label:i?.code,value:i?.code}) : null).filter(Boolean) || [];
-  
-   const {   pipelines : pipelineLists } = useSelector((state) => state.pipelines);
-  
-   const pipelines = pipelineLists?.data?.map(i => i?.is_active === "Y" ? i : null).filter(Boolean) || [];
+  const { currencies } = useSelector((state) => state.currency);
+
+  const currencyLists =
+    currencies
+      ?.map((i) =>
+        i?.is_active === "Y" ? { label: i?.code, value: i?.code } : null
+      )
+      .filter(Boolean) || [];
+
+  const { pipelines: pipelineLists } = useSelector((state) => state.pipelines);
+
+  const pipelines =
+    pipelineLists?.data
+      ?.map((i) => (i?.is_active === "Y" ? i : null))
+      .filter(Boolean) || [];
 
   const contactlist = contacts?.data?.map((contact) => ({
     value: contact.id,
@@ -58,7 +66,7 @@ const AddDealModel = () => {
     value: pipeline.id,
     label: pipeline.name,
   }));
-    const sourceList = sources.map((emnt) => ({
+  const sourceList = sources.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
@@ -94,7 +102,7 @@ const AddDealModel = () => {
     },
   });
   const [stages, setStages] = useState([]); // Local state for stages
-  const {loading} = useSelector((state) => state.pipelines);
+  const { loading } = useSelector((state) => state.pipelines);
 
   const onPipelineChange = async (selectedPipeline) => {
     setValue("pipelineId", selectedPipeline); // Set selected pipeline in the form
@@ -102,7 +110,7 @@ const AddDealModel = () => {
     if (selectedPipeline) {
       try {
         const response = await dispatch(
-          fetchPipelineById(selectedPipeline.value),
+          fetchPipelineById(selectedPipeline.value)
         ).unwrap();
         const fetchedStages = response.data.stages.map((stage) => ({
           value: stage.id,
@@ -140,9 +148,27 @@ const AddDealModel = () => {
       closeButton.click();
     } catch (error) {
       closeButton.click();
+      reset();
     }
   };
-
+  React.useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add_deal");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        reset();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -447,27 +473,26 @@ const AddDealModel = () => {
                 <label className="col-form-label">
                   Status <span className="text-danger">*</span>
                 </label>
-                 <Controller
-                                          name="status"
-                                          rules={{ required: "Status is required !" }} // Make the field required
-                                          control={control}
-                                          render={({ field }) => (
-                                            <Select
-                                              {...field}
-                                              options={sourceList}
-                                              placeholder="Choose"
-                                              className="select2"
-                                              classNamePrefix="react-select"
-                                              onChange={(selectedOption) =>
-                                                field.onChange(selectedOption?.value || null)
-                                              } // Send only value
-                                              value={sourceList?.find(
-                                                (option) =>
-                                                  option.value === watch("status"),
-                                              )}
-                                            />
-                                          )}
-                                        />
+                <Controller
+                  name="status"
+                  rules={{ required: "Status is required !" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={sourceList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || null)
+                      } // Send only value
+                      value={sourceList?.find(
+                        (option) => option.value === watch("status")
+                      )}
+                    />
+                  )}
+                />
                 {/* <Controller
                   name="status"
                   control={control}
@@ -522,17 +547,17 @@ const AddDealModel = () => {
             >
               {dealsLoading ? "Creating..." : "Create"}
               {dealsLoading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { addCurrency, fetchCurrencies, updateCurrency } from "../../../../redux/currency"; // Adjust as per your redux actions
+import {
+  addCurrency,
+  fetchCurrencies,
+  updateCurrency,
+} from "../../../../redux/currency"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
@@ -60,7 +64,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         })
       );
     }
- dispatch(fetchCurrencies());
+    dispatch(fetchCurrencies());
     reset(); // Clear the form
     closeButton.click();
   };
@@ -78,6 +82,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_currency_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -100,8 +107,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     },
                     validate: (value) => {
                       const trimmed = value.trim();
-                      if (trimmed.length === 0) return "Currency name cannot be empty or spaces only !";
-                      if (trimmed.length < 3) return "Must be at least 3 characters !";
+                      if (trimmed.length === 0)
+                        return "Currency name cannot be empty or spaces only !";
+                      if (trimmed.length < 3)
+                        return "Must be at least 3 characters !";
                       return true;
                     },
                   })}
@@ -132,8 +141,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     },
                     validate: (value) => {
                       const trimmed = value.trim();
-                      if (trimmed.length === 0) return "Currency code cannot be empty or spaces only !";
-                      if (trimmed.length < 2) return "Must be at least 2 characters !";
+                      if (trimmed.length === 0)
+                        return "Currency code cannot be empty or spaces only !";
+                      if (trimmed.length < 2)
+                        return "Must be at least 2 characters !";
                       return true;
                     },
                   })}
@@ -203,8 +214,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
               </div>
-
-
             </div>
 
             {/* Footer */}
@@ -214,6 +223,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

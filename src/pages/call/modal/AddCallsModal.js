@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLeads } from "../../../redux/leads";
 import { TimePicker } from "antd";
-import {DatePicker } from "antd";
+import { DatePicker } from "antd";
 import DefaultEditor from "react-simple-wysiwyg";
 import { fetchCallPurposes } from "../../../redux/callPurpose";
 import { addCalls, updateCalls } from "../../../redux/calls";
@@ -165,7 +165,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
       ongoing_callStatus: isScheduled ? "Scheduled" : "Completed",
       call_status_id: null,
       call_type_id: null,
-      call_start_date: new Date(),
+      call_start_date: dayjs(new Date()).format("DD-MM-YYYY"),
       call_start_time: dayjs().format("HH:mm:ss"),
       duration_minutes: null,
       call_subject: "",
@@ -221,7 +221,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
         call_status_id: null,
         ongoing_callStatus: isScheduled ? "Scheduled" : "Completed",
         call_type_id: null,
-        call_start_date: new Date(),
+        call_start_date: dayjs(new Date()).format("DD-MM-YYYY"),
         call_start_time: dayjs().format("HH:mm:ss"),
         duration_minutes: null,
         call_subject: "",
@@ -265,7 +265,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   }, [dispatch, callFor, watch("related_to")]);
 
   const onSubmit = async (data) => {
-    console.log("DAta",data)
+    console.log("DAta", data);
     const closeButton = document.getElementById("offcanvas_add_calls_close");
     const finalData = {
       call_for_contact_id:
@@ -405,7 +405,9 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                             ? "call_for_contact_id"
                             : watch("call_for") === "Leads"
                               ? "call_for_lead_id"
-                              : watch("call_for") === "Projects" ? "call_for_project_id" :""
+                              : watch("call_for") === "Projects"
+                                ? "call_for_project_id"
+                                : ""
                         }
                         rules={{ required: "Call For To is required !" }}
                         control={control}
@@ -477,7 +479,8 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         {errors.call_for_contact_id.message}
                       </small>
                     )
-                  ) : watch("call_for") === "Leads" && errors.call_for_lead_id ? (
+                  ) : watch("call_for") === "Leads" &&
+                    errors.call_for_lead_id ? (
                     <small
                       style={{ marginLeft: errors.call_for ? "20%" : "40%" }}
                       className="text-danger"
@@ -485,7 +488,8 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                       {errors.call_for_lead_id.message}
                     </small>
                   ) : (
-                    watch("call_for") === "Projects" && errors.call_for_project_id && (
+                    watch("call_for") === "Projects" &&
+                    errors.call_for_project_id && (
                       <small
                         style={{ marginLeft: errors.call_for ? "20%" : "40%" }}
                         className="text-danger "
@@ -797,14 +801,15 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         <DatePicker
                           {...field}
                           className="form-control"
-                          selected={field.value}
                           value={
                             field.value
-                              ? dayjs(field.value, "dd-MM-yyyy")
+                              ? dayjs(field.value, "DD-MM-YYYY")
                               : null
                           }
-                          onChange={field.onChange}
-                          dateFormat="dd-MM-yyyy"
+                          format="DD-MM-YYYY"
+                          onChange={(date, dateString) => {
+                            field.onChange(dateString);
+                          }}
                         />
                       )}
                     />

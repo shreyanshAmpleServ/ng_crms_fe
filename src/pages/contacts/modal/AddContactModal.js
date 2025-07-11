@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {DatePicker } from "antd";
+import { DatePicker } from "antd";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import dayjs from "dayjs";
@@ -50,7 +50,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
       dateOfBirth: new Date(),
       reviews: null,
       owner: null,
-      owner_name:"",
+      owner_name: "",
       source: null,
       industry: null,
       currency: "",
@@ -150,22 +150,27 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
   const { loading } = useSelector((state) => state.contacts);
 
   React.useEffect(() => {
-    dispatch(fetchIndustries({is_active:"Y"}));
+    dispatch(fetchIndustries({ is_active: "Y" }));
     dispatch(fetchCompanies());
     dispatch(fetchDeals());
     dispatch(fetchUsers());
-    dispatch(fetchSources({is_active:"Y"}));
-    dispatch(fetchCountries({is_active:"Y"}));
-    dispatch(fetchCurrencies({is_active:"Y"}));
+    dispatch(fetchSources({ is_active: "Y" }));
+    dispatch(fetchCountries({ is_active: "Y" }));
+    dispatch(fetchCurrencies({ is_active: "Y" }));
   }, [dispatch]);
 
   const country_id = watch("country");
   React.useEffect(() => {
-    country_id && dispatch(fetchMappedStates({country_code:country_id,is_active:"Y"}));
+    country_id &&
+      dispatch(fetchMappedStates({ country_code: country_id, is_active: "Y" }));
   }, [dispatch, country_id]);
 
-  const { countries ,loading:countryLoading} = useSelector((state) => state.countries);
-  const { mappedStates ,loading:stateLoading} = useSelector((state) => state.mappedStates);
+  const { countries, loading: countryLoading } = useSelector(
+    (state) => state.countries
+  );
+  const { mappedStates, loading: stateLoading } = useSelector(
+    (state) => state.mappedStates
+  );
   const { currencies } = useSelector((state) => state.currency);
 
   const currencyLists =
@@ -226,6 +231,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
     } finally {
       setSelectedLogo(null);
       setSelectedContact();
+      reset();
     }
   };
   React.useEffect(() => {
@@ -234,6 +240,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
       const handleModalClose = () => {
         setSelectedContact();
         setSelectedLogo(null);
+        reset();
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -513,16 +520,16 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                             required: "Phone 1 is required !",
                             minLength: {
                               value: 9,
-                              message: "Phone must be at least 9 digits"
+                              message: "Phone must be at least 9 digits",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Phone must be at most 12 digits"
+                              message: "Phone must be at most 12 digits",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Phone must contain only numbers"
-                            }
+                              message: "Phone must contain only numbers",
+                            },
                           })}
                         />
                         {errors.phone1 && (
@@ -539,22 +546,22 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           type="number"
                           placeholder="Enter Phone 2"
                           className="form-control"
-                          {...register("phone2",{
+                          {...register("phone2", {
                             minLength: {
                               value: 9,
-                              message: "Phone must be at least 9 digits"
+                              message: "Phone must be at least 9 digits",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Phone must be at most 12 digits"
+                              message: "Phone must be at most 12 digits",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Phone must contain only numbers"
-                            }
+                              message: "Phone must contain only numbers",
+                            },
                           })}
                         />
-                         {errors.phone2 && (
+                        {errors.phone2 && (
                           <small className="text-danger">
                             {errors.phone2.message}
                           </small>
@@ -636,7 +643,11 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                                 {...field}
                                 className="form-control"
                                 value={field.value ? dayjs(field.value) : null}
-                                onChange={(date) => field.onChange(date ? date.toISOString() : null)}
+                                onChange={(date) =>
+                                  field.onChange(
+                                    date ? date.toISOString() : null
+                                  )
+                                }
                                 dateFormat="dd-MM-yyyy"
                               />
                             )}
@@ -690,15 +701,15 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                                       }
                                     : null
                                 } // Ensure correct default value
-                                onChange={(selectedOption) =>{
-                                  field.onChange(selectedOption.value)
-                                  setValue("owner_name",selectedOption.label)
-                               } } // Store only value
+                                onChange={(selectedOption) => {
+                                  field.onChange(selectedOption.value);
+                                  setValue("owner_name", selectedOption.label);
+                                }} // Store only value
                               />
                             );
                           }}
                         />
-                          {errors.owner && (
+                        {errors.owner && (
                           <small className="text-danger">
                             {errors.owner.message}
                           </small>
@@ -723,9 +734,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Source
-                        </label>
+                        <label className="col-form-label">Source</label>
                         <Controller
                           name="source"
                           control={control}
@@ -762,9 +771,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
-                          Indurtry 
-                        </label>
+                        <label className="col-form-label">Indurtry</label>
                         <Controller
                           name="industry"
                           control={control}

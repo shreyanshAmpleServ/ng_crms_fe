@@ -33,7 +33,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_industry_modal",
+      "close_btn_add_edit_industry_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         addIndustry({
           name: data.name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
@@ -49,7 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateIndustry({
           id: initialData.id,
           industryData: { name: data.name, is_active: data.is_active },
-        }),
+        })
       );
     }
     reset(); // Clear the form
@@ -69,6 +69,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_industry_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -124,7 +127,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>
@@ -136,6 +141,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

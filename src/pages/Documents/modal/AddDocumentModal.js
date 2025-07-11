@@ -76,18 +76,39 @@ const AddFiles = ({ data, setData }) => {
     related_type === "Orders" && dispatch(fetchorders());
   }, [related_type]);
 
-  const { deals  ,loading:loadingDeals } = useSelector((state) => state?.deals);
-  const { companies ,loading:loadingComp } = useSelector((state) => state?.companies);
-  const { vendor ,loading:loadingVendor } = useSelector((state) => state?.vendor);
-  const { contacts ,loading:loadingContacts } = useSelector((state) => state?.contacts);
-  const { leads ,loading:loadingLeads } = useSelector((state) => state?.leads);
-  const { users ,loading:loadingUser } = useSelector((state) => state?.users);
-  const { projects ,loading:loadingProject } = useSelector((state) => state?.projects);
-  const { orders ,loading:loadingOrder } = useSelector((state) => state?.orders);
+  const { deals, loading: loadingDeals } = useSelector((state) => state?.deals);
+  const { companies, loading: loadingComp } = useSelector(
+    (state) => state?.companies
+  );
+  const { vendor, loading: loadingVendor } = useSelector(
+    (state) => state?.vendor
+  );
+  const { contacts, loading: loadingContacts } = useSelector(
+    (state) => state?.contacts
+  );
+  const { leads, loading: loadingLeads } = useSelector((state) => state?.leads);
+  const { users, loading: loadingUser } = useSelector((state) => state?.users);
+  const { projects, loading: loadingProject } = useSelector(
+    (state) => state?.projects
+  );
+  const { orders, loading: loadingOrder } = useSelector(
+    (state) => state?.orders
+  );
 
-  let isLoading = loadingDeals ||loadingComp ||loadingVendor ||loadingContacts ||loadingLeads ||loadingUser ||loadingProject ||loadingOrder
+  let isLoading =
+    loadingDeals ||
+    loadingComp ||
+    loadingVendor ||
+    loadingContacts ||
+    loadingLeads ||
+    loadingUser ||
+    loadingProject ||
+    loadingOrder;
 
-  const dealsList = deals?.data?.map((i) => ({ label: i?.dealName, value: i?.id }));
+  const dealsList = deals?.data?.map((i) => ({
+    label: i?.dealName,
+    value: i?.id,
+  }));
   const contactsList = contacts?.data?.map((i) => ({
     label: i?.firstName + " " + i?.lastName,
     value: i?.id,
@@ -96,9 +117,18 @@ const AddFiles = ({ data, setData }) => {
     label: i?.first_name + " " + i?.last_name,
     value: i?.id,
   }));
-  const projectsList = projects?.data?.map((i) => ({ label: i?.name, value: i?.id }));
-  const vendorList = vendor?.data?.map((i) => ({ label: i?.name, value: i?.id }));
-  const userList = users?.data?.map((i) => ({ label: i?.full_name, value: i?.id }));
+  const projectsList = projects?.data?.map((i) => ({
+    label: i?.name,
+    value: i?.id,
+  }));
+  const vendorList = vendor?.data?.map((i) => ({
+    label: i?.name,
+    value: i?.id,
+  }));
+  const userList = users?.data?.map((i) => ({
+    label: i?.full_name,
+    value: i?.id,
+  }));
   const companiesList = companies?.data?.map((i) => ({
     label: i?.name,
     value: i?.id,
@@ -165,6 +195,7 @@ const AddFiles = ({ data, setData }) => {
       const handleModalClose = () => {
         setData(null);
         resetFileInput();
+        reset();
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -190,7 +221,7 @@ const AddFiles = ({ data, setData }) => {
       setSelectedFile(file);
     }
   };
-  
+
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"

@@ -8,23 +8,23 @@ export const fetchLeads = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const params = {
-        search:datas?.search || "",
+        search: datas?.search || "",
         page: datas?.page || "",
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
-        endDate : datas?.endDate?.toISOString() || "",
-        status : datas?.status || "",
+        endDate: datas?.endDate?.toISOString() || "",
+        status: datas?.status || "",
         // priority : datas?.priority || ""
-      }
-      const response = await apiClient.get(`/v1/leads`,{params});
+      };
+      const response = await apiClient.get(`/v1/leads`, { params });
       // const response = await apiClient.get(`/v1/leads?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`);
       return response.data; // Returns a list of leads
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch leads",
+        error.response?.data || "Failed to fetch leads"
       );
     }
-  },
+  }
 );
 
 // Fetch a Lead by ID
@@ -36,10 +36,10 @@ export const fetchLeadById = createAsyncThunk(
       return response.data; // Returns the lead details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch lead",
+        error.response?.data || "Failed to fetch lead"
       );
     }
-  },
+  }
 );
 
 // Create a Lead
@@ -59,10 +59,10 @@ export const createLead = createAsyncThunk(
       return response.data; // Returns the newly created lead
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to create lead",
+        error.response?.data || "Failed to create lead"
       );
     }
-  },
+  }
 );
 
 // Update a Lead
@@ -88,10 +88,10 @@ export const updateLead = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update lead",
+        error.response?.data || "Failed to update lead"
       );
     }
-  },
+  }
 );
 
 // Delete a Lead
@@ -106,10 +106,10 @@ export const deleteLead = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete lead",
+        error.response?.data || "Failed to delete lead"
       );
     }
-  },
+  }
 );
 
 // Fetch All Leads statuses
@@ -121,10 +121,10 @@ export const fetchLeadStatuses = createAsyncThunk(
       return response.data; // Returns a list of leads
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch lead statuses",
+        error.response?.data || "Failed to fetch lead statuses"
       );
     }
-  },
+  }
 );
 const leadSlice = createSlice({
   name: "leads",
@@ -186,7 +186,10 @@ const leadSlice = createSlice({
       })
       .addCase(createLead.fulfilled, (state, action) => {
         state.loading = false;
-        state.leads ={...state.leads, data: [action.payload.data, ...state.leads.data]};
+        state.leads = {
+          ...state.leads,
+          data: [...state.leads.data, action.payload.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(createLead.rejected, (state, action) => {
@@ -200,13 +203,15 @@ const leadSlice = createSlice({
       .addCase(updateLead.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.leads.data?.findIndex(
-          (lead) => lead.id === action.payload.data.id,
+          (lead) => lead.id === action.payload.data.id
         );
         if (index !== -1) {
           state.leads.data[index] = action.payload.data;
         } else {
-          state.leads ={...state.leads , data: [action.payload.data, ...state.leads.data]};
-
+          state.leads = {
+            ...state.leads,
+            data: [...state.leads.data, action.payload.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -221,9 +226,9 @@ const leadSlice = createSlice({
       .addCase(deleteLead.fulfilled, (state, action) => {
         state.loading = false;
         const filteredData = state.leads.data?.filter(
-          (lead) => lead.id !== action.payload.data.id,
+          (lead) => lead.id !== action.payload.data.id
         );
-        state.leads = {...state.leads,data:filteredData}
+        state.leads = { ...state.leads, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteLead.rejected, (state, action) => {

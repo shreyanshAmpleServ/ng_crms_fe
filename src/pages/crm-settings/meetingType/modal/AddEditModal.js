@@ -2,7 +2,10 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { addMeetingType, updateMeetingType } from "../../../../redux/meetingType";
+import {
+  addMeetingType,
+  updateMeetingType,
+} from "../../../../redux/meetingType";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.callStatuses);
@@ -35,7 +38,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_meeting_type_modal",
+      "close_btn_add_edit_meeting_type_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -44,15 +47,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           name: data.name,
           description: data.description,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
       dispatch(
         updateMeetingType({
           id: initialData.id,
-          meetingTypeData: { name: data.name, description: data.description, is_active: data.is_active },
-        }),
+          meetingTypeData: {
+            name: data.name,
+            description: data.description,
+            is_active: data.is_active,
+          },
+        })
       );
     }
     reset(); // Clear the form
@@ -72,6 +79,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_meeting_type_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -90,7 +100,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "Meeting type name is required !",
                     minLength: {
                       value: 3,
-                      message: "Meeting type name must be at least 3 characters !",
+                      message:
+                        "Meeting type name must be at least 3 characters !",
                     },
                   })}
                 />
@@ -101,18 +112,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
               {/* Call Type Description */}
               <div className="mb-3">
-                <label className="col-form-label">
-                  Description
-                </label>
+                <label className="col-form-label">Description</label>
                 <textarea
                   type="text"
                   rows="4"
                   className={`form-control ${errors.descpiption ? "is-invalid" : ""}`}
-                  {...register("description", {
-                  })}
+                  {...register("description", {})}
                 />
                 {errors.name && (
-                  <small className="text-danger">{errors?.description?.message}</small>
+                  <small className="text-danger">
+                    {errors?.description?.message}
+                  </small>
                 )}
               </div>
               {/* Status */}
@@ -155,6 +165,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

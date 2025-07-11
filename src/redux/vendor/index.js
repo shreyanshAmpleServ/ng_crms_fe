@@ -11,10 +11,10 @@ export const fetchVendors = createAsyncThunk(
       return response.data; // Returns a list of vendor
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch vendor",
+        error.response?.data || "Failed to fetch vendor"
       );
     }
-  },
+  }
 );
 
 // Add a vendor
@@ -36,10 +36,10 @@ export const addVendor = createAsyncThunk(
     } catch (error) {
       toast.error(error.response?.data || "Failed to add vendor");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add vendor",
+        error.response?.data || "Failed to add vendor"
       );
     }
-  },
+  }
 );
 
 // Update a vendor
@@ -68,10 +68,10 @@ export const updateVendor = createAsyncThunk(
       }
       toast.error(error.response?.data || "Failed to update vendor");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update vendor",
+        error.response?.data || "Failed to update vendor"
       );
     }
-  },
+  }
 );
 
 // Delete a vendor
@@ -86,12 +86,12 @@ export const deleteVenor = createAsyncThunk(
         message: response.data.message || "vendor deleted successfully",
       };
     } catch (error) {
-      toast.error( error.response?.data || "Failed to delete vendor");
+      toast.error(error.response?.data || "Failed to delete vendor");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete vendor",
+        error.response?.data || "Failed to delete vendor"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single vendor by ID
@@ -103,10 +103,10 @@ export const fetchVendorById = createAsyncThunk(
       return response.data; // Returns the vendor details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch vendor",
+        error.response?.data || "Failed to fetch vendor"
       );
     }
-  },
+  }
 );
 
 const vendorSlice = createSlice({
@@ -144,7 +144,10 @@ const vendorSlice = createSlice({
       })
       .addCase(addVendor.fulfilled, (state, action) => {
         state.loading = false;
-        state.vendor ={...state.vendor,data: [action.payload.data, ...state.vendor.data]};
+        state.vendor = {
+          ...state.vendor,
+          data: [action.payload.data, ...state.vendor.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addVendor.rejected, (state, action) => {
@@ -158,12 +161,15 @@ const vendorSlice = createSlice({
       .addCase(updateVendor.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.vendor.data?.findIndex(
-          (user) => user.id === action.payload.data.id,
+          (user) => user.id === action.payload.data.id
         );
         if (index !== -1) {
           state.vendor.data[index] = action.payload.data;
         } else {
-          state.vendor ={...state.vendor , data: [action.payload.data, ...state.vendor.data]};
+          state.vendor = {
+            ...state.vendor,
+            data: [action.payload.data, ...state.vendor.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -178,9 +184,9 @@ const vendorSlice = createSlice({
       .addCase(deleteVenor.fulfilled, (state, action) => {
         state.loading = false;
         let filteredData = state.vendor.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.vendor = {...state.vendor,data:filteredData}
+        state.vendor = { ...state.vendor, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteVenor.rejected, (state, action) => {

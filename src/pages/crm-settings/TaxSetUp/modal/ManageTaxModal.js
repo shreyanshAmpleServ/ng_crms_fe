@@ -1,5 +1,5 @@
 import React from "react";
-import {DatePicker } from "antd";
+import { DatePicker } from "antd";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { addTaxSetup, updateTaxSetup } from "../../../../redux/taxSetUp";
@@ -61,7 +61,6 @@ const ManageTaxModal = ({ tax, setTax }) => {
     }
   }, [tax]);
 
-
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_tax_setup");
     // const formData = new FormData();
@@ -104,6 +103,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
     if (offcanvasElement) {
       const handleModalClose = () => {
         setTax();
+        reset();
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -124,7 +124,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
       id="offcanvas_add_edit_tax_setup"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">{tax ? "Update " : "Add New"} Tax</h5>
+        <h5 className="fw-semibold">{tax ? "Update " : "Add New"} Tax Setup</h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -239,11 +239,12 @@ const ManageTaxModal = ({ tax, setTax }) => {
                       message: "Rate cannot exceed 100%",
                     },
                   })}
-                  onChange={(e)=>{ 
-                     let value = Number(e.target.value);
+                  onChange={(e) => {
+                    let value = Number(e.target.value);
                     if (value < 0) value = 0;
                     if (value > 100) value = 100;
-                    setValue("rate",value) }}
+                    setValue("rate", value);
+                  }}
                 />
                 {errors.rate && (
                   <small className="text-danger">{errors.rate.message}</small>
@@ -348,9 +349,9 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 />
               </div>
             </div>
-               {/* Status */}
-               <div className="col-md-6">
-               <div className="mb-0">
+            {/* Status */}
+            <div className="col-md-6">
+              <div className="mb-0">
                 <label className="col-form-label">Status</label>
                 <div className="d-flex align-items-center">
                   <div className="me-2">
@@ -377,10 +378,12 @@ const ManageTaxModal = ({ tax, setTax }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
-              </div>
+            </div>
           </div>
 
           <div className="d-flex mt-3 align-items-center justify-content-end">
