@@ -4,8 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { addLostReason, updateLostReason } from "../../../../redux/lostReasons"; // Adjust as per your redux actions
 import { Link, useNavigate } from "react-router-dom";
 
-
-const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) => {
+const AddEditModal = ({
+  mode = "add",
+  initialData = null,
+  sourcePage = null,
+}) => {
   const { loading } = useSelector((state) => state.lostReasons);
   const [colorCode, setColorCode] = useState("#000");
   const navigate = useNavigate();
@@ -42,7 +45,7 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_lost_reason_modal",
+      "close_btn_add_edit_lost_reason_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -52,7 +55,7 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
           order: data.order ? Number(data.order) : null,
           is_active: data.is_active,
           colorCode: colorCode,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
@@ -65,17 +68,15 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
             is_active: data.is_active,
             colorCode: colorCode,
           },
-        }),
+        })
       );
 
-      if (sourcePage === 'leads-kanban') {
+      if (sourcePage === "leads-kanban") {
         window.location.reload();
       }
-
     }
     reset(); // Clear the form
     closeButton.click();
-
   };
 
   return (
@@ -91,6 +92,9 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_lost_reason_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -127,7 +131,6 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
                   className={`form-control ${errors.order ? "is-invalid" : ""}`}
                   {...register("order", {
                     required: "Order is required !",
-
                   })}
                 />
                 {errors.reason && (
@@ -187,6 +190,9 @@ const AddEditModal = ({ mode = "add", initialData = null, sourcePage = null }) =
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

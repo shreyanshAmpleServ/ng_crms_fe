@@ -7,60 +7,63 @@ export const fetchCases = createAsyncThunk(
   "cases/fetchCases",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/cases?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`);
+      const response = await apiClient.get(
+        `/v1/cases?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`
+      );
       return response.data; // Returns a list of order
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch Case",
+        error.response?.data || "Failed to fetch Case"
       );
     }
-  },
+  }
 );
 export const fetchCaseReason = createAsyncThunk(
   "cases/fetchCaseReason",
   async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get(`/v1/case-reason?page=${datas?.page || ""}&size=${datas?.size || ""}`);
+      const response = await apiClient.get(
+        `/v1/case-reason?page=${datas?.page || ""}&size=${datas?.size || ""}`
+      );
       return response.data; // Returns a list of order
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch Case",
+        error.response?.data || "Failed to fetch Case"
       );
     }
-  },
+  }
 );
 
 // Add a Case
 export const addCases = createAsyncThunk(
   "cases/addCases",
   async (orderData, thunkAPI) => {
-   
     try {
       const response = await toast.promise(
         apiClient.post("/v1/cases", orderData),
         {
-            loading: "Case creating...",
-            success: (res) => res.data.message || "Case created successfully!",
-            error: "Failed to create Case",
+          loading: "Case creating...",
+          success: (res) => res.data.message || "Case created successfully!",
+          error: "Failed to create Case",
         }
-    );
+      );
       // const response = await apiClient.post("/v1/cases", orderData);
       // toast.success(response.data.message || "order created successfully");
       return response.data; // Returns the newly added order
     } catch (error) {
       toast.error(error.response?.data || "Failed to create Case");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to create Case",
+        error.response?.data || "Failed to create Case"
       );
     }
-  },
+  }
 );
 
 // Update a Case
 export const updateCases = createAsyncThunk(
   "cases/updateCases",
   async (orderData, thunkAPI) => {
-    let id = orderData.get("id")
+    let id = orderData.get("id");
     try {
       const response = await toast.promise(
         apiClient.put(`/v1/cases/${id}`, orderData),
@@ -83,10 +86,10 @@ export const updateCases = createAsyncThunk(
       }
       toast.error(error.response?.data || "Failed to update Case");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update Case",
+        error.response?.data || "Failed to update Case"
       );
     }
-  },
+  }
 );
 
 // Delete a Case
@@ -109,12 +112,12 @@ export const deleteCases = createAsyncThunk(
         message: response.data.message || "Case deleted successfully",
       };
     } catch (error) {
-      toast.error( error.response?.data || "Failed to delete Case");
+      toast.error(error.response?.data || "Failed to delete Case");
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete Case",
+        error.response?.data || "Failed to delete Case"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single Case by ID
@@ -126,10 +129,10 @@ export const fetchCasesById = createAsyncThunk(
       return response.data; // Returns the order details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch Case",
+        error.response?.data || "Failed to fetch Case"
       );
     }
-  },
+  }
 );
 // Fetch a Generated Case Code
 export const fetchCasesCode = createAsyncThunk(
@@ -140,10 +143,10 @@ export const fetchCasesCode = createAsyncThunk(
       return response.data; // Returns the order details
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch case code",
+        error.response?.data || "Failed to fetch case code"
       );
     }
-  },
+  }
 );
 
 const casesSlice = createSlice({
@@ -151,8 +154,8 @@ const casesSlice = createSlice({
   initialState: {
     cases: {},
     orderDetail: null,
-    caseReason:[],
-    cashNumber:null,
+    caseReason: [],
+    cashNumber: null,
     loading: false,
     error: false,
     success: false,
@@ -184,7 +187,10 @@ const casesSlice = createSlice({
       .addCase(addCases.fulfilled, (state, action) => {
         state.loading = false;
         // state.orders = [action.payload.data, ...state.orders];
-        state.cases = {...state.cases , data: [ action.payload.data ,...state.cases.data]};
+        state.cases = {
+          ...state.cases,
+          data: [action.payload.data, ...state.cases.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addCases.rejected, (state, action) => {
@@ -198,12 +204,15 @@ const casesSlice = createSlice({
       .addCase(updateCases.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.cases?.data?.findIndex(
-          (data) => data.id === action.payload.data.id,
+          (data) => data.id === action.payload.data.id
         );
         if (index !== -1) {
           state.cases.data[index] = action.payload.data;
         } else {
-          state.cases ={...state.cases , data: [ action.payload.data ,...state.cases.data]};
+          state.cases = {
+            ...state.cases,
+            data: [action.payload.data, ...state.cases.data],
+          };
         }
         state.success = action.payload.message;
       })
@@ -218,9 +227,9 @@ const casesSlice = createSlice({
       .addCase(deleteCases.fulfilled, (state, action) => {
         state.loading = false;
         let filteredData = state.cases.data.filter(
-          (data) => data.id !== action.payload.data.id,
+          (data) => data.id !== action.payload.data.id
         );
-        state.cases = {...state.cases,data:filteredData}
+        state.cases = { ...state.cases, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteCases.rejected, (state, action) => {

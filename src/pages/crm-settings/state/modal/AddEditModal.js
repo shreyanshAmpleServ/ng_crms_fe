@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import { fetchCountries } from "../../../../redux/country";
-import { addMappedState, updateMappedState } from "../../../../redux/mappedState";
+import {
+  addMappedState,
+  updateMappedState,
+} from "../../../../redux/mappedState";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
   const { loading } = useSelector((state) => state.states);
@@ -21,17 +24,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-      React.useEffect(() => {
-          dispatch(fetchCountries()); // Changed to fetchCountries
-      }, [dispatch]);
+  React.useEffect(() => {
+    dispatch(fetchCountries()); // Changed to fetchCountries
+  }, [dispatch]);
 
-      const { countries} = useSelector(
-             (state) => state.countries // Changed to 'countries'
-         );
-      const CountriesList = countries.map((emnt) => ({
-        value: emnt.id,
-        label: "("+emnt.code + ") "+ emnt.name,
-      })); 
+  const { countries } = useSelector(
+    (state) => state.countries // Changed to 'countries'
+  );
+  const CountriesList = countries.map((emnt) => ({
+    value: emnt.id,
+    label: "(" + emnt.code + ") " + emnt.name,
+  }));
   // Prefill form in edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -43,7 +46,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     } else {
       reset({
         name: "",
-        country_code:null,
+        country_code: null,
         is_active: "Y",
       });
     }
@@ -51,24 +54,28 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_state_modal",
+      "close_btn_add_edit_state_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
       dispatch(
         addMappedState({
           name: data.name,
-          country_code : data.country_code,
+          country_code: data.country_code,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
       dispatch(
         updateMappedState({
           id: initialData.id,
-          stateData: { name: data.name, country_code : data.country_code, is_active: data.is_active },
-        }),
+          stateData: {
+            name: data.name,
+            country_code: data.country_code,
+            is_active: data.is_active,
+          },
+        })
       );
     }
     reset(); // Clear the form
@@ -88,14 +95,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_state_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-
-            {/* Country  */}
+              {/* Country  */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Country <span className="text-danger">*</span>
@@ -115,10 +124,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       onChange={(selectedOption) =>
                         field.onChange(selectedOption?.value || null)
                       } // Send only value
-                      value={CountriesList?.find(
-                        (option) =>
-                          option.value === watch("country_code"),
-                      ) || ""}
+                      value={
+                        CountriesList?.find(
+                          (option) => option.value === watch("country_code")
+                        ) || ""
+                      }
                     />
                   )}
                 />
@@ -145,8 +155,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     },
                     validate: (value) => {
                       const trimmed = value.trim();
-                      if (trimmed.length === 0) return "State cannot be empty or spaces only !";
-                      if (trimmed.length < 3) return "Must be at least 3 characters !";
+                      if (trimmed.length === 0)
+                        return "State cannot be empty or spaces only !";
+                      if (trimmed.length < 3)
+                        return "Must be at least 3 characters !";
                       return true;
                     },
                   })}
@@ -185,7 +197,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   </div>
                 </div>
                 {errors.is_active && (
-                  <small className="text-danger">{errors.is_active.message}</small>
+                  <small className="text-danger">
+                    {errors.is_active.message}
+                  </small>
                 )}
               </div>
             </div>
@@ -197,6 +211,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

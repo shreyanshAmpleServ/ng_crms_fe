@@ -11,7 +11,7 @@ import DefaultEditor from "react-simple-wysiwyg";
 // import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import {DatePicker } from "antd";
+import { DatePicker } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import ImageWithBasePath from "../../../components/common/imageWithBasePath";
 import {
@@ -26,8 +26,6 @@ import { fetchDeals } from "../../../redux/deals";
 import { fetchUsers } from "../../../redux/manage-user";
 import { fetchProjects } from "../../../redux/projects";
 import { StatusOptions } from "../../../components/common/selectoption/selectoption";
-
-
 
 const ActivitiesModal = ({ setActivity, activity }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -75,7 +73,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   } = useForm({
     defaultValues: {
       title: "",
-      status:"",
+      status: "",
       is_reminder: "N",
       type_id: null,
       due_date: new Date(),
@@ -127,7 +125,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
           reminder_time: "",
           reminder_type: "",
           owner_id: null,
-          owner_name:"",
+          owner_name: "",
           is_reminder: "N",
           description: "",
           deal_id: null,
@@ -143,7 +141,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
     reset
   );
   React.useEffect(() => {
-    dispatch(fetchContacts({search:searchValue}));
+    dispatch(fetchContacts({ search: searchValue }));
   }, [dispatch, searchValue]);
   React.useEffect(() => {
     dispatch(fetchProjects(searchProjectValue));
@@ -208,7 +206,12 @@ const ActivitiesModal = ({ setActivity, activity }) => {
               },
             })
           ).unwrap()
-        : await dispatch(addActivities({...finalData,  due_time: new Date(finalData.due_time)})).unwrap();
+        : await dispatch(
+            addActivities({
+              ...finalData,
+              due_time: new Date(finalData.due_time),
+            })
+          ).unwrap();
       closeButton.click();
       reset();
       setActivity(null);
@@ -225,14 +228,15 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       setActivity(null);
     }
   };
-  useEffect(()=>{
-    setSelectedType(activityTypes?.[0]?.id)
-  },[activityTypes, activity])
+  useEffect(() => {
+    setSelectedType(activityTypes?.[0]?.id);
+  }, [activityTypes, activity]);
   useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add");
     if (offcanvasElement) {
       const handleModalClose = () => {
         setActivity(null);
+        reset();
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -285,11 +289,11 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                         required: "Title is required !",
                       })}
                     />
-                  {errors.title && (
-                    <small className="text-danger">
-                      {errors.title.message}
-                    </small>
-                  )}
+                    {errors.title && (
+                      <small className="text-danger">
+                        {errors.title.message}
+                      </small>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-12">
@@ -329,13 +333,13 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                           </div>
                         </li>
                       ))}
-                      
                     </ul>
-                      {errors.type_id || !selectedType && (
-                <small className="text-danger">
-                 {"Activity type is required !"}
-                </small>
-              )}
+                    {errors.type_id ||
+                      (!selectedType && (
+                        <small className="text-danger">
+                          {"Activity type is required !"}
+                        </small>
+                      ))}
                   </div>
                 </div>
 
@@ -366,11 +370,11 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                         />
                       )}
                     />
-                  {errors.due_date && (
-                    <small className="text-danger">
-                      {errors.due_date.message}
-                    </small>
-                  )}
+                    {errors.due_date && (
+                      <small className="text-danger">
+                        {errors.due_date.message}
+                      </small>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
@@ -409,56 +413,64 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                                              onChange={onChange}
                                              defaultOpenValue={dayjs("00:00:00", "HH:mm:ss")}
                                          /> */}
-                  {errors.due_time && (
-                    <small className="text-danger">
-                      {errors.due_time.message}
-                    </small>
-                  )}
+                    {errors.due_time && (
+                      <small className="text-danger">
+                        {errors.due_time.message}
+                      </small>
+                    )}
                   </div>
                 </div>
                 <div className="col-md-4">
                   <label className="col-form-label">
                     Status <span className="text-danger">*</span>
                   </label>
-                
+
                   <Controller
-                      name="status"
-                      control={control}
-                      rules={{ required: "Status is required !" }} // Validation rule
-                      render={({ field }) => {
-                        const selectedDeal = deals?.data?.find(
-                          (deal) => deal.id === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={StatusOptions}
-                            classNamePrefix="react-select"
-                            value={StatusOptions?.find(
-                              (option) =>
-                                option.value === watch("status")) || ""}
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            } // Store only value
-                            getOptionLabel={(option) => (
-                              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                <span
-                                  style={{
-                                    width: "10px",
-                                    height: "10px",
-                                    borderRadius: "50%",
-                                    backgroundColor: option.color || "black", // Use color property from options
-                                    display: "inline-block",
-                                  }}
-                                />
-                                {option.label}
-                              </div>
-                            )}
-                          />
-                        );
-                      }}
-                    />
+                    name="status"
+                    control={control}
+                    rules={{ required: "Status is required !" }} // Validation rule
+                    render={({ field }) => {
+                      const selectedDeal = deals?.data?.find(
+                        (deal) => deal.id === field.value
+                      );
+                      return (
+                        <Select
+                          {...field}
+                          className="select"
+                          options={StatusOptions}
+                          classNamePrefix="react-select"
+                          value={
+                            StatusOptions?.find(
+                              (option) => option.value === watch("status")
+                            ) || ""
+                          }
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption.value)
+                          } // Store only value
+                          getOptionLabel={(option) => (
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  width: "10px",
+                                  height: "10px",
+                                  borderRadius: "50%",
+                                  backgroundColor: option.color || "black", // Use color property from options
+                                  display: "inline-block",
+                                }}
+                              />
+                              {option.label}
+                            </div>
+                          )}
+                        />
+                      );
+                    }}
+                  />
                   {errors.status && (
                     <small className="text-danger">
                       {errors.status.message}
@@ -572,10 +584,10 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                                   }
                                 : null
                             } // Ensure correct default value
-                            onChange={(selectedOption) =>{
+                            onChange={(selectedOption) => {
                               field.onChange(selectedOption.value);
-                              setValue("owner_name",selectedOption.label)
-                           } } // Store only value
+                              setValue("owner_name", selectedOption.label);
+                            }} // Store only value
                           />
                         );
                       }}
@@ -589,9 +601,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
-                    <label className="col-form-label">
-                      Priority 
-                    </label>
+                    <label className="col-form-label">Priority</label>
                     <Controller
                       name="priority"
                       control={control}
@@ -633,9 +643,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                 </div>
                 <div className="col-md-12">
                   <div className="mb-3">
-                    <label className="col-form-label">
-                      Description 
-                    </label>
+                    <label className="col-form-label">Description</label>
                     <Controller
                       name="description"
                       control={control}
@@ -738,7 +746,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       </small>
                     )} */}
                   </div>
-               
+
                   <div className="mb-3">
                     <div className="d-flex align-items-center justify-content-between">
                       <label className="col-form-label">Companies</label>

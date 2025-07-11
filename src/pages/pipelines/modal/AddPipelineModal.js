@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +29,7 @@ const AddPipelineModal = () => {
   const [stages, setStages] = useState([]);
   const [selectedStage, setSelectedStage] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [indSelected,setIndSelected] = useState()
+  const [indSelected, setIndSelected] = useState();
 
   const handleAddStage = (newStageName, colorCode) => {
     setStages([...stages, { name: newStageName, colorCode }]);
@@ -41,15 +41,17 @@ const AddPipelineModal = () => {
   };
   const handleEditStage = (updatedStage) => {
     setStages(
-      stages.map((stage,ind) =>
-        updatedStage.id ? stage.id === updatedStage.id : ind=== indSelected
-          ? {
-            ...stage,
-            name: updatedStage.name,
-            colorCode: updatedStage.colorCode,
-          }
-          : stage
-      ),
+      stages.map((stage, ind) =>
+        updatedStage.id
+          ? stage.id === updatedStage.id
+          : ind === indSelected
+            ? {
+                ...stage,
+                name: updatedStage.name,
+                colorCode: updatedStage.colorCode,
+              }
+            : stage
+      )
     );
   };
   const onSubmit = async (data) => {
@@ -72,7 +74,24 @@ const AddPipelineModal = () => {
       closeButton.click();
     }
   };
-
+  useEffect(() => {
+    const offcanvasElement = document.getElementById("add_offcanvas_pipeline");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        reset();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -140,7 +159,7 @@ const AddPipelineModal = () => {
                       onClick={(e) => {
                         e.preventDefault(); // Prevent the default anchor behavior
                         setSelectedStage(stage);
-                        setIndSelected(index)
+                        setIndSelected(index);
                       }}
                     >
                       <i className="ti ti-edit text-blue" />

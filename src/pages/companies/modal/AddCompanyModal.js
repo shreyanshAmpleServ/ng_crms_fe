@@ -56,7 +56,7 @@ const AddCompanyModal = () => {
         // Convert complex data to strings if needed
         formData.append(
           key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
+          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
         );
       }
     });
@@ -69,12 +69,32 @@ const AddCompanyModal = () => {
     try {
       await dispatch(addCompany(formData)).unwrap();
       closeButton.click();
-      reset();
       setSelectedLogo(null);
+      reset();
     } catch (error) {
       closeButton.click();
+      reset();
     }
   };
+  React.useEffect(() => {
+    const offcanvasElement = document.getElementById("offcanvas_add_company");
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setSelectedLogo(null);
+        reset();
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, []);
 
   return (
     <div
@@ -221,16 +241,16 @@ const AddCompanyModal = () => {
                             required: "Phone number is required !",
                             minLength: {
                               value: 9,
-                              message: "Phone must be at least 9 digits"
+                              message: "Phone must be at least 9 digits",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Phone must be at most 12 digits"
+                              message: "Phone must be at most 12 digits",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Phone must contain only numbers"
-                            }
+                              message: "Phone must contain only numbers",
+                            },
                           })}
                         />
                         {errors.phone && (
@@ -383,16 +403,16 @@ const AddCompanyModal = () => {
                             required: "Primary contact phone is required !",
                             minLength: {
                               value: 9,
-                              message: "Phone must be at least 9 digits"
+                              message: "Phone must be at least 9 digits",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Phone must be at most 12 digits"
+                              message: "Phone must be at most 12 digits",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Phone must contain only numbers"
-                            }
+                              message: "Phone must contain only numbers",
+                            },
                           })}
                         />
                         {errors.primaryContactPhone && (
@@ -432,17 +452,17 @@ const AddCompanyModal = () => {
             >
               {loading ? "Creating..." : "Create"}
               {loading && (
-                  <div
-                    style={{
-                      height: "15px",
-                      width: "15px",
-                    }}
-                    className="spinner-border ml-2 text-light"
-                    role="status"
-                  >
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                )}
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
             </button>
           </div>
         </form>

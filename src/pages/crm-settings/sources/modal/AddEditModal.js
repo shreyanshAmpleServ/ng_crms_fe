@@ -33,7 +33,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_source_modal",
+      "close_btn_add_edit_source_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -41,7 +41,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         addSource({
           name: data.name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
@@ -49,7 +49,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateSource({
           id: initialData.id,
           sourceData: { name: data.name, is_active: data.is_active },
-        }),
+        })
       );
     }
     reset(); // Clear the form
@@ -69,7 +69,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_source_modal"
-            //onClick={onClose}
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -134,7 +136,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
-                //onClick={onClose}
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

@@ -35,7 +35,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_call_status_modal",
+      "close_btn_add_edit_call_status_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -44,15 +44,19 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
           name: data.name,
           description: data.description,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
       dispatch(
         updateCallResult({
           id: initialData.id,
-          callResultData: { name: data.name, description: data.description, is_active: data.is_active },
-        }),
+          callResultData: {
+            name: data.name,
+            description: data.description,
+            is_active: data.is_active,
+          },
+        })
       );
     }
     reset(); // Clear the form
@@ -72,6 +76,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_call_status_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -90,7 +97,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "Call result name is required !",
                     minLength: {
                       value: 3,
-                      message: "Call result name must be at least 3 characters !",
+                      message:
+                        "Call result name must be at least 3 characters !",
                     },
                   })}
                 />
@@ -101,18 +109,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
               {/* Call Result Description */}
               <div className="mb-3">
-                <label className="col-form-label">
-                  Description
-                </label>
+                <label className="col-form-label">Description</label>
                 <textarea
                   type="text"
                   rows="4"
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
-                  {...register("description", {
-                  })}
+                  {...register("description", {})}
                 />
                 {errors.name && (
-                  <small className="text-danger">{errors.description.message}</small>
+                  <small className="text-danger">
+                    {errors.description.message}
+                  </small>
                 )}
               </div>
 
@@ -156,6 +163,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>

@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { addContactStage, updateContactStage } from "../../../../redux/contact-stages"; // Adjust as per your redux actions
+import {
+  addContactStage,
+  updateContactStage,
+} from "../../../../redux/contact-stages"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
 const AddEditModal = ({ mode = "add", initialData = null }) => {
@@ -33,7 +36,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
-      "close_btn_add_edit_contact_stage_modal",
+      "close_btn_add_edit_contact_stage_modal"
     );
     if (mode === "add") {
       // Dispatch Add action
@@ -41,7 +44,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         addContactStage({
           name: data.name,
           is_active: data.is_active,
-        }),
+        })
       );
     } else if (mode === "edit" && initialData) {
       // Dispatch Edit action
@@ -49,7 +52,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         updateContactStage({
           id: initialData.id,
           contactStageData: { name: data.name, is_active: data.is_active },
-        }),
+        })
       );
     }
     reset(); // Clear the form
@@ -69,6 +72,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_contact_stage_modal"
+              onClick={() => {
+                reset();
+              }}
             >
               <i className="ti ti-x" />
             </button>
@@ -87,7 +93,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     required: "Contact stage name is required !",
                     minLength: {
                       value: 3,
-                      message: "Contact stage name must be at least 3 characters !",
+                      message:
+                        "Contact stage name must be at least 3 characters !",
                     },
                   })}
                 />
@@ -136,6 +143,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    reset();
+                  }}
                 >
                   Cancel
                 </Link>
