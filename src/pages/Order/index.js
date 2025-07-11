@@ -308,8 +308,8 @@ const Orders = () => {
       setShowDeleteModal(false);
     }
   };
-  const syncInvoiceData = () => {
-      dispatch(syncOrderToInvoice());  };
+  const syncInvoiceData = (data) => {
+      dispatch(syncOrderToInvoice(data.id));  };
 
   return (
     <div className="page-wrapper">

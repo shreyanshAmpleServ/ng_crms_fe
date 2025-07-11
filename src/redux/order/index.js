@@ -109,7 +109,7 @@ export const syncOrderToInvoice = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await toast.promise(
-        apiClient.get(`/v1/gmail/inbox`),
+        apiClient.get(`/v1/sync-to-invoice`),
         // apiClient.delete(`/v1/sync-to-invoice/${id}`),
         {
           loading: " Order Syncing...",

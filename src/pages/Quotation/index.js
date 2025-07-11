@@ -19,13 +19,14 @@ import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import {
   clearMessages
 } from "../../redux/manage-user";
-import { deleteQuotation, fetchquotations } from "../../redux/quotation";
+import { deleteQuotation, fetchquotations, syncQuotationToOrder } from "../../redux/quotation";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddQuotationModal from "./modal/AddQuotationModal.js";
 import FilterComponent from "./modal/FilterComponent";
 import PreviewOrder from "./modal/PreviewQuotation.js";
 import UserGrid from "./UsersGrid";
 import { Helmet } from "react-helmet-async";
+import { syncOrderToInvoice } from "../../redux/order/index.js";
 
 const Quotation = () => {
   const [view, setView] = useState("list");
@@ -166,6 +167,15 @@ const Quotation = () => {
             >
               <i className="ti ti-eye text-secondary"></i> Preview
             </Link>
+             <Link
+              className="dropdown-item edit-popup"
+              to="#"
+              // data-bs-toggle="offcanvas"
+              // data-bs-target="#offcanvas_preview_order"
+              onClick={() => syncOrderData(record)}
+            >
+              <i className="ti ti-file-diff text-blue"></i> Create Order
+            </Link>
             {/* <Link
                to="#"
                 className="dropdown-item"
@@ -283,7 +293,8 @@ const Quotation = () => {
       setShowDeleteModal(false);
     }
   };
-
+    const syncOrderData = (data) => {
+        dispatch(syncQuotationToOrder(data.id));  };
   return (
     <div className="page-wrapper">
       <Helmet>

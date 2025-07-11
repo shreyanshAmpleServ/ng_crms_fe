@@ -75,7 +75,33 @@ export const updateQuotation = createAsyncThunk(
     }
   },
 );
-
+export const syncQuotationToOrder = createAsyncThunk(
+  "orders/syncQuotationToOrder",
+  async (id, thunkAPI) => {
+    try {
+      const response = await toast.promise(
+        apiClient.get(`/v1/sync-to-invoice`),
+        // apiClient.delete(`/v1/sync-to-invoice/${id}`),
+        {
+          loading: " Order Syncing...",
+          success: (res) => res.data.message || "Order synced in invoice successfully!",
+          error: "Failed to sync order in invoice",
+        }
+      );
+      // const response = await apiClient.delete(`/v1/order/${id}`);
+      // toast.success(response.data.message || "order deleted successfully");
+      return {
+        data: { id },
+        message: response.data.message || "Order synced in invoice successfully",
+      };
+    } catch (error) {
+      toast.error( error.response?.data || "Failed to Order synced in invoice");
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to Order synced in invoice",
+      );
+    }
+  },
+);
 // Delete a quotation
 export const deleteQuotation = createAsyncThunk(
   "quotations/deleteQuotation",
@@ -228,6 +254,18 @@ const quotationSlice = createSlice({
         state.loading = false;
         state.error = action.payload.message;
       })
+      .addCase(syncQuotationToOrder.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+            })
+            .addCase(syncQuotationToOrder.fulfilled, (state, action) => {
+              state.loading = false;
+              state.success = action.payload.message;
+            })
+            .addCase(syncQuotationToOrder.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload.message;
+            })
       .addCase(fetchOrderById.pending, (state) => {
         state.loading = true;
         state.error = null;
