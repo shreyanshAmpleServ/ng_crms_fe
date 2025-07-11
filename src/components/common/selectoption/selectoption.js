@@ -42,12 +42,9 @@ export const category = [
   { value: "LLC", label: "LLC" },
 ];
 export const arrProjectTiming = [
-
   { value: "Hourly", label: "Hourly" },
   { value: "Minutes", label: "Minutes" },
 ];
-
-
 
 export const optionsource = [
   { value: "Choose", label: "Choose" },
@@ -234,9 +231,9 @@ export const tagInputValues = [
   { value: "MargrateDesign", label: "MargrateDesign" },
 ];
 export const projectTiming = [
-  { value: 'Select', label: 'Select' },
-  { value: 'Hourly', label: 'Hourly' },
-  { value: 'Minutes', label: 'Minutes' },
+  { value: "Select", label: "Select" },
+  { value: "Hourly", label: "Hourly" },
+  { value: "Minutes", label: "Minutes" },
 ];
 export const projectType = [
   { value: "Choose", label: "Choose" },
@@ -402,7 +399,6 @@ export const currencyselect = [
 export const actistatus = [
   { value: "Y", label: "Active" },
   { value: "N", label: "Inactive" },
-
 ];
 export const DocumentRelatedType = [
   { value: "Deals", label: "Deals" },
@@ -415,18 +411,22 @@ export const DocumentRelatedType = [
   // { value: "Orders", label: "Orders" },
 ];
 export const StatusOptions = [
-  { value: "Not Started", color:"",label: "Not Started" },
-  { value: "Deferred", color:"",label: "Deferred" },
-  { value: "In Progress", color:"blue",label: "In Progress" },
-  { value: "Completed", color:"#5cb85c",label: "Completed" },
-  { value: "Waiting for someone else", color:"orange",label: "Waiting for someone else" },
-  { value: "Canceled", color:"red",label: "Canceled" },
+  { value: "Not Started", color: "", label: "Not Started" },
+  { value: "Deferred", color: "", label: "Deferred" },
+  { value: "In Progress", color: "blue", label: "In Progress" },
+  { value: "Completed", color: "#5cb85c", label: "Completed" },
+  {
+    value: "Waiting for someone else",
+    color: "orange",
+    label: "Waiting for someone else",
+  },
+  { value: "Canceled", color: "red", label: "Canceled" },
 ];
 export const CampaignStatusOptions = [
-  { value: "Planned", color:"yellow",label: "Planned" },
-  { value: "In Progress", color:"blue",label: "In Progress" },
-  { value: "Completed", color:"#5cb85c",label: "Completed" },
-  { value: "Aborted", color:"red",label: "Aborted" },
+  { value: "Planned", color: "yellow", label: "Planned" },
+  { value: "In Progress", color: "blue", label: "In Progress" },
+  { value: "Completed", color: "#5cb85c", label: "Completed" },
+  { value: "Aborted", color: "red", label: "Aborted" },
 ];
 export const CampaignTypeOptions = [
   { value: "Email Marketing Campaigns", label: "Email Marketing Campaigns" },
@@ -443,53 +443,61 @@ export const CampaignTypeOptions = [
 ];
 export const OrderStatusOptions = [
   { value: "", label: "Select" },
-  { value: "O", color:"",label: "Open" },
-  { value: "L",label: "Closed" },
-  { value: "C",label: "Canceled" },
-  { value: "P",label: "Pending" },
+  { value: "O", color: "", label: "Open" },
+  { value: "L", label: "Closed" },
+  { value: "C", label: "Canceled" },
+  { value: "P", label: "Pending" },
 ];
 export const priceModelOptions = [
   { value: "", label: "Select" },
-  { value: "Flat",label: "Flat" },
-  { value: "Differencial",label: "Differencial" },
+  { value: "Flat", label: "Flat" },
+  { value: "Differencial", label: "Differencial" },
 ];
-const route = all_routes
+const route = all_routes;
 export const ModuleOptions = [
-  {path: route.dasshboard, label: "Dashboard", value: "Dashboard",},
-  {path: route.leads, label: 'Leads', value: 'Leads'},
-  {path: route.contacts, label: "Contacts", value: "Contacts",},
-  {path: route.companies, label: "Companies", value: "Companies",},
-  {path: route.deals, label: "Deals", value: "Deals",},  
-  {path: route.activities, label: 'Activities', value: 'Activities'},
-  {path: route.calls, label: "Calls", value: "Calls",},
-  {path: route.documents, label: "Documents", value: "Documents",},
-  {path: route.projects, label: "Projects", value: "Projects",},
-  {path: route.quotation, label: "Quotation", value: "Quotation",},
-  {path: route.order, label: "Orders", value: "Orders",},
-  {path: route.purchaseOrder, label: "Sales Invoice", value: "Sales Invoice",},
-  {path: route.purchaseInvoice, label: "Purchase Order", value: "Purchase Order",},
-  {path: route.pipelines, label: "Pipelines", value: "Pipelines",},
-  {path: route.vendor, label: "Vendor", value: "Vendor",},
-  {path: route.products, label: "Products", value: "Products",},
-  {path: route.priceBook, label: "Price Book", value: "Price Book",},
-  {path: route.cases, label: "Cases", value: "Cases",},
-  {path: route.solutions, label: "Solutions", value: "Solutions",},
-  {path: route.sources, label: "Sources", value: "Sources",},
-  {path: route.lostReason, label: "Lead Status", value: "Lead Status",},
-  {path: route.contactStage, label: "Contact Stage", value: "Contact Stage",},
-  {path: route.industries, label: "Industry", value: "Industry",},
-  {path: route.callStatus, label: "Call Status", value: "Call Status",},
-  {path: route.callPurpose, label: "Call Purpose", value: "Call Purpose",},
-  {path: route.callType, label: "Call Types", value: "Call Types",},
-  {path: route.callResult, label: "Call Result", value: "Call Result",},
-  {path: route.meetingType, label: "Meeting Type", value: "Meeting Type",},
-  {path: route.productCategory, label: "Product Category", value: "Product Category",},
-  {path: route.manufacturer, label: "Manufacturer", value: "Manufacturer",},
-  {path: route.taxSetUp, label: "Tax Setup", value: "Tax Setup",},
-  {path: route.country, label: "Country", value: "Country",},
-  {path: route.state, label: "State", value: "State",},
-  {path: route.currency, label: "Currency", value: "Currency",},
-  {path: route.modules, label: 'Modules', value: 'Modules'},
-  {path: route.manageusers, label: 'Manage Users', value: 'Manage Users'},
-  {path: route.rolesPermissions, label: 'Roles & Permission', value: 'Roles & Permission'},
-]   
+  { path: route.dasshboard, label: "Dashboard", value: "Dashboard" },
+  { path: route.leads, label: "Leads", value: "Leads" },
+  { path: route.contacts, label: "Contacts", value: "Contacts" },
+  { path: route.companies, label: "Companies", value: "Companies" },
+  { path: route.deals, label: "Deals", value: "Deals" },
+  { path: route.activities, label: "Activities", value: "Activities" },
+  { path: route.calls, label: "Calls", value: "Calls" },
+  { path: route.documents, label: "Documents", value: "Documents" },
+  { path: route.projects, label: "Projects", value: "Projects" },
+  { path: route.quotation, label: "Quotation", value: "Quotation" },
+  { path: route.order, label: "Orders", value: "Orders" },
+  { path: route.purchaseOrder, label: "Sales Invoice", value: "Sales Invoice" },
+  {
+    path: route.purchaseInvoice,
+    label: "Purchase Order",
+    value: "Purchase Order",
+  },
+  { path: route.pipelines, label: "Pipelines", value: "Pipelines" },
+  { path: route.vendor, label: "Vendor", value: "Vendor" },
+  { path: route.products, label: "Products", value: "Products" },
+  { path: route.priceBook, label: "Price Book", value: "Price Book" },
+  { path: route.cases, label: "Cases", value: "Cases" },
+  { path: route.solutions, label: "Solutions", value: "Solutions" },
+  { path: route.sources, label: "Sources", value: "Sources" },
+  { path: route.lostReason, label: "Lead Status", value: "Lead Status" },
+  { path: route.contactStage, label: "Contact Stage", value: "Contact Stage" },
+  { path: route.industries, label: "Industry", value: "Industry" },
+  { path: route.callStatus, label: "Call Status", value: "Call Status" },
+  { path: route.callPurpose, label: "Call Purpose", value: "Call Purpose" },
+  { path: route.callType, label: "Call Types", value: "Call Types" },
+  { path: route.callResult, label: "Call Result", value: "Call Result" },
+  { path: route.meetingType, label: "Meeting Type", value: "Meeting Type" },
+  {
+    path: route.productCategory,
+    label: "Product Category",
+    value: "Product Category",
+  },
+  { path: route.manufacturer, label: "Manufacturer", value: "Manufacturer" },
+  { path: route.taxSetUp, label: "Tax Setup", value: "Tax Setup" },
+  { path: route.country, label: "Country", value: "Country" },
+  { path: route.state, label: "State", value: "State" },
+  { path: route.currency, label: "Currency", value: "Currency" },
+  { path: route.modules, label: "Modules", value: "Modules" },
+  // {path: route.manageusers, label: 'Manage Users', value: 'Manage Users'},
+  // {path: route.rolesPermissions, label: 'Roles & Permission', value: 'Roles & Permission'},
+];

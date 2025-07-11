@@ -69,7 +69,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {mode === "add" ? "Add New Call Status" : "Edit Call Status"}
+              {mode === "add" ? "Add Call Result" : "Edit Call Result"}
             </h5>
             <button
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
@@ -88,17 +88,16 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               {/* Call Result Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Call Result Name <span className="text-danger">*</span>
+                  Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Call result name is required !",
+                    required: "Name is required !",
                     minLength: {
                       value: 3,
-                      message:
-                        "Call result name must be at least 3 characters !",
+                      message: "Name must be at least 3 characters !",
                     },
                   })}
                 />
@@ -109,16 +108,23 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
               {/* Call Result Description */}
               <div className="mb-3">
-                <label className="col-form-label">Description</label>
+                <label className="col-form-label">
+                  Description (max 255 characters)
+                </label>
                 <textarea
                   type="text"
                   rows="4"
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
-                  {...register("description", {})}
+                  {...register("description", {
+                    maxLength: {
+                      value: 255,
+                      message: "Description must be less than 255 characters !",
+                    },
+                  })}
                 />
-                {errors.name && (
+                {errors.description && (
                   <small className="text-danger">
-                    {errors.description.message}
+                    {errors?.description?.message}
                   </small>
                 )}
               </div>

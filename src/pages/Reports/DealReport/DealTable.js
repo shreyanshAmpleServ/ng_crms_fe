@@ -7,16 +7,21 @@ import { useDispatch, useSelector } from "react-redux";
 import UnauthorizedImage from "../../../components/common/UnAuthorized.js";
 import { fetchDealReport } from "../../../redux/dealReport/index.js";
 
-export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selectedDateRange, setSelectedDateRange}) => {
+export const DataTable = ({
+  data,
+  searchText,
+  setSearchText,
+  setWhoChange,
+  selectedDateRange,
+  setSelectedDateRange,
+}) => {
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const dispatch = useDispatch();
   const [paginationData, setPaginationData] = useState();
-//   React.useEffect(() => {
-//     dispatch(fetchDealReport({ search: searchText, ...selectedDateRange }));
-//   }, [dispatch, searchText, selectedDateRange]);
-  const {  loading } = useSelector(
-    (state) => state.dealReport
-  );
+  //   React.useEffect(() => {
+  //     dispatch(fetchDealReport({ search: searchText, ...selectedDateRange }));
+  //   }, [dispatch, searchText, selectedDateRange]);
+  const { loading } = useSelector((state) => state.dealReport);
   useEffect(() => {
     setPaginationData({
       currentPage: data?.currentPage,
@@ -42,15 +47,11 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
     );
   };
 
-   const columns = [
+  const columns = [
     {
       title: "Deal Name",
       dataIndex: "dealName",
-      render: (text, record, index) => (
-        <div>
-          {record.dealName}
-        </div>
-      ),
+      render: (text, record, index) => <div>{record.dealName}</div>,
       sorter: (a, b) => a.dealName.localeCompare(b.dealName),
     },
     {
@@ -64,12 +65,13 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
       dataIndex: "priority",
       render: (priority) => (
         <span
-          className={`badge ${priority === "High"
-            ? "bg-danger"
-            : priority === "Medium"
-              ? "bg-warning"
-              : "bg-success"
-            }`}
+          className={`badge ${
+            priority === "High"
+              ? "bg-danger"
+              : priority === "Medium"
+                ? "bg-warning"
+                : "bg-success"
+          }`}
         >
           {priority}
         </span>
@@ -81,39 +83,56 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
       dataIndex: "status",
       render: (status) => (
         <span
-          className={`badge ${status === "Open"
-            ? "bg-primary"
-            : status === "Won"
-              ? "bg-success"
-              : "bg-secondary"
-            }`}
+          className={`badge ${
+            status === "Open"
+              ? "bg-primary"
+              : status === "Won"
+                ? "bg-success"
+                : "bg-secondary"
+          }`}
         >
           {status}
         </span>
       ),
-      sorter: (a, b) => a.status.localeCompare(b.status),
+      sorter: (a, b) => {
+        const statusA = a.status || "";
+        const statusB = b.status || "";
+        return statusA.localeCompare(statusB);
+      },
     },
     {
       title: "Created Date",
       dataIndex: "createdDate",
-      render: (date) => <span className="text-center m-auto">{moment(date).format("DD-MM-YYYY")}</span>,
+      render: (date) => (
+        <span className="text-center m-auto">
+          {moment(date).format("DD-MM-YYYY")}
+        </span>
+      ),
       sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
     },
     {
       title: "Exp CloseDate",
       dataIndex: "expectedCloseDate",
-      render: (date) => <span className="text-center m-auto">{moment(date).format("DD-MM-YYYY")}</span>,
+      render: (date) => (
+        <span className="text-center m-auto">
+          {moment(date).format("DD-MM-YYYY")}
+        </span>
+      ),
       sorter: (a, b) =>
         new Date(a.expectedCloseDate) - new Date(b.expectedCloseDate),
     },
     {
       title: "Assignee",
       dataIndex: "DealContacts",
-      render: (value) => <span>{value?.[0]?.contact?.firstName + " "+value?.[0]?.contact?.lastName}</span>, // Replace with assignee name if available
+      render: (value) => (
+        <span>
+          {value?.[0]?.contact?.firstName + " " + value?.[0]?.contact?.lastName}
+        </span>
+      ), // Replace with assignee name if available
       sorter: (a, b) => a.assigneeId - b.assigneeId,
-    }
+    },
   ];
-    const filteredData = useMemo(() => {
+  const filteredData = useMemo(() => {
     let datas = data || [];
 
     if (sortOrder === "ascending") {
@@ -142,8 +161,8 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
             <DateRangePickerComponent
               selectedDateRange={selectedDateRange}
               setSelectedDateRange={setSelectedDateRange}
-                setWhoChange={setWhoChange}
-                ChangeName=""
+              setWhoChange={setWhoChange}
+              ChangeName=""
             />
           </div>
           <div className="d-flex align-items-center flex-wrap row-gap-2">
@@ -157,16 +176,15 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
         </div>
 
         {/* {isView ? ( */}
-          <div className="table-responsive custom-table">
-              <Table
-                dataSource={filteredData}
-                columns={columns}
-                loading={loading}
-                paginationData={paginationData}
-                onPageChange={handlePageChange}
-              />
-            
-          </div>
+        <div className="table-responsive custom-table">
+          <Table
+            dataSource={filteredData}
+            columns={columns}
+            loading={loading}
+            paginationData={paginationData}
+            onPageChange={handlePageChange}
+          />
+        </div>
         {/* ) : (
           <UnauthorizedImage />
         )} */}

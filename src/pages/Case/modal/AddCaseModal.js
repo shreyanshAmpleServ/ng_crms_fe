@@ -540,16 +540,27 @@ const AddCaseModal = ({ cases, setCases }) => {
                   {/* <span className="text-danger">*</span> */}
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  placeholder="Enter Phone"
                   className="form-control"
-                  {...register(
-                    "phone"
-                    //  {required: "Phone number is required !", }
-                  )}
+                  {...register("phone", {
+                    minLength: {
+                      value: 9,
+                      message: "Phone must be at least 9 digits !",
+                    },
+                    maxLength: {
+                      value: 12,
+                      message: "Phone must be at most 12 digits !",
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: "Phone must contain only numbers !",
+                    },
+                  })}
                 />
-                {/* {errors.phone && (
+                {errors.phone && (
                   <small className="text-danger">{errors.phone.message}</small>
-                )} */}
+                )}
               </div>
             </div>
             {/* Email */}
