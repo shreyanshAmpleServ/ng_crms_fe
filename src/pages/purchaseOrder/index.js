@@ -64,7 +64,7 @@ const PurchaseOrders = () => {
     {
       title: " Code",
       dataIndex: "order_code",
-      sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.order_code || "").localeCompare(b.order_code || ""), // Fixed sorter logic
     }, {
       title: "Vendor",
       dataIndex: "purchase_order_vendor",
@@ -76,12 +76,12 @@ const PurchaseOrders = () => {
     {
       title: "Ship To",
       dataIndex: "shipto",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.shipto || "").localeCompare(b.shipto || ""), // Fixed sorter logic
     },
     {
       title: "Bill To",
       dataIndex: "billto",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.billto || "").localeCompare(b.billto || ""), // Fixed sorter logic
     },
     {
       title: "Total Disc",
@@ -115,7 +115,7 @@ const PurchaseOrders = () => {
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
+      sorter: (a, b) => new Date(a.due_date) - new Date(b.due_date), // Sort by date
     },
     {
       title: "Created Date",
@@ -353,7 +353,7 @@ const PurchaseOrders = () => {
                     <ExportData
                       exportToPDF={exportToPDF}
                       exportToExcel={exportToExcel}
-                      label="Add Purchase Order"
+                      label="Add"
                       isCreate={isCreate}
                       id="offcanvas_add_edit_purchase_order"
                     />
