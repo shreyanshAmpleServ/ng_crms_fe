@@ -47,6 +47,11 @@ const ContactList = () => {
 
   const columns = [
     {
+      title: "S. No.",      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+      // sorter: (a, b) => a.code.localeCompare(b.name),
+  },
+    {
       title: "Name",
       dataIndex: "name",
       render: (text, record, index) => (
@@ -63,7 +68,7 @@ const ContactList = () => {
     {
       title: "Phone",
       dataIndex: "phone1",
-      sorter: (a, b) => a.phone1.length - b.phone1.length,
+      // sorter: (a, b) => a.phone1.length - b.phone1.length,
     },
     {
       title: "Email",
@@ -74,7 +79,7 @@ const ContactList = () => {
       title: "Location",
       dataIndex: "contact_Country",
       render: (text,record) => (<div>{`${record.contact_State?.name ? record.contact_State?.name + "," :""} ${record.contact_Country?.name ? record.contact_Country?.name :" - "}`}</div>),
-      sorter: (a, b) => a.country.length - b.country.length,
+      // sorter: (a, b) => a.country.length - b.country.length,
     },
     {
       title: "Contact",
@@ -429,7 +434,7 @@ const ContactList = () => {
                       <ExportData
                         exportToPDF={exportToPDF}
                         exportToExcel={exportToExcel}
-                        label="Add Contacts"
+                        label="Add"
                         isCreate={isCreate}
                         id="offcanvas_add"
                       />

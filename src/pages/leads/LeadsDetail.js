@@ -195,7 +195,10 @@ const LeadsDetail = () => {
                     </div>
                     <div className="d-flex align-items-center mb-3">
                       {/* <div className="avatar avatar-md me-2">
-                     <img
+<<<<<<< HEAD
+
+                        <img
+>>>>>>> rajesh
                           src={
                             leadDetail?.crms_m_user?.profile_img ||
                             `${base_path}assets/img/profiles/avatar-21.jpg`
@@ -206,7 +209,9 @@ const LeadsDetail = () => {
                           height="40"
                         />
                       </div> */}
+
                       <p>{leadDetail?.lead_owner_name|| "N/A"}</p>
+
                     </div>
 
                     <hr />
