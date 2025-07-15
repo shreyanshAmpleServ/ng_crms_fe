@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 
 const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
   const dispatch = useDispatch();
+  
   const formatNumber = (num) => {
     if (num === 0 || isNaN(num)) {
       return '0';
@@ -325,7 +326,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
                         <i className="ti ti-check" />
                       </Link> */}
                   </td>
-                </tr>
+                </tr> 
               ))}
           </tbody>
         </table>

@@ -10,9 +10,9 @@ const DateRangePickerComponent = ({
   setWhoChange= ()=>{},
   ChangeName=""
 }) => {
-  const settings = {
-    startDate: selectedDateRange.startDate,
-    endDate: selectedDateRange.endDate,
+ const settings = {
+    startDate: moment(selectedDateRange.startDate, "DD/MM/YYYY"),
+    endDate: moment(selectedDateRange.endDate, "DD/MM/YYYY"),
     ranges: {
       "Last 30 Days": [moment().subtract(30, "days"), moment()],
       "Last 7 Days": [moment().subtract(7, "days"), moment()],
@@ -25,15 +25,18 @@ const DateRangePickerComponent = ({
       Yesterday: [moment().subtract(1, "days"), moment().subtract(1, "days")],
     },
     timePicker: false,
+    locale: {
+      format: "DD/MM/YYYY", // 👈 Force DD/MM/YYYY display in picker
+    },
   };
 
   const handleCallback = (start, end) => {
     setSelectedDateRange({
-      startDate: moment(start),
-      endDate: moment(end),
+      startDate: moment(start).format("DD/MM/YYYY"),
+      endDate: moment(end).format("DD/MM/YYYY"),
     });
-    setWhoChange(ChangeName)
-    setIsRange(true)
+    setWhoChange(ChangeName);
+    setIsRange(true);
   };
 
   return (
