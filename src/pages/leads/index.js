@@ -57,13 +57,18 @@ const LeadList = () => {
     {
       title: "Title",
       dataIndex: "title",
+      render: (text) => (
+        <div className="text-wrap" style={{maxWidth:"10rem"}}>
+          {`${text}`}
+        </div>
+      ),
       sorter: (a, b) => a.title.localeCompare(b.title),
     },
     {
       title: "Lead Name",
       dataIndex: "leadName",
       render: (text, record, index) => (
-        <Link to={`/crms/leads/${record.id}`} key={index}>
+        <Link className="text-wrap" style={{maxWidth:"10rem"}} to={`/crms/leads/${record.id}`} key={index}>
           {`${record.first_name} ${record.last_name ? record.last_name : ""}`}
         </Link>
       ),
@@ -77,7 +82,7 @@ const LeadList = () => {
       title: "Company Name",
       dataIndex: "lead_company",
       render: (text, record, index) => (
-        <div>
+        <div className="text-wrap" style={{maxWidth:"10rem"}}>
           {`${text.name}`}
         </div>
       ),
@@ -92,6 +97,11 @@ const LeadList = () => {
     {
       title: "Email",
       dataIndex: "email",
+      render: (text) => (
+        <div className="text-wrap" style={{maxWidth:"10rem"}}>
+          {`${text}`}
+        </div>
+      ),
       // sorter: (a, b) => a.email.length - b.email.length,
     },
     {
@@ -116,7 +126,7 @@ const LeadList = () => {
       title: "Assignee",
       dataIndex: "lead_owner_name",
       render: (text) => <span>{text}</span>,
-      sorter: (a, b) =>a.lead_owner_name.localeCompare(b.lead_owner_name),
+      sorter: (a, b) =>(<div className="text-wrap" style={{maxWidth:"10rem"}}>{a.lead_owner_name.localeCompare(b.lead_owner_name)}</div>),
     },
     {
       title: "Created Date",

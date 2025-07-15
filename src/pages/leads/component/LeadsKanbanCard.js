@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { all_routes } from "../../../routes/all_routes";
+import ImageWithDatabase from "../../../components/common/ImageFromDatabase";
 const LeadKanbanCard = ({ lead, leadStatus, leadContainerID }) => {
   const route = all_routes;
   return (
@@ -14,12 +15,15 @@ const LeadKanbanCard = ({ lead, leadStatus, leadContainerID }) => {
             style={{ border: `2px solid ${leadStatus.colorCode}` }}
           />
           <div className="d-flex align-items-center mb-3">
-            <Link
+           {!lead?.company_icon ? <Link
               to={`/crms/leads/${lead.id}`}
               className="avatar avatar-lg bg-gray flex-shrink-0 me-2"
             >
               <span className="avatar-title text-dark"> {`${lead?.first_name?.[0] ?? ''}${lead?.last_name?.[0] ?? ''}`.toUpperCase()}</span>
             </Link>
+            :
+            <ImageWithDatabase className="avatar avatar-lg bg-gray flex-shrink-0 me-2" src={lead?.company_icon} />
+            }
             <h6 className="fw-medium">
               <Link to={`/crms/leads/${lead.id}`}>{`${lead?.first_name} ${lead?.last_name ? lead?.last_name : ""}`}</Link>
             </h6>

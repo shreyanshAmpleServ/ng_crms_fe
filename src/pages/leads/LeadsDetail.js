@@ -100,7 +100,7 @@ const LeadsDetail = () => {
                 {/* Lead Card */}
                 <div className="card">
                   <div className="card-body pb-2">
-                    <div className="d-flex align-items-center justify-content-between flex-wrap">
+                    <div className="d-flex align-items-start justify-content-between flex-wrap">
                       <div className="d-flex align-items-center mb-2">
                         <div className="avatar avatar-xxl me-3 flex-shrink-0 border p-2">
                           {leadDetail?.company_icon ? (
@@ -127,10 +127,20 @@ const LeadsDetail = () => {
                           </p>
                           <p className="mb-0">
                             <i className="ti ti-map-pin-pin" />{" "}
-                            {`${leadDetail?.street|| ""} ${leadDetail?.city|| ""} ${leadDetail?.state|| ""} ${leadDetail?.country || ""} ${leadDetail?.zipcode|| ""}`}
+                            {`${leadDetail?.street|| ""} ${leadDetail?.city|| ""} ${leadDetail?.lead_State?.name|| ""} ${leadDetail?.lead_Country?.name || ""} ${leadDetail?.zipcode|| ""}`}
                           </p>
                         </div>
                       </div>
+                      <div className="priority-info">
+                      <span
+                        style={{
+                          color: leadDetail?.crms_m_lost_reasons?.colorCode,
+                        }}
+                      >
+                        <i className="ti ti-square-rounded-filled me-1" />
+                        {leadDetail?.crms_m_lost_reasons?.name || "N/A"}
+                      </span>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -140,10 +150,10 @@ const LeadsDetail = () => {
               <div className="col-xl-3 theiaStickySidebar">
                 <div className="card">
                   <div className="card-body p-3">
-                    <h6 className="mb-3 fw-semibold">Deal Information</h6>
+                    <h6 className="mb-3 fw-semibold">Lead Information</h6>
                     <ul>
                       <li className="row mb-3">
-                        <span className="col-6">Date Created</span>
+                        <span className="col-6">Created At </span>
                         <span className="col-6">
                           {leadDetail?.createdate
                             ? moment(leadDetail?.createdate).format(
@@ -184,8 +194,8 @@ const LeadsDetail = () => {
                                             </Link> */}
                     </div>
                     <div className="d-flex align-items-center mb-3">
-                      <div className="avatar avatar-md me-2">
-                        <img
+                      {/* <div className="avatar avatar-md me-2">
+                     <img
                           src={
                             leadDetail?.crms_m_user?.profile_img ||
                             `${base_path}assets/img/profiles/avatar-21.jpg`
@@ -195,8 +205,8 @@ const LeadsDetail = () => {
                           width="40"
                           height="40"
                         />
-                      </div>
-                      <p>{leadDetail?.crms_m_user?.full_name || "N/A"}</p>
+                      </div> */}
+                      <p>{leadDetail?.lead_owner_name|| "N/A"}</p>
                     </div>
 
                     <hr />

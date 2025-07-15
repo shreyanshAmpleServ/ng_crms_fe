@@ -143,7 +143,7 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
           </div>
           <div className="modal-body">
             <div className="add-info-fieldset">
-              <div className="add-details-wizard">
+              {/* <div className="add-details-wizard">
                 <ul className="progress-bar-wizard">
                   <li className="active">
                     <span>
@@ -153,16 +153,16 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
                       <h6>Basic Info</h6>
                     </div>
                   </li>
-                  {/* <li>
+                  <li>
                   <span>
                     <i className="ti ti-circle-plus" />
                   </span>
                   <div className="multi-step-info">
                     <h6>Add Recipient</h6>
                   </div>
-                </li> */}
+                </li>
                 </ul>
-              </div>
+              </div> */}
               <fieldset id="first-field-file">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="contact-input-set">
@@ -176,7 +176,7 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
                             type="text"
                             className="form-control"
                             {...register("file_type", {
-                              required: "Title is required !",
+                              required: "Document Type is required !",
                             })}
                           />
                           {errors.file_type && (
@@ -196,7 +196,7 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
                             type="text"
                             className="form-control"
                             {...register("filename", {
-                              required: "Title is required !",
+                              required: "Document Title is required !",
                             })}
                           />
                           {errors.filename && (
@@ -210,7 +210,7 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
                         <div className="mb-3">
                           <label className="col-form-label">
                             Upload attachment{" "}
-                            <span className="text-danger">*</span>
+                          {data &&  <span className="text-danger">*</span>}
                           </label>
                           <input
                             type="file"

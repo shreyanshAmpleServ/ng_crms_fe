@@ -263,18 +263,22 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
     callFor === "Leads" && dispatch(fetchLeads());
     callFor === "Projects" && dispatch(fetchProjects());
   }, [dispatch, callFor, watch("related_to")]);
-
+  
   const onSubmit = async (data) => {
-    console.log("DAta", data);
+    const date = dayjs(data.call_start_date, "DD-MM-YYYY");
+    const timeStr = data.call_start_time;
+    const combinedDateTime = dayjs(`${date.format("YYYY-MM-DD")}T${timeStr}`);
+ 
     const closeButton = document.getElementById("offcanvas_add_calls_close");
     const finalData = {
+      ...data,
       call_for_contact_id:
         callFor === "Accounts" ? data.call_for_contact_id : null,
       call_for_lead_id: callFor === "Leads" ? data.call_for_lead_id : null,
       call_for_project_id:
         callFor === "Projects" ? data.call_for_project_id : null,
-      ...data,
-      call_start_time: dayjs(data.call_start_time).toDate()?.toISOString(),
+        call_start_date: combinedDateTime.toISOString(),
+        call_start_time: combinedDateTime.toISOString(),
       ongoing_callStatus: isScheduled ? "Scheduled" : "Completed",
     };
     try {
@@ -498,7 +502,14 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                       </small>
                     )
                   )}
-                  {console.log("Error ", errors)}
+                   {!watch("call_for") && errors.call_for && (
+                   <small
+                   style={{ marginLeft:  "20%" }}
+                   className="text-danger "
+                 >
+                      {"Call For To is required !"}
+                    </small>
+                  )}
                 </div>
               </div>
               <div className="d-flex justify-content-between align-items-center my-2">

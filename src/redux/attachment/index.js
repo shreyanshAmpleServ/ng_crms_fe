@@ -151,7 +151,7 @@ const attachmentSlice = createSlice({
         state.loading = false;
         state.attachments = {
           ...state.attachments,
-          data: [action.payload.data, ...state.attachments.data],
+          data: [ ...state.attachments.data,action.payload.data],
         };
         state.success = action.payload.message;
       })
@@ -173,7 +173,7 @@ const attachmentSlice = createSlice({
         } else {
           state.attachments = {
             ...state.attachments,
-            data: [action.payload.data, ...state.attachments.data],
+            data: [...state.attachments.data,action.payload.data],
           };
         }
         state.success = action.payload.message;
