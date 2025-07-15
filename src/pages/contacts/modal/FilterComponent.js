@@ -39,7 +39,7 @@ const FilterComponent = ({ countryList, applyFilters }) => {
           </div>
           <div className="accordion" id="accordionExample">
             {/* Country Filter */}
-            <div className="filter-set-content">
+            {/* <div className="filter-set-content">
               <div className="filter-set-content-head">
                 <Link
                   to="#"
@@ -61,7 +61,7 @@ const FilterComponent = ({ countryList, applyFilters }) => {
                   onFilterChange={setSelectedCountries}
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Status Filter */}
             <div className="filter-set-content">
