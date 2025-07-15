@@ -15,31 +15,31 @@ const LeadKanbanCard = ({ lead, leadStatus, leadContainerID }) => {
           />
           <div className="d-flex align-items-center mb-3">
             <Link
-              to={`${route}/${lead.id}`}
+              to={`/crms/leads/${lead.id}`}
               className="avatar avatar-lg bg-gray flex-shrink-0 me-2"
             >
               <span className="avatar-title text-dark"> {`${lead?.first_name?.[0] ?? ''}${lead?.last_name?.[0] ?? ''}`.toUpperCase()}</span>
             </Link>
             <h6 className="fw-medium">
-              <Link to={`${route}/${lead.id}`}>{`${lead?.first_name} ${lead?.last_name}`}</Link>
+              <Link to={`/crms/leads/${lead.id}`}>{`${lead?.first_name} ${lead?.last_name ? lead?.last_name : ""}`}</Link>
             </h6>
           </div>
         </div>
         <div className="mb-3 d-flex flex-column">
           <p className="text-default d-inline-flex align-items-center mb-2">
-            <i className="ti ti-report-money text-dark me-1" />${lead.annual_revenue}
+            <i className="ti ti-report-money text-dark me-1 word-break" />{lead.annual_revenue}
           </p>
-          <p class="text-default d-inline-flex align-items-center mb-2"><i class="ti ti-mail text-dark me-1"></i>{lead?.email}</p>
-          <p class="text-default d-inline-flex align-items-center mb-2"><i class="ti ti-phone text-dark me-1"></i>{lead?.phone}</p>
-          <p class="text-default d-inline-flex align-items-center"><i class="ti ti-map-pin-pin text-dark me-1"></i>{lead?.street},{lead?.city} {lead?.country}</p>
+          <p class="text-default d-inline-flex align-items-center mb-2"><i class="ti ti-mail text-dark me-1"></i>{lead?.email || " - " }</p>
+          <p class="text-default d-inline-flex align-items-center mb-2"><i class="ti ti-phone text-dark me-1"></i>{lead?.phone || " - "}</p>
+          <p class="text-default d-inline-flex align-items-center"><i class="ti ti-map-pin-pin text-dark me-1"></i>{lead?.street ? lead?.street +" , ": ""}{lead?.city ? lead?.city +" , ":""} {lead?.country ? lead?.country : ""}</p>
           {/* Add more deal-related information here */}
         </div>
 
         <div className="d-flex align-items-center justify-content-between border-top pt-3 mt-3">
           <span>
-            <i className="ti ti-calendar-due" /> {moment(lead?.createdate, "YYYY-MM-DD").format("DD MMM YYYY")}
+            <i className="ti ti-calendar-due" />Created At : {moment(lead?.createdate, "YYYY-MM-DD").format("DD-MM-YYYY")}
           </span>
-          <div className="icons-social d-flex align-items-center">
+          {/* <div className="icons-social d-flex align-items-center">
             <Link
               to="#"
               className="d-flex align-items-center justify-content-center me-1"
@@ -58,7 +58,7 @@ const LeadKanbanCard = ({ lead, leadStatus, leadContainerID }) => {
             >
               <i className="ti ti-color-swatch" />
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

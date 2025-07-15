@@ -938,9 +938,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           className="form-control"
                           placeholder="Enter Description"
                           rows={5}
-                          {...register("description", {
-                            required: "Description is required !",
-                          })}
+                          {...register("description")}
                         />
                         {errors.language && (
                           <small className="text-danger">

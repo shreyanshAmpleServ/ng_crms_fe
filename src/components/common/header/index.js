@@ -1,26 +1,24 @@
 import React, { useState } from "react";
-import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
-import ImageWithBasePath from "../imageWithBasePath";
-import { all_routes } from "../../../routes/all_routes";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import {
   setExpandMenu,
   setMiniSidebar,
   setMobileSidebar,
 } from "../../../redux/common/commonSlice";
-import { logoutUser } from "../../../redux/auth/authSlice";
+import { all_routes } from "../../../routes/all_routes";
 import Logo from "../logo";
 // import ChangePassword from "./ChangePassword";
-import { ModuleOptions } from "../selectoption/selectoption";
-import Select from "react-select";
 import { Controller, useForm } from "react-hook-form";
-import { base_path } from "../../../config/environment";
-import ImageWithDatabase from "../ImageFromDatabase";
-import logo_path from "../../../assets/logo-2.png";
-import { logoutUserWithToken } from "../../../redux/redirectCrms";
 import { BsPersonCircle } from "react-icons/bs";
-import DeleteAlert from "./DeleteAlert";
+import Select from "react-select";
+import logo_path from "../../../assets/logo-2.png";
+import { base_path } from "../../../config/environment";
+import { logoutUserWithToken } from "../../../redux/redirectCrms";
 import { privateRoutes } from "../../../routes/router.link";
+import ImageWithDatabase from "../ImageFromDatabase";
+import { ModuleOptions } from "../selectoption/selectoption";
+import DeleteAlert from "./DeleteAlert";
 
 
 const Header = () => {
@@ -36,8 +34,9 @@ const Header = () => {
   const {  isAuthenticated } = useSelector((state) =>
      state.ngAuth
   );
-  const user =JSON.parse(localStorage.getItem("userDetails")) 
-  // ?  JSON.parse(atob(localStorage.getItem("userDetails"))) :{}
+  const user =localStorage.getItem("userDetails")
+  ?  JSON.parse(atob(localStorage.getItem("userDetails"))) :{}
+
 
   // const { user, isAuthenticated } = useSelector((state) => state.auth);
 
@@ -426,10 +425,10 @@ const Header = () => {
               >
                 <span className="user-info">
                   <span className="user-letter">
-                  {(user?.mime_type && user?.template || user?.profile_img) ?    <img
+                  {(user?.profile_pic) ?    <img
                       src={
-                        user?.mime_type && user?.template
-                          ? `${user?.mime_type},${user?.template}`
+                        user?.profile_pic
+                          ? `${user?.profile_pic}`
                           : user?.profile_img
                       }
                       alt="Profile"
@@ -439,9 +438,9 @@ const Header = () => {
                    : <BsPersonCircle style={{fontSize:"4rem" }} />}
                   </span>
                   <span className="" style={{padding:"5px 10px "}}>
-                      <div className="text-capitalize">{`${user?.username || user?.full_name}`}</div>
+                      <div className="text-capitalize">{`${user?.userFullName || user?.full_name}`}</div>
                       <div style={{fontSize:"12px",fontWeight:400,color:"gray"}}>
-                        {user?.department_name ||
+                        {user?.userGroup ||
                           user?.crms_d_user_role?.[0]?.crms_m_role["role_name"]}
                       </div>
                     </span>

@@ -27,8 +27,8 @@ const Sidebar = () => {
   //   const { user, isAuthenticated } = useSelector((state) =>
   //  state.ngAuth 
   //   );
-  const user =JSON.parse(localStorage.getItem("userDetails")) 
-  // ?  JSON.parse(atob(localStorage.getItem("userDetails"))) :{}
+  const user =localStorage.getItem("userDetails")
+  ?  JSON.parse(atob(localStorage.getItem("userDetails"))) :{}
   // console.log("User",user)
   // useEffect(()=>{
   //   loadUser()

@@ -1,5 +1,4 @@
 import React from "react";
-import { FaQuestion } from "react-icons/fa";
 
 const DeleteAlert = ({ showModal, setShowModal, onDelete, label }) => {
   return (

@@ -42,11 +42,12 @@ const KanbanListItem = ({ leadStatus, addContainerRef }) => {
                 />
                 {leadStatus.name}
               </h4>
-              <span className="fw-medium text-default">
-                {leadStatus.total_lead} Leads - ${leadStatus.total_revenue}
+              <span className="fw-medium text-break text-default">
+              <div> Leads -  {leadStatus.total_lead}  </div>
+              Revenue - {leadStatus.total_revenue}
               </span>
             </div>
-            <div className="d-flex align-items-center">
+            {/* <div className="d-flex align-items-center">
               <Link
                 to="#"
                 className="text-purple"
@@ -85,7 +86,7 @@ const KanbanListItem = ({ leadStatus, addContainerRef }) => {
                   </Link>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

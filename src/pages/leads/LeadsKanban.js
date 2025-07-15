@@ -11,11 +11,11 @@ import Loader from "../../components/common/loader";
 import KanbanListItem from "./component/KanbanListItem";
 import AddEditModal from "../crm-settings/lost-reasons/modal/AddEditModal";
 
-const LeadsKanban = () => {
+const LeadsKanban = ({data :leadStatuses}) => {
     const dispatch = useDispatch();
-    const { leadStatuses, loading, error, success } = useSelector(
-        (state) => state.leads,
-    );
+    // const { leadStatuses, loading, error, success } = useSelector(
+    //     (state) => state.leads,
+    // );
     const [totalLeads, setTotalLeads] = useState(0);
 
     // Fetch lead status

@@ -115,9 +115,11 @@ export const deleteLead = createAsyncThunk(
 // Fetch All Leads statuses
 export const fetchLeadStatuses = createAsyncThunk(
   "leads/fetchLeadStatuses",
-  async (_, thunkAPI) => {
+  async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get("/v1/lead-statuses");
+      const params = {}
+    if(datas) params.search = datas
+      const response = await apiClient.get("/v1/lead-statuses",{params});
       return response.data; // Returns a list of leads
     } catch (error) {
       return thunkAPI.rejectWithValue(

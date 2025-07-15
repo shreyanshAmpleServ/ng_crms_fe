@@ -1,11 +1,11 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CollapseHeader from "../../components/common/collapse-header"; // Updated path
 import Table from "../../components/common/dataTable/index"; // Updated path
 import FlashMessage from "../../components/common/modals/FlashMessage";
-import { clearMessages, deleteLead, fetchLeads } from "../../redux/leads"; // Ensuring the redux slice is for leads
+import { clearMessages, deleteLead, fetchLeads, fetchLeadStatuses } from "../../redux/leads"; // Ensuring the redux slice is for leads
 import { all_routes } from "../../routes/all_routes";
 import AddLeadsModal from "./modal/AddLeadsModal";
 
@@ -57,14 +57,14 @@ const LeadList = () => {
     {
       title: "Title",
       dataIndex: "title",
-      sorter: (a, b) => a - b,
+      sorter: (a, b) => a.title.localeCompare(b.title),
     },
     {
       title: "Lead Name",
       dataIndex: "leadName",
       render: (text, record, index) => (
         <Link to={`/crms/leads/${record.id}`} key={index}>
-          {`${record.first_name} ${record.last_name}`}
+          {`${record.first_name} ${record.last_name ? record.last_name : ""}`}
         </Link>
       ),
       sorter: (a, b) => {
@@ -77,21 +77,22 @@ const LeadList = () => {
       title: "Company Name",
       dataIndex: "lead_company",
       render: (text, record, index) => (
-        <Link t key={index}>
+        <div>
           {`${text.name}`}
-        </Link>
+        </div>
       ),
-      sorter: (a, b) => a.name.length - b.name.length,
+      sorter: (a, b) => a.lead_company?.name.localeCompare(b.lead_company?.name),
     },
     {
       title: "Phone",
       dataIndex: "phone",
-      sorter: (a, b) => a.phone.length - b.phone.length,
+      render:(text)=>text
+      // sorter: (a, b) => a.phone.length - b.phone.length,
     },
     {
       title: "Email",
       dataIndex: "email",
-      sorter: (a, b) => a.email.length - b.email.length,
+      // sorter: (a, b) => a.email.length - b.email.length,
     },
     {
       title: "Lead Status",
@@ -115,7 +116,7 @@ const LeadList = () => {
       title: "Assignee",
       dataIndex: "lead_owner_name",
       render: (text) => <span>{text}</span>,
-      sorter: (a, b) => a.text - b.text,
+      sorter: (a, b) =>a.lead_owner_name.localeCompare(b.lead_owner_name),
     },
     {
       title: "Created Date",
@@ -162,7 +163,7 @@ const LeadList = () => {
       ),
     }]:[])
   ];
-  const { leads, loading, error, success } = useSelector(
+  const { leads,leadStatuses, loading, error, success } = useSelector(
     (state) => state.leads,
   );
 
@@ -190,9 +191,11 @@ const LeadList = () => {
       setShowDeleteModal(false);
     }
   };
-
+   useEffect(() => {
+    view !== "list" && dispatch(fetchLeadStatuses(searchText));
+    }, [dispatch,searchText]);
   React.useEffect(() => {
-    dispatch(fetchLeads({search:searchText,status:selectedStatus  , ...selectedDateRange}));
+    view == "list" &&   dispatch(fetchLeads({search:searchText,status:selectedStatus  , ...selectedDateRange}));
   }, [dispatch,searchText ,selectedStatus, selectedDateRange]);
 
 React.useEffect(()=>{
@@ -253,18 +256,18 @@ React.useEffect(()=>{
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, "leads.xlsx");
+    XLSX.writeFile(workbook, "Leads.xlsx");
   }, [filteredData]);
 
   const exportToPDF = useCallback(() => {
     const doc = new jsPDF();
-    doc.text("Exported Data", 14, 10);
+    doc.text("Leads Data", 14, 10);
     doc.autoTable({
       head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
       body: filteredData.map((row) =>
         columns.map((col) => {
           if (col.dataIndex === "leadName") {
-            return `${row.first_name} ${row.last_name}` || ""; 
+            return `${row.first_name} ${row.last_name ?row.last_name: "" }` || ""; 
           }
           if (col.dataIndex === "lead_company") {
           return row.lead_company?.name || ""; 
@@ -282,8 +285,17 @@ React.useEffect(()=>{
         })
       ),
       startY: 20,
+      styles: {
+        fontSize: 7, // sets font size for all cells
+      },
+      headStyles: {
+        fontSize: 6, // optional: explicitly sets header font size
+      },
+      bodyStyles: {
+        fontSize: 7, // optional: explicitly sets body font size
+      },
     });
-    doc.save("leads.pdf");
+    doc.save("Leads.pdf");
   }, [filteredData, columns]);
 
   return (
@@ -375,7 +387,7 @@ React.useEffect(()=>{
                         onPageChange={handlePageChange} 
                       />
                     ) : (
-                      <LeadsKanban />
+                      <LeadsKanban  data={leadStatuses}/>
                       // (() => {
                       //   navigate(`/crms/leads-kanban`);
                       //   return null;
