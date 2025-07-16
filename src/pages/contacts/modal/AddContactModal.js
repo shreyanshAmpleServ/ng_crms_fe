@@ -47,7 +47,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
       phone2: "",
       fax: "",
       deal_id: null,
-      dateOfBirth: new Date(),
+      dateOfBirth: dayjs(new Date()).format("DD-MM-YYYY") ,
       reviews: null,
       owner: null,
       owner_name: "",
@@ -84,7 +84,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
         phone2: contact?.phone2 || "",
         fax: contact?.fax || "",
         deal_id: contact?.deal_id || null,
-        dateOfBirth: contact?.dateOfBirth || new Date(),
+        dateOfBirth:  dayjs(new Date(contact?.dateOfBirth)) ||dayjs(new Date()).format("DD-MM-YYYY") ,
         reviews: contact?.reviews || null,
         owner: contact?.owner || null,
         owner_name: contact?.owner_name || "",
@@ -113,7 +113,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
         phone2: "",
         fax: "",
         deal_id: null,
-        dateOfBirth: new Date(),
+        dateOfBirth: dayjs(new Date()).format("DD-MM-YYYY") ,
         reviews: null,
         owner: null,
         owner_name: "",
@@ -205,9 +205,15 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
     Object?.keys(data).forEach((key) => {
       if (data[key] !== null && data[key] !== undefined) {
         // Convert complex data to strings if needed
+         let value = data[key];
+                if (
+                  (key === "dateOfBirth" )
+                ) {
+                  value = dayjs(data.dateOfBirth, "DD-MM-YYYY").toISOString();
+                }
         formData.append(
           key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key]
+          typeof data[key] === "object" ? JSON.stringify(value) : value
         );
       }
     });
@@ -485,7 +491,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               )}
                             />
 
-                            <label htmlFor="user" className="checktoggle" />
+                            {/* <label htmlFor="user" className="checktoggle" /> */}
                           </div>
                         </div>
                         <input
@@ -510,7 +516,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Phone1 <span className="text-danger">*</span>
+                          Primary Phone  <span className="text-danger">*</span>
                         </label>
                         <input
                           placeholder="Enter Phone 1"
@@ -541,7 +547,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">Phone 2</label>
+                        <label className="col-form-label">Secondary Phone </label>
                         <input
                           type="number"
                           placeholder="Enter Phone 2"
@@ -642,13 +648,11 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               <DatePicker
                                 {...field}
                                 className="form-control"
-                                value={field.value ? dayjs(field.value) : null}
-                                onChange={(date) =>
-                                  field.onChange(
-                                    date ? date.toISOString() : null
-                                  )
-                                }
-                                dateFormat="dd-MM-yyyy"
+                                value={field.value ? dayjs(field.value , "DD-MM-YYYY") : null}
+                                onChange={(date, dateString) => {
+                                  field.onChange(dateString);
+                                }}
+                                format="DD-MM-YYYY"
                               />
                             )}
                           />

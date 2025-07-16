@@ -14,7 +14,7 @@ const FilesDetails = ({ type,type_id,type_name="Unknown" }) => {
 const [data,setData] = useState()
   const dispatch = useDispatch();
   React.useEffect(() => {
-    dispatch(fetchAttachment(type));
+    dispatch(fetchAttachment({filteredType :type,related_entity_id: type_id}));
   }, [dispatch]);
 
   const {attachments } = useSelector((state)=>state?.attachments)
@@ -62,12 +62,12 @@ const deleteData = () => {
                 </div>
               </div>
             </div>
-           {attachments?.length ? attachments?.map((items)=> <div className="card border shadow-none mb-3">
+           {attachments?.data?.length ? attachments?.data?.map((items)=> <div className="card border shadow-none mb-3">
               <div className="card-body pb-0">
                 <div className="row align-items-center">
                   <div className="col-md-8">
                     <div className="mb-3">
-                      <h4 className="fw-medium mb-1">
+                      <h4 className="fw-medium text-capitalize mb-1">
                        {items?.filename}
                       </h4>
                       <p>

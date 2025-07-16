@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -5,10 +6,12 @@ import CollapseHeader from "../../components/common/collapse-header";
 import ImageWithBasePath from "../../components/common/imageWithBasePath";
 import { deleteCompany, fetchCompanyById } from "../../redux/companies/";
 import { all_routes } from "../../routes/all_routes";
-import DateFormat from "../../utils/DateFormat";
 import DeleteAlert from "./alert/DeleteAlert";
 import ComapanyActvities from "./modal/ComapanyActvities";
 import EditCompanyModal from "./modal/EditCompanyModal";
+import { IoPerson } from "react-icons/io5";
+ 
+
 const CompanyDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -116,16 +119,16 @@ const CompanyDetail = () => {
                   <div className="col-sm-6 text-sm-end">
                     <div className="contact-pagination">
                       <ul>
-                        <li>
-                          <Link to={route.contactDetails}>
+                        {/* <li>
+                          <Link to={route.companies+"/"+(Number(id)-1)}>
                             <i className="ti ti-chevron-left" />
                           </Link>
                         </li>
                         <li>
-                          <Link to={route.contactDetails}>
+                          <Link to={route.companies+"/"+(Number(id)+1)}>
                             <i className="ti ti-chevron-right" />
                           </Link>
-                        </li>
+                        </li> */}
                       </ul>
                     </div>
                   </div>
@@ -143,10 +146,12 @@ const CompanyDetail = () => {
                             className="preview"
                           />
                         ) : (
-                          <ImageWithBasePath
-                            src="assets/img/profiles/avatar-14.jpg"
-                            alt="Company Logo"
-                          />
+                                                    <IoPerson className={`border w-100 h-100 bg-gray-100 img-fluid rounded `} />
+                          
+                          // <ImageWithBasePath
+                          //   src="assets/img/profiles/avatar-14.jpg"
+                          //   alt="Company Logo"
+                          // />
                         )}
                         <span className="status online" />
                       </div>
@@ -233,7 +238,7 @@ const CompanyDetail = () => {
                       <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-calendar-exclamation" />
                       </span>
-                      <p>Created on {DateFormat(companyDetail?.createdDate)}</p>
+                      <p>Created At :  {moment(companyDetail?.createdDate).format("DD-MM-YYYY")}</p>
                     </div>
                   </div>
                   <hr />

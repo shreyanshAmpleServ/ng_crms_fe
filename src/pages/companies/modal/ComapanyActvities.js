@@ -36,7 +36,7 @@ const ComapanyActvities = ({ company_id ,company_name }) => {
                 Notes
               </Link>
             </li> */}
-            <li className="nav-item" role="presentation">
+            {/* <li className="nav-item" role="presentation">
               <Link
                 to="#"
                 data-bs-toggle="tab"
@@ -46,7 +46,7 @@ const ComapanyActvities = ({ company_id ,company_name }) => {
                 <i className="ti ti-phone me-1" />
                 Calls
               </Link>
-            </li>
+            </li> */}
             <li className="nav-item" role="presentation">
               <Link
                 to="#"

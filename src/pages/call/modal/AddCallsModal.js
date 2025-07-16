@@ -94,7 +94,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   }));
   const leadList = leads?.data?.map((emnt) => ({
     value: emnt.id,
-    label: emnt.first_name + " " + emnt?.last_name,
+    label: emnt.first_name + " " + (emnt?.last_name ? emnt?.last_name : ""),
   }));
   const projectList = projects?.data?.map((emnt) => ({
     value: emnt.id,
@@ -255,7 +255,6 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
 
   const { loading } = useSelector((state) => state.calls);
 
-  console.log(new Date("2025-04-22T10:35:04.000Z"));
 
   React.useEffect(() => {
     (callFor === "Accounts" || watch("related_to")) &&
@@ -451,6 +450,10 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                             }
                             isSearchable
                             styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                              }),
                               control: (provided, state) => ({
                                 ...provided,
                                 width: "100%",

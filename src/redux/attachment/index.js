@@ -7,10 +7,17 @@ export const fetchAttachment = createAsyncThunk(
   "attachments/fetchAttachment",
   async (datas, thunkAPI) => {
     try {
-      // const params= {}
-      // if(filteredType) params.related_type = filteredType
+      const params= {}
+      if(datas.filteredType) params.related_type = datas.filteredType
+      if(datas.related_entity_id) params.related_type_id = datas.related_entity_id
+      if(datas?.endDate) params.endDate = datas?.endDate?.toISOString()
+      if(datas?.startDate) params.startDate = datas?.startDate?.toISOString()
+      if(datas?.page) params.page = datas?.page
+      if(datas?.size) params.size = datas?.size
+      if(datas?.search) params.search = datas?.search
       const response = await apiClient.get(
-        `/v1/file-attachment?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}&related_type=${datas?.filteredType || ""}`
+        `/v1/file-attachment`,{params}
+        // `/v1/file-attachment?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}&related_type=${datas?.filteredType || ""}&`
       );
       return response.data;
     } catch (error) {

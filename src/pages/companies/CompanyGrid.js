@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { all_routes } from "../../routes/all_routes";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import ImageWithBasePath from "../../components/common/imageWithBasePath";
 import { deleteCompany } from "../../redux/companies";
-import EditCompanyModal from "./modal/EditCompanyModal";
+import { all_routes } from "../../routes/all_routes";
 import DeleteAlert from "./alert/DeleteAlert";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import EditCompanyModal from "./modal/EditCompanyModal";
 
 const ContactGrid = ({ data }) => {
+  const route = all_routes;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(3); // Default visible items
+  const [visibleItems, setVisibleItems] = useState(6); // Default visible items
   const [loading, setLoading] = useState(false); // New state for loading
 
   const handleDeleteCompany = (company) => {
@@ -49,8 +49,8 @@ const ContactGrid = ({ data }) => {
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div className="d-flex align-items-center">
-                    <Link
-                      to={`/companies/${company?.id}`}
+                    {company?.logo ? <Link
+                      to={route.companies+"/"+company?.id}
                       className="avatar avatar-md flex-shrink-0 me-2"
                     >
                       {company?.logo ? (
@@ -60,16 +60,25 @@ const ContactGrid = ({ data }) => {
                           className="preview"
                         />
                       ) : (
-                        <ImageWithBasePath
-                          src="assets/img/profiles/default-avatar.jpg"
-                          alt="Company Logo"
-                        />
+                        
+                        // <Link
+                        //             to={route.companies+"/"+company?.id}
+                        //              className="avatar avatar-lg bg-gray flex-shrink-0 me-2"
+                        //            >
+                                     <span className="avatar-title text-dark"> {` ${company.name?.[0] ?? ''} ${company.name?.[1] ?? ''}`.toUpperCase()}</span>
+                                  //  </Link>
                       )}
                     </Link>
+                    :  <Link
+                                    to={route.companies+"/"+company?.id}
+                                     className="avatar avatar-md bg-gray flex-shrink-0 me-2"
+                                   >
+                                     <span className="avatar-title text-dark"> {` ${company.name?.[0] ?? ''} ${company.name?.[1] ?? ''}`.toUpperCase()}</span>
+                                  </Link>}
                     <div>
                       <h6>
                         <Link
-                          to={`/companies/${company?.id}`}
+                          to={`${route?.companies}/${company?.id}`}
                           className="fw-medium"
                         >
                           {company.name || "N/A"}
@@ -109,7 +118,7 @@ const ContactGrid = ({ data }) => {
                       </Link>
                       <Link
                         className="dropdown-item"
-                        to={`/companies/${company?.id}`}
+                        to={`${route?.companies}/${company?.id}`}
                       >
                         <i className="ti ti-eye text-blue-light" /> Preview
                       </Link>
@@ -118,17 +127,32 @@ const ContactGrid = ({ data }) => {
                 </div>
                 <div className="d-block">
                   <div className="d-flex flex-column mb-3">
-                    <p className="text-default d-inline-flex align-items-center mb-2">
+                    <p className="text-default  text-break text-wrap d-inline-flex align-items-center mb-2">
                       <i className="ti ti-mail text-dark me-1" />
                       {company.email || "No Email"}
                     </p>
-                    <p className="text-default d-inline-flex align-items-center mb-2">
+                    <p className="text-default text-wrap d-inline-flex align-items-center mb-2">
                       <i className="ti ti-phone text-dark me-1" />
                       {company.phone || "No Phone"}
                     </p>
-                    <p className="text-default d-inline-flex align-items-center">
+                    <p className="text-default text-wrap text-break d-inline-flex align-items-center mb-2">
                       <i className="ti ti-map-pin-pin text-dark me-1" />
-                      {`${company.address || ""}, ${company.country || ""}`}
+                      {`${company.address || ""}`}
+                    </p>
+                    <p className="text-default text-wrap text-break d-inline-flex align-items-center mb-2">
+                    <i className="ti ti-world" />
+                    {company?.website && <a
+                          href={company?.website || ""}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none text-break text-primary"
+                        >
+                          {company?.website || " -  "}
+                        </a>}
+                    </p>
+                    <p className="text-default text-wrap text-break d-inline-flex align-items-center">
+                     Annual Revenue :
+                      {`${company.annualRevenue || "0"}`}
                     </p>
                   </div>
                 </div>
