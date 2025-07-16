@@ -1,29 +1,22 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Select from "react-select";
 import { DatePicker } from "antd";
-import { TagsInput } from "react-tag-input-component";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
+import { TagsInput } from "react-tag-input-component";
 
 import DefaultEditor from "react-simple-wysiwyg";
 import { addDeal } from "../../../redux/deals";
-
+import dayjs from "dayjs";
 import {
-  salestypelist,
-  status,
-  optionssymbol,
   duration,
-  project,
-  tagInputValues,
-  socialMedia,
-  priorityList,
+  priorityList
 } from "../../../components/common/selectoption/selectoption";
 import { fetchContacts } from "../../../redux/contacts/contactSlice";
-import { fetchPipelines, fetchPipelineById } from "../../../redux/pipelines";
-import AddPipelineModal from "../../pipelines/modal/AddPipelineModal";
 import { fetchCurrencies } from "../../../redux/currency";
+import { fetchPipelineById, fetchPipelines } from "../../../redux/pipelines";
 import { fetchSources } from "../../../redux/source";
+import AddPipelineModal from "../../pipelines/modal/AddPipelineModal";
 
 const AddDealModel = () => {
   const dispatch = useDispatch();
@@ -36,9 +29,9 @@ const AddDealModel = () => {
   }, [dispatch]);
   const [tags, setTags] = useState([]);
 
-  const [dueDate, setDueDate] = useState(new Date());
-  const [expectedCloseDate, setExpectedCloseDate] = useState(new Date());
-  const [followUpDate, setFollowUpDate] = useState(new Date());
+  const [dueDate, setDueDate] = useState( dayjs(new Date()).format("DD-MM-YYYY") );
+  const [expectedCloseDate, setExpectedCloseDate] = useState( dayjs(new Date()).format("DD-MM-YYYY") );
+  const [followUpDate, setFollowUpDate] = useState(new Date() );
   const { loading: dealsLoading } = useSelector((state) => state.deals);
   const { contacts } = useSelector((state) => state.contacts);
   const { sources } = useSelector((state) => state.sources);
@@ -89,9 +82,9 @@ const AddDealModel = () => {
       currency: null,
       period: null,
       periodValue: "",
-      dueDate: new Date(),
-      expectedCloseDate: new Date(),
-      followUpDate: new Date(),
+      dueDate: dayjs(new Date()).format("DD-MM-YYYY") ,
+      expectedCloseDate: dayjs(new Date()).format("DD-MM-YYYY") ,
+      followUpDate: new Date() ,
       assigneeId: null,
       source: null,
       priority: null,
@@ -137,9 +130,9 @@ const AddDealModel = () => {
         tags: tags.join(", "),
         dealValue: parseFloat(data.dealValue),
         periodValue: parseInt(data.periodValue),
-        dueDate: dueDate.toISOString(),
-        expectedCloseDate: expectedCloseDate.toISOString(),
-        followUpDate: followUpDate.toISOString(),
+        dueDate: dayjs(data.dueDate, "DD-MM-YYYY").toISOString(),
+        expectedCloseDate: dayjs(data.expectedCloseDate, "DD-MM-YYYY").toISOString(),
+        followUpDate: followUpDate,
         priority: data.priority?.value || null,
       };
       await dispatch(addDeal(transformedData)).unwrap();
@@ -413,9 +406,14 @@ const AddDealModel = () => {
                 </label>
                 <DatePicker
                   className="form-control"
-                  selected={dueDate}
-                  onChange={(date) => setDueDate(date)}
-                  dateFormat="yyyy-MM-dd"
+                  selected={dueDate ? dayjs(dueDate , "DD-MM-YYYY") : null }
+                  value={dueDate ? dayjs(dueDate , "DD-MM-YYYY") : null }
+                  // onChange={(date) => setDueDate(date)}
+                  //  value={field.value ? dayjs(field.value , "DD-MM-YYYY") : null}
+                                                  onChange={(date, dateString) => {
+                                                    setDueDate(dateString);
+                                                  }}
+                                                  format="DD-MM-YYYY"
                 />
               </div>
             </div>
@@ -428,8 +426,12 @@ const AddDealModel = () => {
                 <DatePicker
                   className="form-control"
                   selected={expectedCloseDate}
-                  onChange={(date) => setExpectedCloseDate(date)}
-                  dateFormat="yyyy-MM-dd"
+                  value={expectedCloseDate ? dayjs(expectedCloseDate , "DD-MM-YYYY") : null }
+                  // onChange={(date) => setExpectedCloseDate(date)}
+                  onChange={(date, dateString) => {
+                    setExpectedCloseDate(dateString);
+                  }}
+                  format="DD-MM-YYYY"
                 />
               </div>
             </div>

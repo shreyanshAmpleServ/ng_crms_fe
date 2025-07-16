@@ -43,10 +43,9 @@ export const loginWithToken = createAsyncThunk(
       const userData = response.data.data;
       const user = localStorage.getItem("user")
       const decodedString = user ? atob(user) : null;
-      console.log("userDetaisl : ",btoa(JSON.stringify(userData?.user)), userData)
+      // console.log("userDetaisl : ",btoa(JSON.stringify(userData?.user)), userData)
       const module = localStorage.getItem("module")
       const decodedmodule = atob(module);
-      console.log("User", decodedString, decodedmodule)
       // localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem(
         "crmspermissions",
@@ -69,7 +68,7 @@ export const loginWithToken = createAsyncThunk(
       localStorage.setItem("DBName", userData?.DBName);
       // localStorage.setItem("role", userData?.data?.role);
       // localStorage.setItem("authToken", userData?.token);
-      localStorage.setItem("userDetails", JSON.stringify(userData?.user)); // Persist user dat
+      // localStorage.setItem("userDetails", JSON.stringify(userData?.user)); // Persist user dat
 // try{
 //       const Attachments = await axios.get(
 //         `${userData?.BLApiUrl}/api/common/getAttachmentDetails?id=${userData?.user?.id}&TName=m_user`,
@@ -112,7 +111,7 @@ export const logoutUserWithToken = createAsyncThunk(
       // localStorage.removeItem("SubDomain");
       // localStorage.removeItem("DBName");
       // localStorage.removeItem("authToken"); // Clear auth state
-      localStorage.removeItem("userDetails"); // Clear auth state
+      // localStorage.removeItem("userDetails"); // Clear auth state
       // localStorage.removeItem("redirectLogin"); // Clear auth state
       localStorage.clear()
       return true; // Backend clears the cookie
