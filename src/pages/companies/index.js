@@ -7,31 +7,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import CollapseHeader from "../../components/common/collapse-header";
-import { countryList } from "../../components/common/data/json/countriesData";
 import Table from "../../components/common/dataTable/index";
 import FlashMessage from "../../components/common/modals/FlashMessage";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent";
 import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
-import SortDropdown from "../../components/datatable/SortDropDown";
 import {
   clearMessages,
   deleteCompany,
   fetchCompanies,
 } from "../../redux/companies";
-import { all_routes } from "../../routes/all_routes";
 import DeleteAlert from "./alert/DeleteAlert";
 import CompanyGrid from "./CompanyGrid";
 import AddCompanyModal from "./modal/AddCompanyModal";
 import EditCompanyModal from "./modal/EditCompanyModal";
-import FilterComponent from "./modal/FilterComponent";
 // import ManageColumnsDropdown from "../deals/modal/ManageColumnsDropdown";
-import { useNavigate } from "react-router-dom";
-import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
-import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js";
+import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
+import { all_routes } from "../../routes/all_routes.js";
 
 const CompanyList = () => {
+    const route = all_routes;
   const [view, setView] = useState("list"); 
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
@@ -55,6 +53,12 @@ const CompanyList = () => {
 
   const columns = [
     {
+      title: "S.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+      // sorter: (a, b) => a.code.localeCompare(b.name),
+  },
+    {
       title: "Company Name",
       dataIndex: "name",
       render: (text, record) => (
@@ -71,14 +75,14 @@ const CompanyList = () => {
     {
       title: "Phone",
       dataIndex: "phone",
-      sorter: (a, b) => a.phone.localeCompare(b.phone),
+      // sorter: (a, b) => a.phone.localeCompare(b.phone),
     },
     {
       title: "Website",
       dataIndex: "website",
       render: (text) =>
         text ? (
-          <a href={text} target="_blank" rel="noopener noreferrer">
+          <a href={/^https?:\/\//.test(text) ? text : `https://${text}`} target="_blank" rel="noopener noreferrer">
             {text}
           </a>
         ) : (
@@ -136,7 +140,7 @@ const CompanyList = () => {
             >
               <i className="ti ti-trash text-danger"></i> Delete
             </Link>}
-           {isView && <Link className="dropdown-item" to={`/crms/companies/${record?.id}`}>
+           {isView && <Link className="dropdown-item" to={`${route?.companies}/${record?.id}`}>
               <i className="ti ti-eye text-blue-light"></i> Preview
             </Link>}
           </div>

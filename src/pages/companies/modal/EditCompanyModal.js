@@ -230,10 +230,23 @@ const EditCompanyModal = ({ company }) => {
                           Phone <span className="text-danger">*</span>
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           className="form-control"
                           {...register("phone", {
                             required: "Phone number is required !",
+                            required: "Phone number is required !",
+                            minLength: {
+                              value: 9,
+                              message: "Phone must be at least 9 digits",
+                            },
+                            maxLength: {
+                              value: 12,
+                              message: "Phone must be at most 12 digits",
+                            },
+                            pattern: {
+                              value: /^[0-9]+$/,
+                              message: "Phone must contain only numbers",
+                            },
                           })}
                         />
                         {errors.phone && (
@@ -384,6 +397,18 @@ const EditCompanyModal = ({ company }) => {
                           className="form-control"
                           {...register("primaryContactPhone", {
                             required: "Primary contact phone is required !",
+                            minLength: {
+                              value: 9,
+                              message: "Phone must be at least 9 digits",
+                            },
+                            maxLength: {
+                              value: 12,
+                              message: "Phone must be at most 12 digits",
+                            },
+                            pattern: {
+                              value: /^[0-9]+$/,
+                              message: "Phone must contain only numbers",
+                            },
                           })}
                         />
                         {errors.primaryContactPhone && (

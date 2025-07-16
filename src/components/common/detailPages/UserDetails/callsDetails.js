@@ -77,8 +77,8 @@ const CallsDetailsOfUsers = ({ lead_id=null, contact_id=null ,project_id=null })
             </div>
           </div>
           <div className="card-body">
-            {calls && calls?.length ? (
-              calls?.map((item) => (
+            {calls && calls?.data?.length ? (
+              calls?.data?.map((item) => (
                 <div className="card mb-3">
                   <div className="card-body">
                     <div className="d-sm-flex align-items-center justify-content-between pb-2">

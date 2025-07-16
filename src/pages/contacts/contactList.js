@@ -25,7 +25,9 @@ import ContactGrid from "./ContactGrid";
 import AddContactModal from "./modal/AddContactModal";
 import EditContactModal from "./modal/EditContactModal";
 import FilterComponent from "./modal/FilterComponent";
+import { all_routes } from "../../routes/all_routes.js";
 const ContactList = () => {
+      const route = all_routes;
   const [view, setView] = useState("list"); 
   const [paginationData , setPaginationData] = useState()
   const dispatch = useDispatch();
@@ -47,7 +49,8 @@ const ContactList = () => {
 
   const columns = [
     {
-      title: "S. No.",      width: 50,
+      title: "S.No.",      
+      width: 50,
       render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
@@ -78,7 +81,7 @@ const ContactList = () => {
     {
       title: "Location",
       dataIndex: "contact_Country",
-      render: (text,record) => (<div>{`${record.contact_State?.name ? record.contact_State?.name + "," :""} ${record.contact_Country?.name ? record.contact_Country?.name :" - "}`}</div>),
+      render: (text,record) => (<div>{`${record?.city ? record?.city+ ", ": ""} ${record.contact_State?.name ? record.contact_State?.name + ", " :""} ${record.contact_Country?.name ? record.contact_Country?.name :" - "}`}</div>),
       // sorter: (a, b) => a.country.length - b.country.length,
     },
     {
@@ -213,7 +216,7 @@ const ContactList = () => {
             >
               <i className="ti ti-trash text-danger"></i> Delete
             </Link>}
-            {isView && <Link className="dropdown-item z-3" to={`/contacts/${record?.id}`}>
+            {isView && <Link className="dropdown-item z-3" to={`${route.contacts}/${record?.id}`}>
               <i className="ti ti-eye text-blue-light"></i> Preview
             </Link>}
           </div>
@@ -334,7 +337,7 @@ const ContactList = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, "contacts.xlsx");
+    XLSX.writeFile(workbook, "Contacts.xlsx");
   }, [filteredData]);
 
   // Export to PDF
@@ -342,18 +345,25 @@ const ContactList = () => {
     const doc = new jsPDF();
 
     // Add Title
-    doc.text("Exported  Contacts Data", 14, 10);
+    doc.text("Exported  Contact List", 14, 10);
 
     // Generate table using autoTable
     doc.autoTable({
       head: [columns.map((col) => (col.title !== "Actions" && col.title !== "Contact") ?  col.title : "")], // Extract column headers
-      body: filteredData.map((row) =>
+      body: filteredData.map((row,index) =>
         columns.map((col) => {
           if (col.dataIndex === "name") {
             return `${row.firstName|| ""} ${row.lastName || ""}` || ""; 
           }
+          if (col.title === "S.No.") {
+            return (paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1 || ""; 
+          }
           if (col.dataIndex === "contact_Country") {
-          return row.contact_State?.name + ", "+row.contact_Country?.name|| ""; 
+          return `${row?.city ? row?.city+ ", ": ""} ${row.contact_State?.name ? row.contact_State?.name + ", " :""} ${row.contact_Country?.name ? row.contact_Country?.name :" - "}`; 
+          }
+          if (col.dataIndex === "is_active") {
+          return row.is_active === "Y" ?  "Active"
+            :   "Inactive"
           }
           if (col.dataIndex === "createdate") {
             return moment(row.createdate).format("DD-MM-YYYY") || ""; 

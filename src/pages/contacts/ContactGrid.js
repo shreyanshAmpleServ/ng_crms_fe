@@ -18,7 +18,18 @@ const ContactGrid = ({ data }) => {
                             <div className="card-body">
                                 <div className="d-flex align-items-center justify-content-between mb-3">
                                     <div className="d-flex align-items-center">
-                                        <Link
+                                    {!contact.image ? <Link
+             to={route.contacts+"/"+contact?.id || '#'}
+              className="avatar avatar-lg bg-gray flex-shrink-0 me-2"
+            >
+              <span className="avatar-title text-dark"> {` ${contact.firstName?.[0] ?? ''} ${contact.lastName?.[0] ?? ''}`.toUpperCase()}</span>
+            </Link>
+            :
+            <Link
+            to={route.contacts+"/"+contact?.id || '#'}>
+            <ImageWithDatabase className="avatar avatar-lg bg-gray flex-shrink-0 me-2" src={contact.image} />
+            </Link> }
+                                        {/* <Link
                                             to={contact.contactDetails || '#'}
                                             className="avatar avatar-md flex-shrink-0 me-2"
                                         >
@@ -26,11 +37,11 @@ const ContactGrid = ({ data }) => {
                                                 src={contact.image || 'assets/img/profiles/default-avatar.jpg'}
                                                 alt="img"
                                             />
-                                        </Link>
+                                        </Link> */}
                                         <div>
                                             <h6>
                                                 <Link
-                                                    to={contact.contactDetails || '#'}
+                                                    to={route.contacts+"/"+contact?.id || '#'}
                                                     className="fw-large h5"
                                                 >
                                                     {`${contact.firstName || ''} ${contact.lastName || ''}`}
@@ -86,11 +97,11 @@ const ContactGrid = ({ data }) => {
                                         </p>
                                         <p className="text-default d-inline-flex align-items-center mb-2">
                                             <i className="ti ti-phone text-dark me-1" />
-                                            {contact.phone1 || 'No Phone'}
+                                            {contact.phone1 || ""}{ contact?.phone2 ? ", "+contact?.phone2 :"" }
                                         </p>
                                         <p className="text-default d-inline-flex align-items-center">
                                             <i className="ti ti-map-pin-pin text-dark me-1" />
-                                            {`${contact.city || ''}, ${contact.country || ''}`}
+                                            {`${contact.city ? contact?.city + " , " : ''}${contact?.contact_State?.name ? contact?.contact_State?.name +" , " : "" } ${contact.contact_Country?.name || ''}`}
                                         </p>
                                     </div>
                                     <div className="d-flex align-items-center">
