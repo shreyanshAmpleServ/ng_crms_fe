@@ -62,6 +62,12 @@ const SalesInvoice = () => {
 
   const columns = [
     {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
+    {
       title: " Code",
       dataIndex: "order_code",
       sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
@@ -76,13 +82,14 @@ const SalesInvoice = () => {
     {
       title: "Ship To",
       dataIndex: "shipto",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.shipto || "").localeCompare(b.shipto || ""), // Fixed sorter logic
     },
     {
       title: "Bill To",
       dataIndex: "billto",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.billto || "").localeCompare(b.billto || ""), // Fixed sorter logic
     },
+    
     {
       title: "Total Disc",
       dataIndex: "disc_prcnt",
@@ -244,31 +251,90 @@ const SalesInvoice = () => {
   }, [filteredData]);
 
   const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported sales invoice", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "invoice_vendor") {
-            return row.invoice_vendor?.name || ""; 
-          }
-          if (col.dataIndex === "invoice_currency") {
-            return row.invoice_currency?.code || ""; 
-          }
-          if (col.dataIndex === "due_date") {
-            return moment(row.due_date).format("DD-MM-YYYY") || ""; 
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
-    doc.save("Sales Invoices.pdf");
-  }, [filteredData, columns]);
+  const doc = new jsPDF({ orientation: 'landscape' }); // landscape for more width
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // 🎨 Centered Title
+  const title = "Sales Invoice";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  // Filter out Actions column
+  const tableColumns = columns.filter(
+    col => col.title !== "Actions"
+  );
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
+      if (col.dataIndex === "invoice_vendor") {
+        return row.invoice_vendor?.name || "";
+      }
+      if (col.dataIndex === "invoice_currency") {
+        return row.invoice_currency?.code || "";
+      }
+      if (col.dataIndex === "due_date") {
+        return moment(row.due_date).format("DD-MM-YYYY") || "";
+      }
+      if (col.dataIndex === "createdate") {
+        return moment(row.createdate).format("DD-MM-YYYY") || "";
+      }
+      return row[col.dataIndex] || "";
+    })
+  );
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak'
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center'
+    },
+
+    bodyStyles: {
+      halign: 'left',
+      valign: 'middle',
+            halign: 'center'
+
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+      if (tableWidth > pageWidth) {
+        const scale = pageWidth / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  doc.save("Sales_Invoice.pdf");
+}, [filteredData, columns, paginationData]);
+
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

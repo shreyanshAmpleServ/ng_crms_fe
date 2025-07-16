@@ -62,6 +62,13 @@ const PurchaseOrders = () => {
 
   const columns = [
     {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+            // sorter: (a, b) => a.code.localeCompare(b.name),
+        },
+    {
       title: " Code",
       dataIndex: "order_code",
       sorter: (a, b) => (a.order_code || "").localeCompare(b.order_code || ""), // Fixed sorter logic
@@ -125,6 +132,39 @@ const PurchaseOrders = () => {
       ),
       sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate), // Sort by date
     },
+//      {
+//   title: "Attachment 1",
+//   dataIndex: "attachment1",
+//   render: (text) => (
+//     text?.url ? (
+//       <a href={text.url} target="_blank" rel="noopener noreferrer">
+//         View
+//       </a>
+//     ) : (
+//       "-"
+//     )
+//   ),
+//   sorter: (a, b) =>
+//     (a.attachment1?.code || "").localeCompare(b.attachment1?.code || ""),
+// },
+
+// {
+//   title: "Attachment 2",
+//   dataIndex: "attachment2",
+//   render: (text) => (
+//     text?.url ? (
+//       <a href={text.url} target="_blank" rel="noopener noreferrer">
+//         View
+//       </a>
+//     ) : (
+//       "-"
+//     )
+//   ),
+//   sorter: (a, b) =>
+//     (a.attachment2?.code || "").localeCompare(b.attachment2?.code || ""),
+// },
+
+
     // {
     //   title: "Status",
     //   dataIndex: "is_active",
@@ -259,32 +299,95 @@ const PurchaseOrders = () => {
     XLSX.writeFile(workbook, "Purchase Orders.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Purchase Orders", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "purchase_order_vendor") {
-            return row.purchase_order_vendor?.name || ""; 
-          }
-          if (col.dataIndex === "purchase_order_currency") {
-            return row.purchase_order_currency?.code || ""; 
-          }
-          if (col.dataIndex === "due_date") {
-            return moment(row.due_date).format("DD-MM-YYYY") || ""; 
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
-    doc.save("Prchase Orders.pdf");
-  }, [filteredData, columns]);
+const exportToPDF = useCallback(() => {
+  const doc = new jsPDF({ orientation: 'landscape' }); // more width
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // 🎨 Centered Title
+  const title = "Purchase Orders";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  const tableColumns = columns.filter(
+    col => col.title !== "Actions" && col.dataIndex !== "attachment1" && col.dataIndex !== "attachment2"
+  );
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
+      if (col.dataIndex === "purchase_order_vendor") {
+        return row.purchase_order_vendor?.name || "";
+      }
+      if (col.dataIndex === "purchase_order_currency") {
+        return row.purchase_order_currency?.code || "";
+      }
+      if (col.dataIndex === "due_date") {
+        return moment(row.due_date).format("DD-MM-YYYY") || "";
+      }
+      if (col.dataIndex === "createdate") {
+        return moment(row.createdate).format("DD-MM-YYYY") || "";
+      }
+      return row[col.dataIndex] || "";
+    })
+  );
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak'
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center'
+    },
+
+    bodyStyles: {
+      halign: 'left',
+      valign: 'middle',
+            halign: 'center',
+
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+    halign: 'center',
+
+
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+
+      if (tableWidth > pageWidth) {
+        const scale = pageWidth / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  doc.save("Purchase_Orders.pdf");
+}, [filteredData, columns, paginationData]);
+
+
+
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

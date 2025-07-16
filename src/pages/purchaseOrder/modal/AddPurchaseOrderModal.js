@@ -1,28 +1,24 @@
-import React, { useEffect, useState } from "react";
 import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { OrderStatusOptions } from "../../../components/common/selectoption/selectoption";
 import { fetchCurrencies } from "../../../redux/currency";
 import {
-  addOrder,
-  fetchOrderCode,
-  fetchSalesType,
-  updateOrder,
+  fetchSalesType
 } from "../../../redux/order";
-import { fetchTaxSetup } from "../../../redux/taxSetUp";
-import { fetchVendors } from "../../../redux/vendor";
-import ManageOrderItemModal from "./ManageOrderItemModal";
 import {
   addPurchaseOrder,
   fetchPurchaseOrderCode,
   updatePurchaseOrder,
 } from "../../../redux/purchaseOrder";
-import toast from "react-hot-toast";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import moment from "moment"
+import { fetchTaxSetup } from "../../../redux/taxSetUp";
+import { fetchVendors } from "../../../redux/vendor";
+import ManageOrderItemModal from "./ManageOrderItemModal";
 const initialItem = [
   {
     parent_id: null,
@@ -255,10 +251,11 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
       }
     }
   };
+console.log("items Data : ", itemNumber);
 
   const onSubmit = async (data) => {
     if (!itemNumber?.[0]?.item_id) {
-      toast.error("Purchase Order items is not selected !");
+      toast.error("Purchase Order Items is not selected !");
       return;
     }
     const closeButton = document.getElementById("close_add_edit_order");
@@ -301,7 +298,25 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
       closeButton.click();
       dispatch(fetchPurchaseOrderCode());
       reset();
-      setItemNumber(initialItem);
+      setItemNumber([
+  {
+    parent_id: null,
+    item_id: null,
+    item_name: "",
+    quantity: 1,
+    delivered_qty: 0,
+    unit_price: 0,
+    currency: null,
+    rate: 0,
+    disc_prcnt: 0,
+    disc_amount: 0,
+    tax_id: null,
+    tax_per: 0.0,
+    line_tax: 0,
+    total_bef_disc: 0,
+    total_amount: 0,
+  },
+]);
     } catch (error) {
       closeButton.click();
     }
@@ -313,8 +328,27 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
     if (offcanvasElement) {
       const handleModalClose = () => {
         setOrder();
-        setItemNumber(initialItem);
         reset();
+        setItemNumber([
+  {
+    parent_id: null,
+    item_id: null,
+    item_name: "",
+    quantity: 1,
+    delivered_qty: 0,
+    unit_price: 0,
+    currency: null,
+    rate: 0,
+    disc_prcnt: 0,
+    disc_amount: 0,
+    tax_id: null,
+    tax_per: 0.0,
+    line_tax: 0,
+    total_bef_disc: 0,
+    total_amount: 0,
+  },
+]);
+        // setItemNumber(initialItem)
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -597,7 +631,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
               <div className="subtotal-div mb-3">
                 <ul className="mb-3">
                   <li>
-                    <h5>Total Befor Tax</h5>
+                    <h5>Total Before Tax</h5>
                     <input
                       name="total_bef_tax"
                       type="text"
@@ -646,7 +680,8 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
                     />
                   </li>
                   <li>
-                    <h5>Total tax amount</h5>
+                    <h5>Total Tax Amount
+</h5>
                     <input
                       name="tax_total"
                       type="text"

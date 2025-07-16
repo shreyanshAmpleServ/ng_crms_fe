@@ -252,7 +252,7 @@ const AddProductModal = ({ order, setOrder }) => {
 
   const onSubmit = async (data) => {
     if (!itemNumber?.[0]?.item_id) {
-      toast.error("Order items is not selected !");
+      toast.error("Order Items is not selected !");
       return;
     }
     const closeButton = document.getElementById("close_add_edit_order");
@@ -558,7 +558,7 @@ const AddProductModal = ({ order, setOrder }) => {
               <div className="subtotal-div mb-3">
                 <ul className="mb-3">
                   <li>
-                    <h5>Total Befor Tax</h5>
+                    <h5>Total Before Tax</h5>
                     <input
                       name="total_bef_tax"
                       type="text"
@@ -607,7 +607,8 @@ const AddProductModal = ({ order, setOrder }) => {
                     />
                   </li>
                   <li>
-                    <h5>Total tax amount</h5>
+                    <h5>Total Tax Amount
+</h5>
                     <input
                       name="tax_total"
                       type="text"

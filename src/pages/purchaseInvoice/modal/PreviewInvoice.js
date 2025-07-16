@@ -201,7 +201,7 @@ setItemNumber(order?.purchase_invoice_items?.map((item)=>({
                  <div>
       <div className="col-md-12 mt-3 ">
         <div className="mb-1 d-flex justify-content-between">
-          <label className="h4 fw-bold">Order items</label>
+          <label className="h4 fw-bold">Order Items</label>
           
         </div>
       </div>
@@ -276,7 +276,8 @@ setItemNumber(order?.purchase_invoice_items?.map((item)=>({
             <div className="subtotal-div  d-flex justify-content-end mb-3">
               <ul className="mb-3  " style={{width:"30%" ,lineHeight:".5"}}>
                 <li>
-                  <h5>Total Befor Tax</h5>
+                  <h5>Total Before Tax
+</h5>
                  {formatNumber(order?.total_bef_tax)}
                 </li>
                 <li>
@@ -295,7 +296,8 @@ setItemNumber(order?.purchase_invoice_items?.map((item)=>({
              {formatNumber(order?.rounding_amount) || 0}
                 </li>
                 <li>
-                  <h5>Total tax amount</h5>
+                  <h5>Total Tax Amount
+</h5>
                   {formatNumber(order?.tax_total) || 0}
                 </li>
                 <li>

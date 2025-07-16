@@ -147,7 +147,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
               <th>Unit Price</th>
               <th>Rate</th>
               <th>Discount(%)</th>
-              <th>Price aft disc</th>
+              <th>Price Aft Disc</th>
               <th>Tax</th>
               <th>Total Tax</th>
               <th>Total Amount</th>

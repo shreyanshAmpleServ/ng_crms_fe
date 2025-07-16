@@ -559,7 +559,8 @@ const AddQuotationModal = ({ order, setOrder }) => {
               <div className="subtotal-div mb-3">
                 <ul className="mb-3">
                   <li>
-                    <h5>Total Befor Tax</h5>
+                    <h5>Total Before Tax
+</h5>
                     <input
                       name="total_bef_tax"
                       type="text"
@@ -608,7 +609,8 @@ const AddQuotationModal = ({ order, setOrder }) => {
                     />
                   </li>
                   <li>
-                    <h5>Total tax amount</h5>
+                    <h5>Total Tax Amount
+</h5>
                     <input
                       name="tax_total"
                       type="text"

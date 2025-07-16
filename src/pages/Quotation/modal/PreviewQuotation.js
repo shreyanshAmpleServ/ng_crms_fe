@@ -265,7 +265,8 @@ setItemNumber(order?.quotation_items?.map((item)=>({
             <div className="subtotal-div  d-flex justify-content-end mb-3">
               <ul className="mb-3  " style={{width:"30%" ,lineHeight:".5"}}>
                 <li>
-                  <h5>Total Befor Tax</h5>
+                  <h5>Total Before Tax
+</h5>
                  {formatNumber(order?.total_bef_tax)}
                 </li>
                 <li>
@@ -284,7 +285,8 @@ setItemNumber(order?.quotation_items?.map((item)=>({
              {order?.rounding === "Y" ? formatNumber(order?.rounding_amount) : formatNumber(order?.rounding_amount) || 0}
                 </li>
                 <li>
-                  <h5>Total tax amount</h5>
+                  <h5>Total Tax Amount
+</h5>
                   {formatNumber(order?.tax_total) || 0}
                 </li>
                 <li>

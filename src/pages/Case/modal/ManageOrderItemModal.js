@@ -120,7 +120,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
     <div>
       <div className="col-md-12 ">
         <div className="mb-1 d-flex justify-content-between">
-          <label className="col-form-label fw-bold">Order items</label>
+          <label className="col-form-label fw-bold">Order Items</label>
           <Link
             to="#"
             className="label-add"
@@ -142,7 +142,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
               <th>Unit Price</th>
               <th>Rate</th>
               <th>Discount(%)</th>
-              <th>Price aft disc</th>
+              <th>Price Aft Disc</th>
               <th>Tax</th>
               <th>Total Tax</th>
               <th>Total Amount</th>
