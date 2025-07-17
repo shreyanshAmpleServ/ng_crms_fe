@@ -53,6 +53,12 @@ const LeadList = () => {
   const dispatch = useDispatch();
 
   const columns = [
+     {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
     {
       title: "Call For",
       dataIndex: "call_for",
@@ -321,18 +327,77 @@ const LeadList = () => {
     XLSX.writeFile(workbook, "calls.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Data", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title)],
-      body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
-      ),
-      startY: 20,
-    });
-    doc.save("calls.pdf");
-  }, [filteredData, columns]);
+ const exportToPDF = useCallback(() => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const title = "Exported Call";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  // Remove Actions column
+  const tableColumns = columns.filter(col => col.title !== "Actions");
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
+      if (col.dataIndex === "createdDate") {
+        return row.createdDate ? moment(row.createdDate).format("DD-MM-YYYY") : "";
+      }
+      const value = row[col.dataIndex];
+      if (value && typeof value === "object") {
+        return value.name || value.code || JSON.stringify(value);
+      }
+      return value ?? "";
+    })
+  );
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak',
+    },
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center',
+    },
+    bodyStyles: {
+      halign: 'center',
+      valign: 'middle',
+    },
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+
+    /** ✅ Scale down if table too wide */
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+      if (tableWidth > pageWidth - 20) {  // 20 for margins
+        const scale = (pageWidth - 20) / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  doc.save("Call.pdf");
+}, [filteredData, columns, paginationData]);
+
 
   return (
     <div>

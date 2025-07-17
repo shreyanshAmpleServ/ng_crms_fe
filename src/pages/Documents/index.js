@@ -69,6 +69,12 @@ const DocumentLists = () => {
   };
 
   const columns = [
+     {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
     {
       title: "File Name",
       dataIndex: "filename",
@@ -295,17 +301,68 @@ const DocumentLists = () => {
   }, [filteredData]);
 
   const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Documents", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
-      ),
-      startY: 20,
-    });
-    doc.save("Documents.pdf");
-  }, [filteredData, columns]);
+  const doc = new jsPDF({ orientation: 'landscape' });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // 🎨 Title center me
+  const title = "Exported Documents";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  // 🔷 Actions column hatao
+  const tableColumns = columns.filter(col => col.title !== "Actions");
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
+      return row[col.dataIndex] || "";
+    })
+  );
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak',
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center',
+    },
+
+    bodyStyles: {
+      halign: 'left',
+      valign: 'middle',
+      halign: 'center',
+
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+  });
+
+  doc.save("Documents.pdf");
+}, [filteredData, columns, paginationData]);
+
 
   const handleDeleteProject = (project) => {
     setSelectedProject(project);

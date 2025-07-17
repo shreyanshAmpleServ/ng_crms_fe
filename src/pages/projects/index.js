@@ -54,6 +54,12 @@ const ProjectList = () => {
 
   const columns = [
     {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
+    {
       title: "Project Name",
       dataIndex: "name",
       render: (text, record) => (
@@ -205,29 +211,90 @@ const ProjectList = () => {
     XLSX.writeFile(workbook, "projects.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Projects", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "startDate") {
-            return moment(row.startDate).format("DD-MM-YYYY") || ""; 
-          }
-          if (col.dataIndex === "createdDate") {
-            return moment(row.createdDate).format("DD-MM-YYYY") || ""; 
-          }
-          if (col.dataIndex === "dueDate") {
-            return moment(row.dueDate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
-    doc.save("projects.pdf");
-  }, [filteredData, columns]);
+      
+ const exportToPDF = useCallback(() => {
+  const doc = new jsPDF({ orientation: 'landscape' });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // 🎨 Title center me
+  const title = "Exported Projects";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  // 🔷 Actions column ko hatao
+  const tableColumns = columns.filter(col => col.title !== "Actions");
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
+      if (col.dataIndex === "startDate") {
+        return moment(row.startDate).format("DD-MM-YYYY") || "";
+      }
+      if (col.dataIndex === "createdDate") {
+        return moment(row.createdDate).format("DD-MM-YYYY") || "";
+      }
+      if (col.dataIndex === "dueDate") {
+        return moment(row.dueDate).format("DD-MM-YYYY") || "";
+      }
+      return row[col.dataIndex] || "";
+    })
+  );
+
+   doc.autoTable({
+    head,
+    body,
+    startY: 25,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak'
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center'
+    },
+
+    bodyStyles: {
+      halign: 'left',
+      valign: 'middle',
+            halign: 'center',
+
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+    halign: 'center',
+
+
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+
+      if (tableWidth > pageWidth) {
+        const scale = pageWidth / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  doc.save("projects.pdf");
+}, [filteredData, columns, paginationData]);
+
 
   const handleDeleteProject = (project) => {
     setSelectedProject(project);

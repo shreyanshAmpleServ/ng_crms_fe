@@ -14,8 +14,9 @@ import {
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
 import { fetchVendors } from "../../../redux/vendor";
 import ManageOrderItemModal from "./ManageOrderItemModal";
-import toast from "react-hot-toast";
-
+import toast from "react-hot-toast"; 
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from "dayjs";
 const initialItem = [
   {
     parent_id: null,
@@ -81,7 +82,7 @@ const AddProductModal = ({ order, setOrder }) => {
       cont_person: "",
       address: "",
       currency: null,
-      due_date: new Date(),
+      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -115,7 +116,7 @@ const AddProductModal = ({ order, setOrder }) => {
         cont_person: order?.cont_person || "",
         address: order?.address || "",
         currency: order?.currency || null,
-        due_date: order?.due_date || new Date(),
+        due_date: dayjs(new Date(order?.due_date)) ||  dayjs(new Date()).format("DD-MM-YYYY") ,
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -162,7 +163,7 @@ const AddProductModal = ({ order, setOrder }) => {
         cont_person: "",
         address: "",
         currency: null,
-        due_date: new Date(),
+        due_date: dayjs(new Date()).format("DD-MM-YYYY"),
         total_bef_tax: 0,
         disc_prcnt: 0,
         tax_total: 0,
@@ -258,17 +259,22 @@ const AddProductModal = ({ order, setOrder }) => {
     const closeButton = document.getElementById("close_add_edit_order");
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] !== undefined) {
-        let value = data[key];
-        if (
-          (key === "due_date" || key === "apr_date") &&
-          value instanceof Date
-        ) {
-          value = value.toISOString();
-        }
-        formData.append(key, value);
-      }
-    });
+          if (data[key] !== null && data[key] != "due_date" && data[key] !== undefined) {
+            let value = data[key];
+            if (
+              (key === "due_date" )
+            ) {
+              value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
+            }
+            if (
+              ( key === "apr_date") &&
+              value instanceof Date
+            ) {
+              value = dayjs(data.apr_date).toISOString();
+            }
+            formData.append(key, value);
+          }
+        })
     // Object.keys(data).forEach((key) => {
     //   if (data[key] !== null) {
     //     formData.append(key, (key=== "due_date" || key === "apr_date") ? data[key] ? data[key]?.toISOString() : "" : data[key]);
@@ -286,33 +292,70 @@ const AddProductModal = ({ order, setOrder }) => {
       closeButton.click();
       dispatch(fetchOrderCode());
       reset();
-      setItemNumber(initialItem);
-    } catch (error) {
-      closeButton.click();
-    }
-  };
-  React.useEffect(() => {
-    const offcanvasElement = document.getElementById(
-      "offcanvas_add_edit_order"
-    );
-    if (offcanvasElement) {
-      const handleModalClose = () => {
-        setOrder();
-        reset();
-        setItemNumber(initialItem);
-      };
-      offcanvasElement.addEventListener(
-        "hidden.bs.offcanvas",
-        handleModalClose
-      );
-      return () => {
-        offcanvasElement.removeEventListener(
-          "hidden.bs.offcanvas",
-          handleModalClose
-        );
-      };
-    }
-  }, []);
+         setItemNumber([
+       {
+         parent_id: null,
+         item_id: null,
+         item_name: "",
+         quantity: 1,
+         delivered_qty: 0,
+         unit_price: 0,
+         currency: null,
+         rate: 0,
+         disc_prcnt: 0,
+         disc_amount: 0,
+         tax_id: null,
+         tax_per: 0.0,
+         line_tax: 0,
+         total_bef_disc: 0,
+         total_amount: 0,
+       },
+     ]);
+         } catch (error) {
+           closeButton.click();
+         }
+       };
+       React.useEffect(() => {
+         const offcanvasElement = document.getElementById(
+           "offcanvas_add_edit_order"
+         );
+         if (offcanvasElement) {
+           const handleModalClose = () => {
+             setOrder();
+             reset();
+             setItemNumber([
+       {
+         parent_id: null,
+         item_id: null,
+         item_name: "",
+         quantity: 1,
+         delivered_qty: 0,
+         unit_price: 0,
+         currency: null,
+         rate: 0,
+         disc_prcnt: 0,
+         disc_amount: 0,
+         tax_id: null,
+         tax_per: 0.0,
+         line_tax: 0,
+         total_bef_disc: 0,
+         total_amount: 0,
+       },
+     ]);
+             // setItemNumber(initialItem)
+           };
+           offcanvasElement.addEventListener(
+             "hidden.bs.offcanvas",
+             handleModalClose
+           );
+           return () => {
+             offcanvasElement.removeEventListener(
+               "hidden.bs.offcanvas",
+               handleModalClose
+             );
+           };
+         }
+       }, []);
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
@@ -511,24 +554,43 @@ const AddProductModal = ({ order, setOrder }) => {
                 </div>
               </div>
               {/* Due Date  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Due Date<span className="text-danger">*</span>
-                  </label>
-                  <div className="icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <DatePicker
-                      className="form-control datetimepicker"
-                      selected={selectedDate}
-                      onChange={handleDateChange}
-                      dateFormat="dd-MM-yyyy"
-                    />
-                  </div>
-                </div>
-              </div>
+             <div className="col-md-6">
+               <div className="mb-3">
+                 <label className="col-form-label">
+                   Due Date <span className="text-danger">*</span>
+                 </label>
+                 <div className="mb-3 icon-form">
+                   <span className="form-icon z-1">
+                     <i className="ti ti-calendar-check" />
+                   </span>
+                   <Controller
+                     name="due_date"
+                      control={control}
+                                   rules={{ required: "Start date is required !" }} // Make the field required
+                                   render={({ field }) => (
+                                     <DatePicker
+                                       {...field}
+                                       className="form-control"
+                                       value={
+                                         field.value
+                                           ? dayjs(field.value, "DD-MM-YYYY")
+                                           : null
+                                       }
+                                       format="DD-MM-YYYY"
+                                       onChange={(date, dateString) => {
+                                         field.onChange(dateString);
+                                       }}
+                                     />
+                     )}
+                   />
+                   {errors.due_date && (
+                     <small className="text-danger">
+                       {errors.due_date.message}
+                     </small>
+                   )}
+                 </div>
+               </div>
+             </div>
               {/* Status */}
               <div className="col-md-6">
                 <div className="mb-1">

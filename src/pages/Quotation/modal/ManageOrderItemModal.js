@@ -125,7 +125,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
     <div>
       <div className="col-md-12 ">
         <div className="mb-1 d-flex justify-content-between">
-          <label className="col-form-label fw-bold">Quotation items</label>
+          <label className="col-form-label fw-bold">Quotation Items</label>
           <Link
             to="#"
             className="label-add"
