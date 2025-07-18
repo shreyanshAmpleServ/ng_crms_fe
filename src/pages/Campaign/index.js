@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useMemo,useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import {
@@ -21,7 +21,9 @@ import { useDispatch, useSelector } from "react-redux";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
 import { fetchCampaign } from "../../redux/campaign/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
-
+import ExportData from "../../components/datatable/ExportData";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
 const CampaignsList = () => {
   // const data = activities_data;
   const {name} = useParams()
@@ -31,6 +33,7 @@ const CampaignsList = () => {
   const [isLoading,setIsLoading] = useState(false)
   const [searchValue, setSearchValue] = useState("");
   const [campaign, setCampaign] = useState();
+    const [searchText, setSearchText] = useState("");
     const [selectedCampaign, setSelectedCampaign] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [paginationData , setPaginationData] = useState()
@@ -88,6 +91,11 @@ const CampaignsList = () => {
   const isDelete = isAdmin || allPermissions?.delete
 
   const columns = [
+    {
+      title: "Sr.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+  },
     {
       title: "Name",
       dataIndex: "name",
@@ -197,11 +205,83 @@ const CampaignsList = () => {
       ),
     }]:[])
   ];
+ 
+   const filteredData = useMemo(() => {
+    if (!searchText) return data;
+    return data.filter(item =>
+      item.name?.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [data, searchText]);
+
+  // 🔷 Excel Export
+  const exportToExcel = useCallback(() => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, "contacts.xlsx");
+  }, [filteredData]);
+
+  // 🔷 PDF Export
+  const exportToPDF = useCallback(() => {
+    const doc = new jsPDF({ orientation: "landscape" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    const title = "Exported Campaign";
+    doc.setFontSize(16);
+    const textWidth = doc.getTextWidth(title);
+    const x = (pageWidth - textWidth) / 2;
+    doc.text(title, x, 15);
+
+    const tableColumns = columns.filter(col => col.title !== "Actions");
+    const head = [tableColumns.map(col => col.title)];
+
+    const body = filteredData.map((row, index) =>
+      tableColumns.map(col => {
+        if (col.title === "Sr.No.") {
+          return (
+            (paginationData?.currentPage - 1) * paginationData?.pageSize +
+            index +
+            1
+          );
+        }
+        return row[col.dataIndex] || "";
+      })
+    );
+
+    doc.autoTable({
+      head,
+      body,
+      startY: 25,
+      styles: {
+        fontSize: 7,
+        cellPadding: 1,
+        overflow: "linebreak"
+      },
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255,
+        fontSize: 8,
+        halign: "center"
+      },
+      bodyStyles: {
+        halign: "center",
+        valign: "middle"
+      },
+      theme: "grid",
+      tableWidth: "auto",
+      pageBreak: "auto"
+    });
+
+    doc.save("Campaign.pdf");
+  }, [filteredData, columns, paginationData]);
+
+
+
   const handleDeleteCampaign = (id) => {
     setSelectedCampaign(id);
     setShowDeleteModal(true);
   };
-
+ 
   return (
     <div>
       <Helmet>
@@ -246,19 +326,18 @@ const CampaignsList = () => {
                         />
                       </div>
                     </div>
-                  {isCreate &&  <div className="col-sm-8">
-                      <div className="text-sm-end">
-                        <Link
-                          to="#"
-                          className="btn btn-primary"
-                          data-bs-toggle="offcanvas"
-                          data-bs-target="#offcanvas_add"
-                        >
-                          <i className="ti ti-square-rounded-plus me-2" />
-                          Add 
-                        </Link>
-                      </div>
-                    </div>}
+                    
+                 <div className="col-sm-8">
+                    {/* Export Start & Add Button */}
+                    <ExportData
+                      exportToPDF={exportToPDF}
+                      exportToExcel={exportToExcel}
+                      label="Add"
+                      id="offcanvas_add_compaign"
+                      isCreate={isCreate}
+                    />
+                    {/* Export End & Add Button  */}
+                  </div>
                   </div>
                   {/* /Search */}
                 </div>
@@ -269,7 +348,13 @@ const CampaignsList = () => {
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Campaign</h4>
+                          {/* <h4 className="mb-0 me-3">All Campaign</h4> */}
+                           <div className="mx-2">
+                      <DateRangePickerComponent
+                      selectedDateRange={selectedDateRange}
+                      setSelectedDateRange={setSelectedDateRange}
+                    />
+                    </div>
                           <div className="active-list">
                           {/* <ul className="mb-0">
                             {activityTypes?.map((item)=><>
@@ -330,13 +415,8 @@ const CampaignsList = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="d-flex align-items-center flex-wrap row-gap-2">
-                        <div className="mx-2">
-                      <DateRangePickerComponent
-                      selectedDateRange={selectedDateRange}
-                      setSelectedDateRange={setSelectedDateRange}
-                    />
-                    </div>
+                      <div className="align-items-center flex-wrap row-gap-2">
+                       
                         {/* <div className="dropdown me-2">
                           <Link
                             to="#"

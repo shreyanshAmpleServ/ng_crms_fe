@@ -237,11 +237,13 @@ const PipelineList = () => {
     head,
     body,
     startY: 25,
+    
 
     styles: {
       fontSize: 7,
       cellPadding: 1,
       overflow: 'linebreak',
+      
     },
 
     headStyles: {
@@ -249,12 +251,13 @@ const PipelineList = () => {
       textColor: 255,
       fontSize: 8,
       halign: 'center',
+      
     },
 
     bodyStyles: {
       halign: 'left',
       valign: 'middle',
-      halign: 'center',
+            halign: 'center',
 
     },
 

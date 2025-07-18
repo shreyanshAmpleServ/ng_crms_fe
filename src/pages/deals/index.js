@@ -50,6 +50,11 @@ const DealList = () => {
   const isDelete = isAdmin || allPermissions?.delete
 
   const columns = [
+     {
+      title: "Sr.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+  },
     {
       title: "Deal Name",
       dataIndex: "dealName",
@@ -259,34 +264,88 @@ const DealList = () => {
   }, [filteredData]);
 
   // Export to PDF
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
+const exportToPDF = useCallback(() => {
+  const doc = new jsPDF({ orientation: 'landscape' });
 
-    // Add Title
-    doc.text("Exported Deals", 14, 10);
+  const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Generate table using autoTable
-    doc.autoTable({ // Extract column headers
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")], // Extract column headers
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "DealContacts") {
-            return row?.DealContacts?.[0]?.contact?.firstName + " "+row?.DealContacts?.[0]?.contact?.lastName || ""; 
-          }
-          if (col.dataIndex === "createdDate") {
-            return moment(row.createdDate).format("DD-MM-YYYY") || ""; 
-          }
-          if (col.dataIndex === "expectedCloseDate") {
-            return moment(row.expectedCloseDate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
+  // 🎨 Title center me
+  const title = "Exported Deals";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
 
-    doc.save("Deals.pdf");
-  }, [filteredData, columns]);
+  // 🔷 Actions column ko hatao
+  const tableColumns = columns.filter(col => col.title !== "Actions");
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
+      if (col.dataIndex === "expectedCloseDate") {
+        return moment(row.expectedCloseDate).format("DD-MM-YYYY") || "";
+      }
+      if (col.dataIndex === "createdDate") {
+        return moment(row.createdDate).format("DD-MM-YYYY") || "";
+      }
+      // if (col.dataIndex === "dueDate") {
+      //   return moment(row.dueDate).format("DD-MM-YYYY") || "";
+      // }
+      return row[col.dataIndex] || "";
+    })
+  );
+
+   doc.autoTable({
+    head,
+    body,
+    startY: 25,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak'
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center'
+    },
+
+    bodyStyles: {
+      halign: 'left',
+      valign: 'middle',
+            halign: 'center',
+
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+    halign: 'center',
+
+
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+
+      if (tableWidth > pageWidth) {
+        const scale = pageWidth / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  doc.save("Deals.pdf");
+}, [filteredData, columns, paginationData]);
 
   return (
     <div>

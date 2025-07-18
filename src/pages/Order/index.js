@@ -68,7 +68,7 @@ const Orders = () => {
     {
       title: "Order Code",
       dataIndex: "order_code",
-      sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.order_code || "").localeCompare(b.order_code || ""), // Fixed sorter logic
     },
     {
       title: "Vendor",

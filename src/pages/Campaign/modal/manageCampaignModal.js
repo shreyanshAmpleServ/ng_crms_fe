@@ -187,7 +187,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       <div
         className="offcanvas offcanvas-end offcanvas-large"
         tabIndex={-1}
-        id="offcanvas_add"
+        id="offcanvas_add_compaign"
       >
         <div className="offcanvas-header border-bottom">
           <h4>{campaign ? "Update " : "Add New "} Campaign </h4>
@@ -365,7 +365,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                 </div>
                 {/* Exp Revenue  */}
                 <div className="col-md-6">
-                  <label className="col-form-label">Expected Revanue</label>
+                  <label className="col-form-label">Expected Revenue</label>
                   <div className="mb-3 ">
                     <input
                       type="number"

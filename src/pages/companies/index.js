@@ -53,10 +53,9 @@ const CompanyList = () => {
 
   const columns = [
     {
-      title: "S.No.",      
+      title: "Sr.No.",      
       width: 50,
       render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
       title: "Company Name",
@@ -224,18 +223,77 @@ React.useEffect(()=>{
     XLSX.writeFile(workbook, "companies.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Companies", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => row[col.dataIndex] || ""),
-      ),
-      startY: 20,
-    });
-    doc.save("companies.pdf");
-  }, [filteredData, columns]);
+ const exportToPDF = useCallback(() => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const title = "Exported Companies";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  // Filter out the "Actions" column
+  const tableColumns = columns.filter(col => col.title !== "Actions");
+
+  // Prepare the table header
+  const head = [tableColumns.map(col => col.title)];
+
+  // Prepare the table body with Sr.No. and data
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        // Compute Sr.No. based on pagination
+        return (
+          ((paginationData?.currentPage - 1) || 0) *
+            (paginationData?.pageSize || 0) +
+          index +
+          1
+        );
+      }
+
+      const val = row[col.dataIndex];
+
+      // Optionally handle nested objects
+      if (val && typeof val === "object") {
+        return val.name || val.code || JSON.stringify(val);
+      }
+
+      return val ?? "-";
+    })
+  );
+
+  // Render the table
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: "linebreak",
+    },
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: "center",
+    },
+    bodyStyles: {
+      fontSize: 7,
+      halign: "center",
+      valign: "middle",
+    },
+    theme: "grid",
+    tableWidth: "auto",
+    pageBreak: "auto",
+  });
+
+  doc.save("companies.pdf");
+}, [filteredData, columns, paginationData]);
+
+
+
 
   const handleDeleteCompany = (company) => {
     setSelectedCompany(company);

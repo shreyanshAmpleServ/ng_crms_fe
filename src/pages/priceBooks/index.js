@@ -45,6 +45,12 @@ const PriceBook = () => {
   const isDelete = isAdmin || allPermissions?.delete
 
   const columns = [
+     {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
     {
       title: " Name",
       dataIndex: "name",
@@ -197,26 +203,74 @@ const PriceBook = () => {
     XLSX.writeFile(workbook, "Price book.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Price book", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "effectivate_to") {
-            return moment(row.effectivate_to).format("DD-MM-YYYY") || ""; 
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
-    doc.save("Price book.pdf");
-  }, [filteredData, columns]);
+ const exportToPDF = useCallback(() => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const title = "Exported Price Book";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  // 🔷 Remove "Actions" column
+  const tableColumns = columns.filter(col => col.title !== "Actions");
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return index + 1; // optional: can include pagination if needed
+      }
+
+      if (col.dataIndex === "effectivate_to") {
+        return row.effectivate_to
+          ? moment(row.effectivate_to).format("DD-MM-YYYY")
+          : "";
+      }
+      if (col.dataIndex === "createdate") {
+        return row.createdate
+          ? moment(row.createdate).format("DD-MM-YYYY")
+          : "";
+      }
+
+      const value = row[col.dataIndex];
+      if (value && typeof value === "object") {
+        return value.name || value.code || JSON.stringify(value);
+      }
+
+      return value ?? "";
+    })
+  );
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak',
+    },
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center',
+    },
+    bodyStyles: {
+      halign: 'center',
+      valign: 'middle',
+    },
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+  });
+
+  doc.save("PriceBook.pdf");
+}, [filteredData, columns]);
+
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

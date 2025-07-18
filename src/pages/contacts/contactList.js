@@ -48,12 +48,12 @@ const ContactList = () => {
   const isDelete = isAdmin || allPermissions?.delete
 
   const columns = [
-    {
-      title: "S.No.",      
-      width: 50,
-      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+   {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
     {
       title: "Name",
       dataIndex: "name",
@@ -342,40 +342,92 @@ const ContactList = () => {
 
   // Export to PDF
   const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Add Title
-    doc.text("Exported  Contact List", 14, 10);
+  // Centered Title
+  const title = "Exported Contact List";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
 
-    // Generate table using autoTable
-    doc.autoTable({
-      head: [columns.map((col) => (col.title !== "Actions" && col.title !== "Contact") ?  col.title : "")], // Extract column headers
-      body: filteredData.map((row,index) =>
-        columns.map((col) => {
-          if (col.dataIndex === "name") {
-            return `${row.firstName|| ""} ${row.lastName || ""}` || ""; 
-          }
-          if (col.title === "S.No.") {
-            return (paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1 || ""; 
-          }
-          if (col.dataIndex === "contact_Country") {
-          return `${row?.city ? row?.city+ ", ": ""} ${row.contact_State?.name ? row.contact_State?.name + ", " :""} ${row.contact_Country?.name ? row.contact_Country?.name :" - "}`; 
-          }
-          if (col.dataIndex === "is_active") {
-          return row.is_active === "Y" ?  "Active"
-            :   "Inactive"
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
+  // Columns excluding Actions & Contact
+  const tableColumns = columns.filter(
+    col => col.title !== "Actions" && col.title !== "Contact"
+  );
 
-    doc.save("Contacts.pdf");
-  }, [filteredData, columns]);
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+     if (col.title === "Sr.No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
+
+      if (col.dataIndex === "name") {
+        const name = `${row.firstName || ""} ${row.lastName || ""}`.trim();
+        return name || "-";
+      }
+
+      if (col.dataIndex === "contact_Country") {
+        const city = row?.city ? row.city + ", " : "";
+        const state = row.contact_State?.name ? row.contact_State.name + ", " : "";
+        const country = row.contact_Country?.name || "-";
+        return `${city}${state}${country}`;
+      }
+
+      if (col.dataIndex === "is_active") {
+        return row.is_active === "Y" ? "Active" : "Inactive";
+      }
+
+      if (col.dataIndex === "createdate") {
+        return row.createdate
+          ? moment(row.createdate).format("DD-MM-YYYY")
+          : "-";
+      }
+
+      const val = row[col.dataIndex];
+      if (val && typeof val === "object") {
+        return val.name || val.code || JSON.stringify(val);
+      }
+
+      return val ?? "-";
+    })
+  );
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak',
+    },
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center',
+    },
+    bodyStyles: {
+      fontSize: 7,
+      halign: 'center',
+      valign: 'middle',
+    },
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+  });
+
+  doc.save("Contacts.pdf");
+}, [filteredData, columns, paginationData]);
+
 
   const handleCountryFilterChange = (selectedCountries) => {
     setFilteredCountries(selectedCountries);

@@ -1,9 +1,9 @@
 import React from "react";
 import { DatePicker } from "antd";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { addTaxSetup, updateTaxSetup } from "../../../../redux/taxSetUp";
-
+import dayjs from "dayjs";
 const ManageTaxModal = ({ tax, setTax }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.taxs);
@@ -297,17 +297,41 @@ const ManageTaxModal = ({ tax, setTax }) => {
               </div>
             </div> */}
             {/*Effect Dates */}
-            <div className="col-md-6">
+             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
-                  Effect Date <span className="text-danger">*</span>
+                 Effect Date  <span className="text-danger">*</span>
                 </label>
-                <DatePicker
-                  className="form-control"
-                  selected={watch("effect_date")}
-                  onChange={(date) => setValue("effect_date", date)}
-                  dateFormat="dd-MM-yyyy"
+                <Controller
+                  name="effect_date"
+                  control={control}
+                  rules={{ required: "Effect Date is required!" }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      className="form-control"
+                      value={
+                        field.value
+                          ? dayjs(field.value, [
+                              "DD-MM-YYYY",
+                              "YYYY-MM-DD",
+                              dayjs.ISO_8601,
+                            ])
+                          : null
+                      }
+                      format="DD-MM-YYYY"
+                      onChange={(date, dateString) =>
+                        field.onChange(dateString)
+                      }
+                    />
+                  )}
                 />
+
+                {errors.effect_date && (
+                  <small className="text-danger">
+                    {errors.effect_date.message}
+                  </small>
+                )}
               </div>
             </div>
             {/* external_code */}
@@ -322,31 +346,81 @@ const ManageTaxModal = ({ tax, setTax }) => {
               </div>
             </div>
             {/*Valid From */}
-            <div className="col-md-6">
+           <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
-                  Valid From<span className="text-danger">*</span>
+                  Valid From <span className="text-danger">*</span>
                 </label>
-                <DatePicker
-                  className="form-control"
-                  selected={watch("validFrom")}
-                  onChange={(date) => setValue("validFrom", date)}
-                  dateFormat="dd-MM-yyyy"
+                <Controller
+                  name="validFrom"
+                  control={control}
+                  rules={{ required: "Valid From is required!" }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      className="form-control"
+                      value={
+                        field.value
+                          ? dayjs(field.value, [
+                              "DD-MM-YYYY",
+                              "YYYY-MM-DD",
+                              dayjs.ISO_8601,
+                            ])
+                          : null
+                      }
+                      format="DD-MM-YYYY"
+                      onChange={(date, dateString) =>
+                        field.onChange(dateString)
+                      }
+                    />
+                  )}
                 />
+
+                {errors.validFrom && (
+                  <small className="text-danger">
+                    {errors.validFrom.message}
+                  </small>
+                )}
               </div>
-            </div>{" "}
+            </div>
+
             {/* Valid To */}
+           
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
-                  Valid To <span className="text-danger">*</span>
+                   Valid To <span className="text-danger">*</span>
                 </label>
-                <DatePicker
-                  className="form-control"
-                  selected={watch("validTo")}
-                  onChange={(date) => setValue("validTo", date)}
-                  dateFormat="dd-MM-yyyy"
+                <Controller
+                  name="validTo"
+                  control={control}
+                  rules={{ required: "Valid To is required!" }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      className="form-control"
+                      value={
+                        field.value
+                          ? dayjs(field.value, [
+                              "DD-MM-YYYY",
+                              "YYYY-MM-DD",
+                              dayjs.ISO_8601,
+                            ])
+                          : null
+                      }
+                      format="DD-MM-YYYY"
+                      onChange={(date, dateString) =>
+                        field.onChange(dateString)
+                      }
+                    />
+                  )}
                 />
+
+                {errors. validTo && (
+                  <small className="text-danger">
+                    {errors. validTo.message}
+                  </small>
+                )}
               </div>
             </div>
             {/* Status */}

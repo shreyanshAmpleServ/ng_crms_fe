@@ -54,12 +54,12 @@ const LeadList = () => {
   const isDelete = isAdmin || allPermissions?.delete
 
   const columns = [
-    {
-      title: "S.No.",      
-      width: 50,
-      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+  {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
     {
       title: "Title",
       dataIndex: "title",
@@ -276,43 +276,85 @@ React.useEffect(()=>{
   }, [filteredData]);
 
   const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Leads Data", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "leadName") {
-            return `${row.first_name} ${row.last_name ?row.last_name: "" }` || ""; 
-          }
-          if (col.dataIndex === "lead_company") {
-          return row.lead_company?.name || ""; 
-          }
-          if (col.dataIndex === "crms_m_lost_reasons") {
-            return row.crms_m_lost_reasons?.name || ""; 
-          }
-          if (col.dataIndex === "crms_m_user") {
-            return row.crms_m_user?.full_name || ""; 
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-      styles: {
-        fontSize: 7, // sets font size for all cells
-      },
-      headStyles: {
-        fontSize: 6, // optional: explicitly sets header font size
-      },
-      bodyStyles: {
-        fontSize: 7, // optional: explicitly sets body font size
-      },
-    });
-    doc.save("Leads.pdf");
-  }, [filteredData, columns]);
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  const title = "Leads Data";
+  doc.setFontSize(16);
+  const textWidth = doc.getTextWidth(title);
+  const x = (pageWidth - textWidth) / 2;
+  doc.text(title, x, 15);
+
+  // 🔷 Remove "Actions" column
+  const tableColumns = columns.filter(col => col.title !== "Actions");
+
+  const head = [tableColumns.map(col => col.title)];
+
+  const body = filteredData.map((row, index) =>
+    tableColumns.map(col => {
+      if (col.title === "Sr.No.") {
+        return index + 1; // optional: include pagination logic if needed
+      }
+
+      if (col.dataIndex === "leadName") {
+        return `${row.first_name || ""} ${row.last_name || ""}`.trim() || "-";
+      }
+
+      if (col.dataIndex === "lead_company") {
+        return row.lead_company?.name || "-";
+      }
+
+      if (col.dataIndex === "crms_m_lost_reasons") {
+        return row.crms_m_lost_reasons?.name || "-";
+      }
+
+      if (col.dataIndex === "crms_m_user") {
+        return row.crms_m_user?.full_name || "-";
+      }
+
+      if (col.dataIndex === "createdate") {
+        return row.createdate
+          ? moment(row.createdate).format("DD-MM-YYYY")
+          : "-";
+      }
+
+      const value = row[col.dataIndex];
+      if (value && typeof value === "object") {
+        return value.name || value.code || JSON.stringify(value);
+      }
+
+      return value ?? "-";
+    })
+  );
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 25,
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak',
+    },
+    headStyles: {
+      fontSize: 8,
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      halign: 'center',
+    },
+    bodyStyles: {
+      fontSize: 7,
+      halign: 'center',
+      valign: 'middle',
+    },
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+  });
+
+  doc.save("Leads.pdf");
+}, [filteredData, columns]);
+
 
   return (
     <div>

@@ -352,8 +352,8 @@ const LeadList = () => {
         );
       }
       if (col.dataIndex === "createdDate") {
-        return row.createdDate ? moment(row.createdDate).format("DD-MM-YYYY") : "";
-      }
+              return moment(row.createdDate).format("DD-MM-YYYY") || "";
+            }
       const value = row[col.dataIndex];
       if (value && typeof value === "object") {
         return value.name || value.code || JSON.stringify(value);
