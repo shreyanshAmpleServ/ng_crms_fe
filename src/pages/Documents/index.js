@@ -147,19 +147,19 @@ const DocumentLists = () => {
     },
     {
       title: "Created By",
-      dataIndex: "created_user",
-      render: (text) => (
-        <span>{text?.full_name}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => moment(a.full_name).diff(moment(b.full_name)),
+      dataIndex: "createdby_name",
+      // render: (text) => (
+      //   <span>{text?.createdby_name}</span> // Format the date as needed
+      // ),
+      sorter: (a, b) => moment(a.createdby_name).diff(moment(b.createdby_name)),
     },
     {
       title: "Created Date",
       render: (text) => (
         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
       ),
-      dataIndex: "createdDate",
-      sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
+      dataIndex: "createdate",
+      sorter: (a, b) => moment(a.createdate).diff(moment(b.createdate)),
     },
     // {
     //   title: "Status",
@@ -319,6 +319,9 @@ const DocumentLists = () => {
 
   const body = filteredData.map((row, index) =>
     tableColumns.map(col => {
+      if (col.dataIndex === "createdate") {
+              return moment(row.createdate).format("DD-MM-YYYY") || "";
+            }
       if (col.title === "Sr.No.") {
         return (
           (paginationData?.currentPage - 1) * paginationData?.pageSize +

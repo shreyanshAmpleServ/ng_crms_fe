@@ -90,7 +90,7 @@ const ProjectsGrid = ({ data  }) => {
                       </Link>
                       <div>
                         <h6>
-                          <Link className="text-break fw-large h5">
+                          <Link className="text-break text-capitalize fw-large h5">
                             {company.filename || "N/A"}
                           </Link>
                         </h6>
@@ -150,7 +150,7 @@ const ProjectsGrid = ({ data  }) => {
                       </p>
                       <p className="text-default d-inline-flex align-items-center mb-2">
                         <span className="col-md-4 text-dark">Created by</span>
-                        <span>{company.created_user.full_name || "No due date"}</span>
+                        <span>{company.createdby_name || "No due date"}</span>
                       </p>
                       <p className="text-default d-inline-flex align-items-center mb-2">
                         <span className="col-md-4 text-dark">Created at</span>

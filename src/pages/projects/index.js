@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import moment from "moment";
 import React, { useCallback, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -14,7 +15,6 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent";
 import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
-import SortDropdown from "../../components/datatable/SortDropDown";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import {
   clearMessages,
@@ -27,9 +27,9 @@ import AddProjectModal from "./modal/AddProjectModal";
 import EditProjectModal from "./modal/EditProjectModal";
 import FilterComponent from "./modal/FilterComponent";
 import ProjectGrid from "./ProjectsGrid";
-import { Helmet } from "react-helmet-async";
 
 const ProjectList = () => {
+  const route = all_routes
   const [view, setView] = useState("list"); // 'list' or 'grid'
   const [paginationData , setPaginationData] = useState()
   const dispatch = useDispatch();
@@ -144,7 +144,7 @@ const ProjectList = () => {
             >
               <i className="ti ti-trash text-danger"></i> Delete
             </Link>}
-         {isView &&   <Link className="dropdown-item" to={`/projects/${record?.id}`}>
+         {isView &&   <Link className="dropdown-item" to={`${route.products}/${record?.id}`}>
               <i className="ti ti-eye text-blue-light"></i> Preview
             </Link>}
           </div>

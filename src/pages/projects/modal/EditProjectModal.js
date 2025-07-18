@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProject } from "../../../redux/projects";
-import {DatePicker } from "antd";
+import { DatePicker } from "antd";
 import Select from "react-select";
-import {
-  arrProjectTiming
-} from "../../../components/common/selectoption/selectoption";
+import dayjs from "dayjs";
+import { arrProjectTiming } from "../../../components/common/selectoption/selectoption";
 
 const EditProjectModal = ({ project }) => {
-
   const dispatch = useDispatch();
-  const [startDate, setStartDate] = useState(new Date());
-  const [dueDate, setDueDate] = useState(null);
-
   const { loading } = useSelector((state) => state.projects);
 
   const {
@@ -22,48 +17,44 @@ const EditProjectModal = ({ project }) => {
     register,
     reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: project?.name || "",
-      projectTiming: project?.projectTiming ? { value: project.projectTiming, label: project.projectTiming } : "",
-      amount: project?.amount || "",
-      startDate: project?.startDate ? new Date(project.startDate) : null,
-      dueDate: project?.dueDate ? new Date(project.dueDate) : null,
-      description: project?.description || "",
-      is_active: project?.is_active || "Y",
-    },
-  });
+  } = useForm();
+
   useEffect(() => {
-    reset({
-      name: project?.name || "",
-      projectTiming: project?.projectTiming
-        ? { value: project.projectTiming, label: project.projectTiming }
-        : "",
-      amount: project?.amount || "",
-      startDate: project?.startDate ? new Date(project.startDate) : null,
-      dueDate: project?.dueDate ? new Date(project.dueDate) : null,
-      description: project?.description || "",
-      is_active: project?.is_active || "Y",
-    });
+    if (project) {
+      reset({
+        name: project?.name || "",
+        projectTiming: project?.projectTiming
+          ? { value: project.projectTiming, label: project.projectTiming }
+          : "",
+        amount: project?.amount || "",
+        startDate: project?.startDate ? dayjs(project.startDate) : null,
+        dueDate: project?.dueDate ? dayjs(project.dueDate) : null,
+        description: project?.description || "",
+        is_active: project?.is_active || "Y",
+      });
+    }
   }, [project, reset]);
+
   const onSubmit = async (data) => {
-    const closeButton = document.getElementById('close_offcanvas_edit_project');
+    const closeButton = document.getElementById("close_offcanvas_edit_project");
+
+    const payload = {
+      ...data,
+      projectTiming: data.projectTiming?.value || null,
+      amount: parseFloat(data.amount) || null,
+      startDate: data.startDate ? dayjs(data.startDate).toISOString() : null,
+      dueDate: data.dueDate ? dayjs(data.dueDate).toISOString() : null,
+    };
 
     try {
-      const transformedData = {
-        ...data,
-        dueDate: data.dueDate?.toISOString() || null,
-        startDate: data.startDate?.toISOString() || null,
-        projectTiming: data.projectTiming?.value || null,
-        amount: parseFloat(data?.amount) || null
-      };
-      await dispatch(updateProject({ id: project.id, projectData: transformedData })).unwrap();
+      await dispatch(updateProject({ id: project.id, projectData: payload })).unwrap();
       closeButton.click();
       reset();
-    } catch (error) {
+    } catch (err) {
       closeButton.click();
     }
   };
+  
 
   return (
     <div
@@ -75,207 +66,156 @@ const EditProjectModal = ({ project }) => {
         <h5 className="fw-semibold">Edit Project</h5>
         <button
           type="button"
-          className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
+          className="btn-close"
           data-bs-dismiss="offcanvas"
           id="close_offcanvas_edit_project"
           aria-label="Close"
-        >
-          <i className="ti ti-x" />
-        </button>
+        ></button>
       </div>
+
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="accordion" id="project_accordion">
-            <div className="accordion-item rounded mb-3">
-              <div className="accordion-header">
-                <button
-                  type="button"
-                  className="accordion-button accordion-custom-button bg-white rounded fw-medium text-dark"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#project_basic"
-                >
-                  <span className="avatar avatar-md rounded text-dark border me-2">
-                    <i className="ti ti-briefcase fs-20" />
-                  </span>
-                  Project Info
-                </button>
-              </div>
-              <div
-                className="accordion-collapse collapse show"
-                id="project_basic"
-                data-bs-parent="#project_accordion"
-              >
-                <div className="accordion-body border-top">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Project Name <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("name", {
-                            required: "Project name is required !",
-                          })}
-                        />
-                        {errors.name && (
-                          <small className="text-danger">
-                            {errors.name.message}
-                          </small>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Project Timing
-                        </label>
-                        <Controller
-                          name="projectTiming"
-                          rules={{ required: "Project Timing is required !" }}
-                          control={control}
-                          render={({ field }) => (
-                            <Select
-                              {...field}
-                              options={arrProjectTiming}
-                              placeholder="Choose"
-                              classNamePrefix="react-select"
-                            />
-                          )}
-                        />
-                        {errors.projectTiming && (
-                          <small className="text-danger">{errors.projectTiming.message}</small>
-                        )}
+          <div className="row">
+            <div className="col-md-12 mb-3">
+              <label>Project Name<span className="text-danger">*</span></label>
+              <input
+                type="text"
+                className="form-control"
+                {...register("name", { required: "Project name is required!" })}
+              />
+              {errors.name && <small className="text-danger">{errors.name.message}</small>}
+            </div>
 
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Budget <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          className="form-control"
-                          {...register("amount", { required: "Budget is required !" })}
-                        />
-                        {errors.amount && (
-                          <small className="text-danger">
-                            {errors.amount.message}
-                          </small>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Start Date <span className="text-danger">*</span>
-                        </label>
-                        <Controller
-                          name="startDate"
-                          control={control}
-                          rules={{ required: "Start date is required !" }}
-                          render={({ field }) => (
-                            <DatePicker
-                              className="form-control"
-                              selected={startDate}
-                              onChange={(date) => {
-                                setStartDate(date);
-                                field.onChange(date);
-                              }}
-                              dateFormat="yyyy-MM-dd"
-                            />
-                          )}
-                        />
-                        {errors.startDate && (
-                          <small className="text-danger">
-                            {errors.startDate.message}
-                          </small>
-                        )}
-                      </div>
-                    </div>
+            <div className="col-md-6 mb-3">
+              <label>Project Timing<span className="text-danger">*</span></label>
+              <Controller
+                name="projectTiming"
+                control={control}
+                rules={{ required: "Project Timing is required!" }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={arrProjectTiming}
+                    placeholder="Choose"
+                    classNamePrefix="react-select"
+                  />
+                )}
+              />
+              {errors.projectTiming && (
+                <small className="text-danger">{errors.projectTiming.message}</small>
+              )}
+            </div>
 
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-                          Due Date
-                        </label>
-                        <Controller
-                          name="dueDate"
-                          control={control}
-                          render={({ field }) => (
-                            <DatePicker
-                              className="form-control"
-                              selected={dueDate}
-                              onChange={(date) => {
-                                setDueDate(date);
-                                field.onChange(date);
-                              }}
-                              dateFormat="yyyy-MM-dd"
-                            />
-                          )}
-                        />
+            <div className="col-md-6 mb-3">
+              <label>Budget <span className="text-danger">*</span></label>
+              <input
+                type="number"
+                step="0.01"
+                className="form-control"
+                {...register("amount", { required: "Budget is required!" })}
+              />
+              {errors.amount && <small className="text-danger">{errors.amount.message}</small>}
+            </div>
 
-                      </div>
-                    </div>
+            <div className="col-md-6">
+                         <div className="mb-3">
+                           <label className="col-form-label">
+                             Start Date <span className="text-danger">*</span>
+                           </label>
+                           <Controller
+                             name="startDate"
+                             control={control}
+                             rules={{ required: "Start date is required!" }}
+                             render={({ field }) => (
+                               <DatePicker
+                                 {...field}
+                                 className="form-control"
+                                 value={
+                                   field.value
+                                     ? dayjs(field.value, [
+                                         "DD-MM-YYYY",
+                                         "YYYY-MM-DD",
+                                         dayjs.ISO_8601,
+                                       ])
+                                     : null
+                                 }
+                                 format="DD-MM-YYYY"
+                                 onChange={(date, dateString) =>
+                                   field.onChange(dateString)
+                                 }
+                               />
+                             )}
+                           />
+           
+                           {errors.startDate && (
+                             <small className="text-danger">
+                               {errors.startDate.message}
+                             </small>
+                           )}
+                         </div>
+                       </div>
+           
+                       <div className="col-md-6">
+                         <div className="mb-3">
+                           <label className="col-form-label">
+                             Due Date <span className="text-danger">*</span>
+                           </label>
+                           <Controller
+                             name="dueDate"
+                             control={control}
+                             rules={{ required: "Due date is required!" }}
+                             render={({ field }) => (
+                               <DatePicker
+                                 {...field}
+                                 className="form-control"
+                                 value={
+                                   field.value
+                                     ? dayjs(field.value, [
+                                         "DD-MM-YYYY",
+                                         "YYYY-MM-DD",
+                                         dayjs.ISO_8601,
+                                       ])
+                                     : null
+                                 }
+                                 format="DD-MM-YYYY"
+                                 onChange={(date, dateString) =>
+                                   field.onChange(dateString)
+                                 }
+                               />
+                             )}
+                           />
+           
+                           {errors.dueDate && (
+                             <small className="text-danger">
+                               {errors.dueDate.message}
+                             </small>
+                           )}
+                         </div>
+                       </div>
 
-                    <div className="col-md-12">
-                      <div className="mb-3">
-                        <label className="col-form-label">Description</label>
-                        <textarea
-                          className="form-control"
-                          rows="3"
-                          {...register("description")}
-                        ></textarea>
-                      </div>
-                    </div>
-                    <div className="col-md-12">
-                      <div className="mb-0">
-                        <label className="col-form-label">Status</label>
-                        <div className="d-flex flex-wrap">
-                          <div className="me-2">
-                            <input
-                              type="radio"
-                              className="status-radio"
-                              id="edit-active"
-                              value="Y"
-                              {...register("is_active")}
-                            />
-                            <label htmlFor="edit-active">Active</label>
-                          </div>
-                          <div>
-                            <input
-                              type="radio"
-                              className="status-radio"
-                              id="edit-inactive"
-                              value="N"
-                              {...register("is_active")}
-                            />
-                            <label htmlFor="edit-inactive">Inactive</label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div className="col-md-12 mb-3">
+              <label>Description</label>
+              <textarea className="form-control" rows={3} {...register("description")} />
+            </div>
+
+            <div className="col-md-12 mb-3">
+              <label>Status</label>
+              <div>
+                <label>
+                  <input type="radio" value="Y" {...register("is_active")} /> Active
+                </label>
+                <label className="ms-3">
+                  <input type="radio" value="N" {...register("is_active")} /> Inactive
+                </label>
               </div>
             </div>
           </div>
-          <div className="d-flex align-items-center justify-content-end">
-            <button
-              type="button"
-              data-bs-dismiss="offcanvas"
-              className="btn btn-light me-2"
-            >
+
+          <div className="text-end">
+            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
               Cancel
             </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={loading}
-            >
+            <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? "Updating..." : "Update"}
             </button>
           </div>

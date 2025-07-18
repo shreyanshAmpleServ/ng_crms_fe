@@ -243,26 +243,7 @@ const AddFiles = ({ data, setData }) => {
       <div className="offcanvas-body">
         <div className="modal-body">
           <div className="add-info-fieldset">
-            <div className="add-details-wizard">
-              <ul className="progress-bar-wizard">
-                <li className="active">
-                  <span>
-                    <i className="ti ti-file" />
-                  </span>
-                  <div className="multi-step-info">
-                    <h6>Basic Info</h6>
-                  </div>
-                </li>
-                {/* <li>
-                  <span>
-                    <i className="ti ti-circle-plus" />
-                  </span>
-                  <div className="multi-step-info">
-                    <h6>Add Recipient</h6>
-                  </div>
-                </li> */}
-              </ul>
-            </div>
+            
             <fieldset id="first-field-file">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="contact-input-set">
