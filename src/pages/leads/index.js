@@ -130,7 +130,7 @@ const LeadList = () => {
 
     {
       title: "Assignee",
-      dataIndex: "lead_owner_name",
+      dataIndex: "DealContacts",
       render: (text) => <span>{text}</span>,
       sorter: (a, b) =>(<div className="text-wrap" style={{maxWidth:"10rem"}}>{a.lead_owner_name.localeCompare(b.lead_owner_name)}</div>),
     },
@@ -317,11 +317,14 @@ React.useEffect(()=>{
           ? moment(row.createdate).format("DD-MM-YYYY")
           : "-";
       }
+      if (col.dataIndex === "DealContacts") {
+        return row?.DealContacts?.map((val) => (val?.contacts?.firstName || "" )+ " "+ (val?.contact?.lastName || "")).join(", ")
+      }
 
       const value = row[col.dataIndex];
-      if (value && typeof value === "object") {
-        return value.name || value.code || JSON.stringify(value);
-      }
+      // if (value && typeof value === "object") {
+      //   return value.name || value.code || JSON.stringify(value);
+      // }
 
       return value ?? "-";
     })
