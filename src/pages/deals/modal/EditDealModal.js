@@ -118,10 +118,10 @@ const EditDealModal = ({ deal }) => {
       reset({
         dealName: deal.dealName,
 
-        // status: deal.status
-        //   ? status?.find((opt) => opt.value === deal.status)
-        //   : null,
-        status:deal.stages.id,
+        status: deal.status
+          ? status?.find((opt) => opt.value === deal.status)
+          : null,
+        // status:deal.stages.id,
         dealValue: deal.dealValue,
         currency: deal.currency
           ? optionssymbol?.find((opt) => opt.value === deal.currency)
@@ -151,6 +151,7 @@ const EditDealModal = ({ deal }) => {
   }, [deal, contactlist, stageList, reset]);
   // Form submission handler
   const onSubmit = async (data) => {
+
     const closeButton = document.getElementById("cls_btn_edit_deal"); // Updated to use id
     try {
       const transformedData = {
@@ -164,8 +165,8 @@ const EditDealModal = ({ deal }) => {
         tags: tags.join(", "),
         dealValue: parseFloat(data.dealValue),
         periodValue: parseInt(data.periodValue),
-        dueDate:dayjs(data.dueDate, "DD-MM-YYYY").toISOString(),
-        expectedCloseDate:  dayjs(data.expectedCloseDate, "DD-MM-YYYY").toISOString(),
+        dueDate:dayjs(dueDate, "DD-MM-YYYY").toISOString(),
+        expectedCloseDate:  dayjs(expectedCloseDate, "DD-MM-YYYY").toISOString(),
         followUpDate: followUpDate.toISOString(),
         priority: data.priority?.value || null,
       };
@@ -509,27 +510,27 @@ const EditDealModal = ({ deal }) => {
                   control={control}
                   rules={{ required: "Status is required !" }} // Validation rule
                   render={({ field }) => (
+                  //   <Select
+                  //   {...field}
+                  //   options={sourceList}
+                  //   placeholder="Choose"
+                  //   className="select2"
+                  //   classNamePrefix="react-select"
+                  //   onChange={(selectedOption) =>
+                  //     field.onChange(selectedOption?.value || null)
+                  //   } // Send only value
+                  //   value={sourceList?.find(
+                  //     (option) => option.value === watch("status")
+                  //   )}
+                  // />
                     <Select
-                    {...field}
-                    options={sourceList}
-                    placeholder="Choose"
-                    className="select2"
-                    classNamePrefix="react-select"
-                    onChange={(selectedOption) =>
-                      field.onChange(selectedOption?.value || null)
-                    } // Send only value
-                    value={sourceList?.find(
-                      (option) => option.value === watch("status")
-                    )}
-                  />
-                    // <Select
-                    //   {...field}
-                    //   options={status}
-                    //   placeholder="Choose"
-                    //   classNamePrefix="react-select"
-                    // />
-                  )}
-                />
+                      {...field}
+                      options={status}
+                      placeholder="Choose"
+                      classNamePrefix="react-select"
+                    />
+                   )} 
+                 />
                 {errors.status && (
                   <small className="text-danger">{errors.status.message}</small>
                 )}

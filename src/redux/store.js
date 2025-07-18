@@ -50,6 +50,7 @@ import companyReportReducer from "./companyReport";
 import projectReportReducer from "./projectReport";
 import TaskReportReducer from "./TaskReport";
 import ngAuthReducer from "./redirectCrms";
+import quoteTemplateReducer from "./quoteTemplate";
 
 const store = configureStore({
   reducer: {
@@ -103,6 +104,7 @@ const store = configureStore({
     projectReport: projectReportReducer,
     taskReport: TaskReportReducer,
     ngAuth: ngAuthReducer,
+    quoteTemplate: quoteTemplateReducer,
   },
 });
 

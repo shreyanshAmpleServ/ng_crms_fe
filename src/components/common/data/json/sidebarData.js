@@ -134,6 +134,13 @@ export const SidebarData = [
         submenu: false,
       },
       {
+        label: "Quote Template",
+        link: route.quoteTemplate,
+        icon: "ti ti-template",
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
         label: "Quotation",
         link: route.quotation,
         icon: "ti ti-clipboard-text",

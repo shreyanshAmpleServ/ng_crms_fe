@@ -28,7 +28,7 @@ export const all_routes = {
   /* Deals Route*/
   deals: "/crms/deals",
   dealtDetail: "/crms/deals/:id",
-  dealsKanban: "/crms/deals-kanban",
+  dealsKanban: "/crms/deals-by-stage",
   /* /Deals Route */
 
   /* Activity Route */
@@ -137,4 +137,6 @@ export const all_routes = {
   projectReport:"/crms/project-report",
   taskReport:"/crms/task-report",
   noPermission:"/crms/no-permission",
+
+  quoteTemplate:"/crems/quote-template"
 };

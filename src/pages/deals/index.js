@@ -24,8 +24,10 @@ import FilterComponent from "./modal/FilterComponent";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import { Helmet } from "react-helmet-async";
+import { all_routes } from "../../routes/all_routes.js";
 
 const DealList = () => {
+  const route = all_routes
   const navigate = useNavigate();
   const [view, setView] = useState("list"); 
   const dispatch = useDispatch();
@@ -48,10 +50,16 @@ const DealList = () => {
   const isCreate = isAdmin || allPermissions?.create
   const isUpdate = isAdmin || allPermissions?.update
   const isDelete = isAdmin || allPermissions?.delete
-
+  
   const columns = [
     {
-      title: "Deal Name",
+      title: "S.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+      // sorter: (a, b) => a.code.localeCompare(b.name),
+  },
+    {
+      title: "Name",
       dataIndex: "dealName",
       render: (text, record, index) => (
         <Link to={`/crms/deals/${record.id}`} key={index}>
@@ -66,58 +74,72 @@ const DealList = () => {
       render: (value) => <span>{value.toFixed(2)}</span>,
       sorter: (a, b) => a.dealValue - b.dealValue,
     },
-    {
-      title: "Priority",
-      dataIndex: "priority",
-      render: (priority) => (
-        <span
-          className={`badge ${priority === "High"
-            ? "bg-danger"
-            : priority === "Medium"
-              ? "bg-warning"
-              : "bg-success"
-            }`}
-        >
-          {priority}
-        </span>
-      ),
-      sorter: (a, b) => a.priority.localeCompare(b.priority),
-    },
-    {
-      title: "Status",
+    // {
+      //   title: "Stage",
+      //   dataIndex: "stages",
+      //   render: (status) => (
+        //     <span
+        //     style={{backgroundColor:status?.colorCode}}
+        //       className={`badge text-white
+        //         `}
+        //     >
+        //       {status?.name}
+        //     </span>
+        //   ),
+        //   sorter: (a, b) => a.status.localeCompare(b.status),
+        // },
+        {
+          title: "Priority",
+          dataIndex: "priority",
+          render: (priority) => (
+            <span
+              className={`badge ${priority === "High"
+                ? "bg-danger"
+                : priority === "Medium"
+                  ? "bg-warning"
+                  : "bg-success"
+                }`}
+            >
+              {priority}
+            </span>
+          ),
+          sorter: (a, b) => a.priority.localeCompare(b.priority),
+        },
+        {
+          title: "Created Date",
+          dataIndex: "createdDate",
+          render: (date) => <span>{moment(date).format("DD-MM-YYYY")}</span>,
+          sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
+        },
+        {
+          title: "Expected Close Date",
+          dataIndex: "expectedCloseDate",
+          render: (date) => <span>{moment(date).format("DD-MM-YYYY")}</span>,
+          sorter: (a, b) =>
+            new Date(a.expectedCloseDate) - new Date(b.expectedCloseDate),
+        },
+        {
+          title: "Status",
       dataIndex: "status",
       render: (status) => (
         <span
           className={`badge ${status === "Open"
-            ? "bg-primary"
+            ? "bg-blue"
             : status === "Won"
               ? "bg-success"
-              : "bg-secondary"
+              : "bg-danger"
             }`}
         >
           {status}
         </span>
       ),
-      sorter: (a, b) => a.status.localeCompare(b.status),
+      // sorter: (a, b) => a.status.localeCompare(b.status),
     },
-    {
-      title: "Created Date",
-      dataIndex: "createdDate",
-      render: (date) => <span>{moment(date).format("DD-MM-YYYY")}</span>,
-      sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
-    },
-    {
-      title: "Expected Close Date",
-      dataIndex: "expectedCloseDate",
-      render: (date) => <span>{moment(date).format("DD-MM-YYYY")}</span>,
-      sorter: (a, b) =>
-        new Date(a.expectedCloseDate) - new Date(b.expectedCloseDate),
-    },
-    {
+        {
       title: "Assignee",
       dataIndex: "DealContacts",
-      render: (value) => <span>{(value?.[0]?.contact?.firstName || " " )+ " "+(value?.[0]?.contact?.lastName || " ")}</span>, // Replace with assignee name if available
-      sorter: (a, b) => a.assigneeId - b.assigneeId,
+      render: (value) => value?.map((val,ind)=>( <span style={{backgroundColor:"gray"}} className="badge m-1 text-white">{(val?.contact?.firstName || " " )+ " "+(val?.contact?.lastName || " ")}</span>)), // Replace with assignee name if available
+      // sorter: (a, b) => a.assigneeId - b.assigneeId,
     },
    ...((isUpdate || isDelete) ? [{
       title: "Actions",
@@ -158,7 +180,7 @@ const DealList = () => {
             >
               <i className="ti ti-trash text-danger"></i> Delete
             </Link>}
-          {isView &&  <Link className="dropdown-item" to={`/deals/${record?.id}`}>
+          {isView &&  <Link className="dropdown-item" to={`${route?.deals}/${record?.id}`}>
               <i className="ti ti-eye text-blue-light"></i> Preview
             </Link>}
           </div>
@@ -268,16 +290,24 @@ const DealList = () => {
     // Generate table using autoTable
     doc.autoTable({ // Extract column headers
       head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")], // Extract column headers
-      body: filteredData.map((row) =>
+      body: filteredData.map((row,index) =>
         columns.map((col) => {
-          if (col.dataIndex === "DealContacts") {
-            return row?.DealContacts?.[0]?.contact?.firstName + " "+row?.DealContacts?.[0]?.contact?.lastName || ""; 
+          if (col.title === "S.No.") {
+            return (paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1 || ""; 
           }
+          // if (col.dataIndex === "DealContacts") {
+          //   return row?.DealContacts?.[0]?.contact?.firstName + " "+row?.DealContacts?.[0]?.contact?.lastName || ""; 
+          // }
           if (col.dataIndex === "createdDate") {
             return moment(row.createdDate).format("DD-MM-YYYY") || ""; 
           }
           if (col.dataIndex === "expectedCloseDate") {
             return moment(row.expectedCloseDate).format("DD-MM-YYYY") || ""; 
+          }
+          if (col.dataIndex === "DealContacts") {
+            return row?.DealContacts?.map((val) =>
+              (val?.contact?.firstName || "") + " " + (val?.contact?.lastName || "")
+            ).join(", ");; 
           }
           return row[col.dataIndex] || "";
         })
@@ -397,7 +427,7 @@ const DealList = () => {
                       />
                     ) : (
                       (() => {
-                        navigate(`/crms/deals-kanban`);
+                        navigate(route?.dealsKanban);
                         return null; // Ensure JSX doesn't break
                       })()
                     )}

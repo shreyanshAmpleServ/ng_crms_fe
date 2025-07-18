@@ -9,7 +9,7 @@ import DefaultEditor from "react-simple-wysiwyg";
 import { addDeal } from "../../../redux/deals";
 import dayjs from "dayjs";
 import {
-  duration,
+  duration,status,
   priorityList
 } from "../../../components/common/selectoption/selectoption";
 import { fetchContacts } from "../../../redux/contacts/contactSlice";
@@ -475,7 +475,7 @@ const AddDealModel = () => {
                 <label className="col-form-label">
                   Status <span className="text-danger">*</span>
                 </label>
-                <Controller
+                {/* <Controller
                   name="status"
                   rules={{ required: "Status is required !" }} // Make the field required
                   control={control}
@@ -494,8 +494,8 @@ const AddDealModel = () => {
                       )}
                     />
                   )}
-                />
-                {/* <Controller
+                /> */}
+                <Controller
                   name="status"
                   control={control}
                   rules={{ required: "Status is required !" }} // Validation rule
@@ -507,7 +507,7 @@ const AddDealModel = () => {
                       classNamePrefix="react-select"
                     />
                   )}
-                /> */}
+                />
                 {errors.status && (
                   <small className="text-danger">{errors.status.message}</small>
                 )}

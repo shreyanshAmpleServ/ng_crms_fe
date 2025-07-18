@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './Flashmessage.css';
-const FlashMessage = ({ type = "success", message, onClose, duration = 5000 }) => {
+const FlashMessage = ({ type = "success", message, onClose, duration = 2500 }) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {

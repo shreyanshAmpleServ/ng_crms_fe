@@ -16,6 +16,8 @@ import {
   updateQuotation,
 } from "../../../redux/quotation";
 import toast from "react-hot-toast";
+import { fetchquoteTemplate } from "../../../redux/quoteTemplate";
+import { fetchProducts } from "../../../redux/products";
 
 const initialItem = [
   {
@@ -40,13 +42,14 @@ const initialItem = [
 const AddQuotationModal = ({ order, setOrder }) => {
   const dispatch = useDispatch();
   const [itemNumber, setItemNumber] = useState(initialItem);
+  const [optionalItem, setOptionalItem] = useState([]);
+  const [termsItems,setIermsItems] = useState("")
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
   const { salesTypes } = useSelector((state) => state.orders);
   const { quotationCode, loading } = useSelector((state) => state.quotations);
-
   const formatNumber = (num) => {
     if (num === 0 || isNaN(num)) {
       return "0";
@@ -191,14 +194,27 @@ const AddQuotationModal = ({ order, setOrder }) => {
     dispatch(fetchCurrencies({ is_active: "Y" }));
     dispatch(fetchTaxSetup({ is_active: "Y" }));
     dispatch(fetchQuotationCode());
+    dispatch(fetchquoteTemplate())
+    dispatch(fetchProducts());
   }, [dispatch]);
 
+    const { quoteTemplate , loading:loadingTemp } = useSelector(
+      (state) => state.quoteTemplate,
+    );
   const { vendor, loading: loadingVendor } = useSelector(
     (state) => state.vendor
   );
   const { currencies, loading: loadingCurrency } = useSelector(
     (state) => state.currency
   );
+  const { products } = useSelector((state) => state.products);
+
+  const quoteTempList = quoteTemplate?.data?.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.template_name,
+    crms_template_category: emnt.crms_template_category,
+    terms:emnt.terms,
+  }));
   const vendorList = vendor?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
@@ -210,6 +226,11 @@ const AddQuotationModal = ({ order, setOrder }) => {
   const salesTypesOption = salesTypes.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
+  }));
+  const productList = products?.data?.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.name,
+    unit_price: emnt.unit_price,
   }));
 
   useEffect(() => {
@@ -406,6 +427,100 @@ const AddQuotationModal = ({ order, setOrder }) => {
                   )}
                 </div>
               </div>
+               {/* Vendor  */}
+               <div className=" col-md-6 mb-3">
+                <div className="d-flex align-items-center justify-content-between">
+                  <label className="col-form-label">
+                    Quotation Template
+                  </label>
+                </div>
+                <Controller
+                  name="quotation_template_id"
+                  // rules={{ required: "Customer is required !" }} // Make the field required
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={quoteTempList}
+                      placeholder="Choose"
+                      className="select2"
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value || null);
+                      
+        const productCategories = selectedOption?.crms_template_category?.filter(
+          (item) => item?.type === "product"
+        );
+
+        const items =
+          productCategories?.flatMap((cat) =>
+            cat?.crms_template_items?.map((i) => {
+              const product = productList?.find((p) => p.value === i?.item_id);
+              const unit_price = Number(product?.unit_price || 0);
+              const rate = unit_price * Number(i?.qty)
+              return {
+              parent_id: null,
+              item_id: i?.item_id,
+              item_name:product?.label || "",
+              quantity: Number(i?.qty) || 1,
+              delivered_qty: 0,
+              unit_price: unit_price,
+              currency: null,
+              rate: rate ||0,
+              disc_prcnt: 0,
+              disc_amount: 0,
+              tax_id: null,
+              tax_per: 0.0,
+              line_tax: 0,
+              total_bef_disc: rate,
+              total_amount: rate,
+            }})
+          ) || [];
+        const optionalProductCategories = selectedOption?.crms_template_category?.filter(
+          (item) => item?.type === "optional"
+        );
+
+        const optinalItems =
+        optionalProductCategories?.flatMap((cat) =>
+            cat?.crms_template_items?.map((i) => {
+              const product = productList?.find((p) => p.value === i?.item_id);
+              const unit_price = Number(product?.unit_price || 0);
+              const rate = unit_price * Number(i?.qty)
+              return {
+              parent_id: null,
+              item_id: i?.item_id,
+              item_name: product?.label ||"",
+              quantity: Number(i?.qty) || 1,
+              delivered_qty: 0,
+              unit_price: unit_price,
+              currency: null,
+              rate: rate ||0,
+              disc_prcnt: 0,
+              disc_amount: 0,
+              tax_id: null,
+              tax_per: 0.0,
+              line_tax: 0,
+              total_bef_disc: rate,
+              total_amount: rate,
+            }})
+          ) || [];
+
+        setItemNumber(items);
+        setOptionalItem(optinalItems)
+        setIermsItems(selectedOption?.terms)
+                      }}
+                      value={
+                        quoteTempList?.find(
+                          (option) => option.value === watch("quotation_template_id")
+                        ) || ""
+                      }
+                      styles={{
+                        menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                      }}
+                    />
+                  )}
+                />
+              </div>
               {/* Bill To  */}
               <div className="col-md-6">
                 <div className="mb-3">
@@ -554,6 +669,11 @@ const AddQuotationModal = ({ order, setOrder }) => {
               <ManageOrderItemModal
                 itemNumber={itemNumber}
                 setItemNumber={setItemNumber}
+                productList={productList}
+                termsItems={termsItems} 
+                setIermsItems={setIermsItems}
+                optionalItem ={optionalItem}
+                setOptionalItem={setOptionalItem}
               />
               {/* Amount Calculation  */}
               <div className="subtotal-div mb-3">

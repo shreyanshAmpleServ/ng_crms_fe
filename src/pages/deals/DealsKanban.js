@@ -50,6 +50,13 @@ const DealsKanban = ({ data }) => {
       dispatch(fetchPipelineDeals(selectedPipelineId));
     }
   };
+   useEffect(()=>{
+    const selectedPipelineId = pipelines?.data?.[0]?.id
+    setSelectedPipeline(selectedPipelineId);
+    if (selectedPipelineId) {
+      dispatch(fetchPipelineDeals(selectedPipelineId));
+    }
+   },[pipelines])
 
   // Ref to store all container references
   const containerRefs = useRef([]);

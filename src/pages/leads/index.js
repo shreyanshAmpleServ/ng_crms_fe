@@ -89,7 +89,7 @@ const LeadList = () => {
       dataIndex: "lead_company",
       render: (text, record, index) => (
         <div className="text-wrap" style={{maxWidth:"10rem"}}>
-          {`${text.name}`}
+          {`${text?.name}`}
         </div>
       ),
       sorter: (a, b) => a.lead_company?.name.localeCompare(b.lead_company?.name),
@@ -280,10 +280,13 @@ React.useEffect(()=>{
     doc.text("Leads Data", 14, 10);
     doc.autoTable({
       head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
+      body: filteredData.map((row,index) =>
         columns.map((col) => {
           if (col.dataIndex === "leadName") {
             return `${row.first_name} ${row.last_name ?row.last_name: "" }` || ""; 
+          }
+          if (col.title === "S.No.") {
+            return (paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1 || ""; 
           }
           if (col.dataIndex === "lead_company") {
           return row.lead_company?.name || ""; 
