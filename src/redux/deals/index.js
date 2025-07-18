@@ -165,7 +165,7 @@ const dealsSlice = createSlice({
         state.loading = false;
         state.deals = {
           ...state.deals,
-          data: [action.payload.data, ...state.deals],
+          data: [action.payload.data, ...state.deals?.data],
         };
         state.success = action.payload.message;
       })
@@ -179,17 +179,25 @@ const dealsSlice = createSlice({
       })
       .addCase(updateDeal.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.deals.data?.findIndex(
-          (deal) => deal.id === action.payload.data.id
-        );
-        if (index !== -1) {
-          state.deals.data[index] = action.payload.data;
-        } else {
-          state.deals = {
-            ...state.deals,
-            data: [action.payload.data, ...state.deals],
-          };
-        }
+        const updatedDeal = action.payload.data;
+        const filteredDeals = state.deals.data?.filter(deal => deal.id !== updatedDeal.id) || [];
+      
+        // Insert the updated deal at the top
+        state.deals = {
+          ...state.deals,
+          data: [updatedDeal, ...filteredDeals],
+        };
+        // const index = state.deals.data?.findIndex(
+        //   (deal) => deal.id === action.payload.data.id
+        // );
+        // if (index !== -1) {
+        //   state.deals.data[index] = action.payload.data;
+        // } else {
+        //   state.deals = {
+        //     ...state.deals,
+        //     data: [ action.payload.data, ...state.deals.data ],
+        //   };
+        // }
         state.success = action.payload.message;
       })
       .addCase(updateDeal.rejected, (state, action) => {

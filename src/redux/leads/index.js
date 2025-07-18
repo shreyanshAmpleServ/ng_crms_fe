@@ -204,17 +204,23 @@ const leadSlice = createSlice({
       })
       .addCase(updateLead.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.leads.data?.findIndex(
-          (lead) => lead.id === action.payload.data.id
-        );
-        if (index !== -1) {
-          state.leads.data[index] = action.payload.data;
-        } else {
-          state.leads = {
-            ...state.leads,
-            data: [...state.leads.data, action.payload.data],
-          };
-        }
+        const updatedlead = action.payload.data;
+        const filteredLeads = state.leads.data?.filter(lead => lead.id !== updatedlead.id) || [];
+        state.leads = {
+              ...state.leads,
+              data: [updatedlead, filteredLeads],
+            };
+        // const index = state.leads.data?.findIndex(
+        //   (lead) => lead.id === action.payload.data.id
+        // );
+        // if (index !== -1) {
+        //   state.leads.data[index] = action.payload.data;
+        // } else {
+        //   state.leads = {
+        //     ...state.leads,
+        //     data: [...state.leads.data, action.payload.data],
+        //   };
+        // }
         state.success = action.payload.message;
       })
       .addCase(updateLead.rejected, (state, action) => {

@@ -89,7 +89,7 @@ const LeadList = () => {
       dataIndex: "lead_company",
       render: (text, record, index) => (
         <div className="text-wrap" style={{maxWidth:"10rem"}}>
-          {`${text.name}`}
+          {`${text?.name}`}
         </div>
       ),
       sorter: (a, b) => a.lead_company?.name.localeCompare(b.lead_company?.name),

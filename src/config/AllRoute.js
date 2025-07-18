@@ -24,7 +24,7 @@ export const AllRoutes = {
     contactDetails: "/crm/contact-details",
     deals: "/crm/deals",
     dealsDetails: "/crm/deals-details",
-    dealsKanban: "/crm/deals-kanban",
+    dealsKanban: "/crm/deals-by-stage",
     contactList: "/crm/contact-list",
     leadsKanban: "/leads-kanban",
     pipeline: "/crm/pipeline",

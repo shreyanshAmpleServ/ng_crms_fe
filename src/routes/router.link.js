@@ -106,6 +106,7 @@ import ProjectReport from "../pages/Reports/ProjectReport";
 import CompanyReport from "../pages/Reports/CompanyReport";
 import TaskReport from "../pages/Reports/TaskReport";
 import NoPermissionPage from "../components/common/noPermission";
+import QuoteTemplate from "../pages/QuoteTemplate";
 
 // // Export components individually
 
@@ -184,6 +185,12 @@ export const privateRoutes = [
     element: <Projects />,
     route: Route,
     title: "Projects",
+  },
+  {
+    path: route.quoteTemplate,
+    element: <QuoteTemplate />,
+    route: Route,
+    title: "Quotation Template",
   },
   {
     path: route.quotation,
