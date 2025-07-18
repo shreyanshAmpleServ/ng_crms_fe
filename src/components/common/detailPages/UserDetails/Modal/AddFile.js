@@ -96,6 +96,7 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
       const handleModalClose = () => {
         setData(null);
         resetFileInput()
+        reset()
       };
       offcanvasElement.addEventListener(
         "hidden.bs.modal",
@@ -174,6 +175,8 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
                           </label>
                           <input
                             type="text"
+                            placeholder="Enter Document Type"
+                            value={watch("file_type")}
                             className="form-control"
                             {...register("file_type", {
                               required: "Document Type is required !",
@@ -194,7 +197,9 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
                           </label>
                           <input
                             type="text"
+                            placeholder="Enter Document Title"
                             className="form-control"
+                            value={watch("filename")}
                             {...register("filename", {
                               required: "Document Title is required !",
                             })}
@@ -248,7 +253,8 @@ const AddFiles = ({ data, setData, type, type_id ,type_name }) => {
                           <textarea
                             className="form-control"
                             rows={5}
-                            placeholder="Add Content"
+                            value={watch("description")}
+                            placeholder="Add description"
                             {...register("description")}
                           />
                         </div>

@@ -1,26 +1,23 @@
-import React, { useState, useMemo } from "react";
+import { DatePicker } from "antd";
+import React, { useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
-import {DatePicker } from "antd";
-import { TagsInput } from "react-tag-input-component";
-import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import DefaultEditor from "react-simple-wysiwyg";
-import { updateDeal, updateDealStage } from "../../../redux/deals";
-
+import { TagsInput } from "react-tag-input-component";
+import { updateDeal } from "../../../redux/deals";
+import dayjs from "dayjs";
 import {
-  salestypelist,
-  status,
-  optionssymbol,
   duration,
-  project,
-  tagInputValues,
-  socialMedia,
+  optionssymbol,
   priorityList,
+  status
 } from "../../../components/common/selectoption/selectoption";
 import { fetchContacts } from "../../../redux/contacts/contactSlice";
-import { fetchPipelines, fetchPipelineById } from "../../../redux/pipelines";
 import { fetchCurrencies } from "../../../redux/currency";
+import { fetchPipelineById, fetchPipelines } from "../../../redux/pipelines";
+import { fetchSources } from "../../../redux/source";
 
 const EditDealModal = ({ deal }) => {
   const dispatch = useDispatch();
@@ -29,10 +26,12 @@ const EditDealModal = ({ deal }) => {
     dispatch(fetchContacts());
     dispatch(fetchPipelines());
     dispatch(fetchCurrencies({is_active:"Y"}))
+        dispatch(fetchSources({ is_active: "Y" }));
+    
   }, [dispatch]);
   const [tags, setTags] = useState([]);
-  const [dueDate, setDueDate] = useState(new Date());
-  const [expectedCloseDate, setExpectedCloseDate] = useState(new Date());
+  const [dueDate, setDueDate] = useState(dayjs(new Date()).format("DD-MM-YYYY"));
+  const [expectedCloseDate, setExpectedCloseDate] = useState(dayjs(new Date()).format("DD-MM-YYYY"));
   const [followUpDate, setFollowUpDate] = useState(new Date());
   const { loading } = useSelector((state) => state.deals);
   const { contacts } = useSelector((state) => state.contacts);
@@ -45,7 +44,12 @@ const EditDealModal = ({ deal }) => {
  
   const pipelines = pipelineLists?.data?.map(i => i?.is_active === "Y" ? i : null).filter(Boolean) || [];
 
-
+    const { sources } = useSelector((state) => state.sources);
+  
+  const sourceList = sources.map((emnt) => ({
+    value: emnt.id,
+    label: emnt.name,
+  }));
   // Memoize contactlist to avoid unnecessary recalculations
   const contactlist = useMemo(
     () =>
@@ -74,8 +78,8 @@ const EditDealModal = ({ deal }) => {
       currency: null,
       period: null,
       periodValue: "",
-      dueDate: new Date(),
-      expectedCloseDate: new Date(),
+      dueDate: dayjs(new Date()).format("DD-MM-YYYY"),
+      expectedCloseDate: dayjs(new Date()).format("DD-MM-YYYY"),
       followUpDate: new Date(),
       assigneeId: null,
       source: null,
@@ -114,9 +118,10 @@ const EditDealModal = ({ deal }) => {
       reset({
         dealName: deal.dealName,
 
-        status: deal.status
-          ? status?.find((opt) => opt.value === deal.status)
-          : null,
+        // status: deal.status
+        //   ? status?.find((opt) => opt.value === deal.status)
+        //   : null,
+        status:deal.stages.id,
         dealValue: deal.dealValue,
         currency: deal.currency
           ? optionssymbol?.find((opt) => opt.value === deal.currency)
@@ -139,8 +144,8 @@ const EditDealModal = ({ deal }) => {
       });
 
       setTags(deal.tags ? deal.tags.split(", ") : []);
-      setDueDate(new Date(deal.dueDate));
-      setExpectedCloseDate(new Date(deal.expectedCloseDate));
+      setDueDate( dayjs(new Date(deal.dueDate)));
+      setExpectedCloseDate( dayjs(new Date(deal.expectedCloseDate)));
       setFollowUpDate(new Date(deal.followUpDate));
     }
   }, [deal, contactlist, stageList, reset]);
@@ -159,8 +164,8 @@ const EditDealModal = ({ deal }) => {
         tags: tags.join(", "),
         dealValue: parseFloat(data.dealValue),
         periodValue: parseInt(data.periodValue),
-        dueDate: dueDate.toISOString(),
-        expectedCloseDate: expectedCloseDate.toISOString(),
+        dueDate:dayjs(data.dueDate, "DD-MM-YYYY").toISOString(),
+        expectedCloseDate:  dayjs(data.expectedCloseDate, "DD-MM-YYYY").toISOString(),
         followUpDate: followUpDate.toISOString(),
         priority: data.priority?.value || null,
       };
@@ -245,14 +250,14 @@ const EditDealModal = ({ deal }) => {
                   <label className="col-form-label">
                     Pipeline <span className="text-danger">*</span>
                   </label>
-                  <Link
+                  {/* <Link
                     to=""
                     className="label-add"
                     data-bs-toggle="offcanvas"
                     data-bs-target="#add_offcanvas_pipeline"
                   >
                     <i className="ti ti-square-rounded-plus"></i> Add New
-                  </Link>
+                  </Link> */}
                 </div>
                 <Controller
                   name="pipelineId"
@@ -438,6 +443,7 @@ const EditDealModal = ({ deal }) => {
                 <DatePicker
                   className="form-control"
                   selected={dueDate}
+                  value={dueDate ? dayjs(dueDate , "DD-MM-YYYY") : null }
                   onChange={(date) => setDueDate(date)}
                   dateFormat="yyyy-MM-dd"
                 />
@@ -452,6 +458,7 @@ const EditDealModal = ({ deal }) => {
                 <DatePicker
                   className="form-control"
                   selected={expectedCloseDate}
+                                    value={expectedCloseDate ? dayjs(expectedCloseDate , "DD-MM-YYYY") : null }
                   onChange={(date) => setExpectedCloseDate(date)}
                   dateFormat="yyyy-MM-dd"
                 />
@@ -503,11 +510,24 @@ const EditDealModal = ({ deal }) => {
                   rules={{ required: "Status is required !" }} // Validation rule
                   render={({ field }) => (
                     <Select
-                      {...field}
-                      options={status}
-                      placeholder="Choose"
-                      classNamePrefix="react-select"
-                    />
+                    {...field}
+                    options={sourceList}
+                    placeholder="Choose"
+                    className="select2"
+                    classNamePrefix="react-select"
+                    onChange={(selectedOption) =>
+                      field.onChange(selectedOption?.value || null)
+                    } // Send only value
+                    value={sourceList?.find(
+                      (option) => option.value === watch("status")
+                    )}
+                  />
+                    // <Select
+                    //   {...field}
+                    //   options={status}
+                    //   placeholder="Choose"
+                    //   classNamePrefix="react-select"
+                    // />
                   )}
                 />
                 {errors.status && (

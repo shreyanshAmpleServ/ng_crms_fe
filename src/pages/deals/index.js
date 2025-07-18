@@ -61,7 +61,7 @@ const DealList = () => {
       sorter: (a, b) => a.dealName.localeCompare(b.dealName),
     },
     {
-      title: "Value (USD)",
+      title: "Value",
       dataIndex: "dealValue",
       render: (value) => <span>{value.toFixed(2)}</span>,
       sorter: (a, b) => a.dealValue - b.dealValue,
@@ -116,7 +116,7 @@ const DealList = () => {
     {
       title: "Assignee",
       dataIndex: "DealContacts",
-      render: (value) => <span>{value?.[0]?.contact?.firstName + " "+value?.[0]?.contact?.lastName}</span>, // Replace with assignee name if available
+      render: (value) => <span>{(value?.[0]?.contact?.firstName || " " )+ " "+(value?.[0]?.contact?.lastName || " ")}</span>, // Replace with assignee name if available
       sorter: (a, b) => a.assigneeId - b.assigneeId,
     },
    ...((isUpdate || isDelete) ? [{
