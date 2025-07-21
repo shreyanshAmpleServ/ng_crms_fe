@@ -8,7 +8,15 @@ import UnauthorizedImage from "../../../components/common/UnAuthorized.js/index.
 import { fetchDealReport } from "../../../redux/dealReport/index.js";
 import { Link } from "react-router-dom";
 
-export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selectedDateRange, setSelectedDateRange}) => {
+export const DataTable = ({
+ data,
+  searchText,
+  setSearchText,
+  setWhoChange,
+  selectedDateRange,
+  setSelectedDateRange,
+  setFilteredData,
+  setColumns,}) => {
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const dispatch = useDispatch();
   const [paginationData, setPaginationData] = useState();
@@ -106,6 +114,10 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
       sorter: (a, b) => a.created_date.length - b.created_date.length,
     },
   ];
+   useEffect(() => {
+      setColumns?.(columns);
+    }, []);
+
     const filteredData = useMemo(() => {
     let datas = data || [];
 
@@ -124,6 +136,10 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
     }
     return datas;
   }, [searchText, selectedDateRange, data, columns, sortOrder]);
+
+  useEffect(() => {
+      setFilteredData?.(filteredData);
+    }, [filteredData]);
 
   console.log("filteredData", filteredData);
   return (

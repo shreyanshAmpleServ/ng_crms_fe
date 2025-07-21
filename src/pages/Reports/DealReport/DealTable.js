@@ -8,12 +8,14 @@ import UnauthorizedImage from "../../../components/common/UnAuthorized.js";
 import { fetchDealReport } from "../../../redux/dealReport/index.js";
 
 export const DataTable = ({
-  data,
+ data,
   searchText,
   setSearchText,
   setWhoChange,
   selectedDateRange,
   setSelectedDateRange,
+  setFilteredData,
+  setColumns,
 }) => {
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const dispatch = useDispatch();
@@ -104,7 +106,7 @@ export const DataTable = ({
       title: "Created Date",
       dataIndex: "createdDate",
       render: (date) => (
-        <span className="text-center m-auto">
+        <span >
           {moment(date).format("DD-MM-YYYY")}
         </span>
       ),
@@ -132,6 +134,10 @@ export const DataTable = ({
       sorter: (a, b) => a.assigneeId - b.assigneeId,
     },
   ];
+   useEffect(() => {
+      setColumns?.(columns);
+    }, []);
+
   const filteredData = useMemo(() => {
     let datas = data || [];
 
@@ -150,7 +156,9 @@ export const DataTable = ({
     }
     return datas;
   }, [searchText, selectedDateRange, data, columns, sortOrder]);
-
+ useEffect(() => {
+    setFilteredData?.(filteredData);
+  }, [filteredData]);
   console.log("filteredData", filteredData);
   return (
     <>

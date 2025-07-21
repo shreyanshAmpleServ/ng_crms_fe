@@ -331,7 +331,7 @@ const LeadList = () => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  const title = "Exported Call";
+  const title = "Exported Calls";
   doc.setFontSize(16);
   const textWidth = doc.getTextWidth(title);
   const x = (pageWidth - textWidth) / 2;
@@ -354,6 +354,10 @@ const LeadList = () => {
       if (col.dataIndex === "createdDate") {
               return moment(row.createdDate).format("DD-MM-YYYY") || "";
             }
+          if (col.dataIndex === "crms_m_contact_call_for.firstName") {
+    return row.crms_m_contact_call_for?.firstName || "-";
+}
+
       const value = row[col.dataIndex];
       if (value && typeof value === "object") {
         return value.name || value.code || JSON.stringify(value);
@@ -395,7 +399,7 @@ const LeadList = () => {
     },
   });
 
-  doc.save("Call.pdf");
+  doc.save("Calls.pdf");
 }, [filteredData, columns, paginationData]);
 
 

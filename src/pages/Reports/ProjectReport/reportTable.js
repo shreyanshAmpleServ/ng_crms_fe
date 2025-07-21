@@ -8,10 +8,19 @@ import UnauthorizedImage from "../../../components/common/UnAuthorized.js/index.
 import { fetchDealReport } from "../../../redux/dealReport/index.js";
 import { Link } from "react-router-dom";
 
-export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selectedDateRange, setSelectedDateRange}) => {
+export const DataTable = ({
+ data,
+  searchText,
+  setSearchText,
+  setWhoChange,
+  selectedDateRange,
+  setSelectedDateRange,
+  setFilteredData,
+  setColumns,}) => {
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const dispatch = useDispatch();
   const [paginationData, setPaginationData] = useState();
+  
 //   React.useEffect(() => {
 //     dispatch(fetchDealReport({ search: searchText, ...selectedDateRange }));
 //   }, [dispatch, searchText, selectedDateRange]);
@@ -58,28 +67,41 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
        sorter: (a, b) => (a.amount || 0) - (b.amount || 0),
      },
      {
-       title: "Start Date",
-       render: (text) => (
-         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-       ),
-       dataIndex: "startDate",
-       sorter: (a, b) => moment(a.startDate).diff(moment(b.startDate)),
-     },
-     {
-       title: "End Date",
-       render: (text) => (
-         <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
-       ),
-       dataIndex: "dueDate",
-       sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
-     },
+  title: "Start Date",
+  dataIndex: "startDate",
+  render: (text) => (
+    <span>
+      {text ? moment(text).format("DD-MM-YYYY") : "N/A"}
+    </span>
+  ),
+  sorter: (a, b) => {
+    const aDate = a.startDate ? moment(a.startDate) : moment(0);
+    const bDate = b.startDate ? moment(b.startDate) : moment(0);
+    return aDate.diff(bDate);
+  },
+},
+{
+  title: "End Date",
+  dataIndex: "dueDate",
+  render: (text) => (
+    <span>
+      {text ? moment(text).format("DD-MM-YYYY") : "N/A"}
+    </span>
+  ),
+  sorter: (a, b) => {
+    const aDate = a.dueDate ? moment(a.dueDate) : moment(0);
+    const bDate = b.dueDate ? moment(b.dueDate) : moment(0);
+    return aDate.diff(bDate);
+  },
+},
+
      {
        title: "Created Date",
        render: (text) => (
          <span>{moment(text).format("DD-MM-YYYY")}</span> // Format the date as needed
        ),
        dataIndex: "createdDate",
-       sorter: (a, b) => moment(a.dueDate).diff(moment(b.dueDate)),
+       sorter: (a, b) => moment(a.createdDate).diff(moment(b.createdDate)),
      },
      {
        title: "Status",
@@ -102,6 +124,10 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
 
    ];
    
+   useEffect(() => {
+       setColumns?.(columns);
+     }, []);
+
     const filteredData = useMemo(() => {
     let datas = data || [];
 
@@ -121,7 +147,10 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
     return datas;
   }, [searchText, selectedDateRange, data, columns, sortOrder]);
 
-  console.log("filteredData", filteredData);
+    useEffect(() => {
+      setFilteredData?.(filteredData);
+    }, [filteredData]);
+    
   return (
     <>
       <div className="card-body">
@@ -130,10 +159,10 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
             {/* <SortDropdown sortOrder={sortOrder} setSortOrder={setSortOrder} /> */}
             <DateRangePickerComponent
               selectedDateRange={selectedDateRange}
-              setSelectedDateRange={setSelectedDateRange}
-                setWhoChange={setWhoChange}
-                ChangeName=""
-            />
+          setSelectedDateRange={setSelectedDateRange}
+          setWhoChange={setWhoChange}
+          ChangeName=""
+        />
           </div>
           <div className="d-flex align-items-center flex-wrap row-gap-2">
             {/* <FilterComponent
@@ -148,11 +177,11 @@ export const DataTable = ({data ,searchText,setSearchText ,setWhoChange, selecte
         {/* {isView ? ( */}
           <div className="table-responsive custom-table">
               <Table
-                dataSource={filteredData}
-                columns={columns}
-                loading={loading}
-                paginationData={paginationData}
-                onPageChange={handlePageChange}
+                 dataSource={filteredData}
+          columns={columns}
+          loading={loading}
+          paginationData={paginationData}
+          onPageChange={handlePageChange}
               />
             
           </div>

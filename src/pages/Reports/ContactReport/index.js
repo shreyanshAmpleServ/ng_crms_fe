@@ -10,12 +10,16 @@ import DateRangePickerComponent from "../../../components/datatable/DateRangePic
 import { DatePicker } from "antd";
 import { LoadingGraph } from "../../main-menu/deals-dashboard/loading";
 import { fetchContactReport } from "../../../redux/contactReport";
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 export default function ContactReport() {
   const [searchText, setSearchText] = useState("");
   const [yearFilter, setYearFilter] = useState();
     const [whoChange,setWhoChange] =useState()
+    const [filteredData, setFilteredData] = useState([]);
+      const [columns, setColumns] = useState([]);
   const dispatch = useDispatch();
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -107,7 +111,50 @@ export default function ContactReport() {
     setWhoChange("dealYear")
     setYearFilter(date);
   };
+ const exportToExcel = useCallback(() => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Leads");
+    XLSX.writeFile(workbook, "Contact_Reports.xlsx");
+  }, [filteredData]);
 
+  const exportToPDF = useCallback(() => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Contact Reports", doc.internal.pageSize.getWidth() / 2, 15, { align: "center" });
+
+    const visibleColumns = columns.filter(col => col.title && col.title !== "Actions");
+    const head = [visibleColumns.map(col => col.title)];
+
+    const body = filteredData.map(row =>
+      visibleColumns.map(col => {
+        const val = row[col.dataIndex];
+        if (col.dataIndex === "manufacturer") return row.manufacturer?.name || "";
+        if (col.dataIndex === "vendor") return row.vendor?.name || "";
+        if (col.dataIndex === "Currency") return row.Currency?.code || "";
+         if (col.dataIndex === "name") {
+        const fullName = `${row.firstName || ""} ${row.lastName || ""}`.trim();
+        return fullName || "-";
+      }
+        if (col.dataIndex === "createdate") return val ? moment(val).format("DD-MM-YYYY") : "";
+        if (typeof val === "object" && val !== null && val.name) return val.name;
+        return val ?? "";
+      })
+    );
+
+    doc.autoTable({
+      head,
+      body,
+      startY: 25,
+      theme: "grid",
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+      alternateRowStyles: { fillColor: [240, 240, 240] },
+      margin: { top: 25 },
+    });
+
+    doc.save("Contact_Reports.pdf");
+  }, [filteredData, columns]);
   return (
     <div className="page-wrapper">
       <Helmet>
@@ -129,8 +176,8 @@ export default function ContactReport() {
 
               <div className="col-sm-8">
                 <ExportData
-                  //   exportToPDF={exportToPDF}
-                  //   exportToExcel={exportToExcel}
+                    exportToPDF={exportToPDF}
+                    exportToExcel={exportToExcel}
                   label="Add "
                   isCreate={false}
                   id="offcanvas_add_edit_order"
@@ -195,6 +242,8 @@ export default function ContactReport() {
             selectedDateRange={selectedDateRange}
             setSelectedDateRange={setSelectedDateRange}
             setWhoChange={setWhoChange}
+            setFilteredData={setFilteredData}   // 👈
+            setColumns={setColumns}     
           />
         </div>
       </div>

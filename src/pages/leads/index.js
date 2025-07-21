@@ -132,7 +132,7 @@ const LeadList = () => {
       title: "Assignee",
       dataIndex: "DealContacts",
       render: (text) => <span>{text}</span>,
-      sorter: (a, b) =>(<div className="text-wrap" style={{maxWidth:"10rem"}}>{a.lead_owner_name.localeCompare(b.lead_owner_name)}</div>),
+      sorter: (a, b) =>(<div className="text-wrap" style={{maxWidth:"10rem"}}>{a.DealContacts.localeCompare(b.DealContacts)}</div>),
     },
     {
       title: "Created Date",

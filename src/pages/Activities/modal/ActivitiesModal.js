@@ -76,7 +76,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       status: "",
       is_reminder: "N",
       type_id: null,
-      due_date: new Date(),
+      due_date: dayjs().format("DD-MM-YYYY"),
       due_time: dayjs().format("HH:mm:ss"),
       reminder_time: "",
       reminder_type: "",
@@ -100,8 +100,9 @@ const ActivitiesModal = ({ setActivity, activity }) => {
           title: activity?.title || "",
           status: activity?.status || "",
           type_id: activity?.type_id || null,
-          due_date: activity?.due_date || new Date(),
-          due_time: activity?.due_time || dayjs().format("HH:mm:ss"),
+due_date: activity.due_date
+        ? dayjs(activity.due_date).format("DD-MM-YYYY")
+        : dayjs().format("DD-MM-YYYY"),          due_time: activity?.due_time || dayjs().format("HH:mm:ss"),
           reminder_time: activity?.reminder_time || "",
           reminder_type: activity?.reminder_type || "",
           owner_id: activity?.owner_id || null,
@@ -256,7 +257,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       <div
         className="offcanvas offcanvas-end offcanvas-large"
         tabIndex={-1}
-        id="offcanvas_add"
+        id="offcanvas_add_activities"
       >
         <div className="offcanvas-header border-bottom">
           <h4>{activity ? "Update " : "Add New "} Activity </h4>
@@ -344,32 +345,35 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                 </div>
 
                 <div className="col-md-4">
-                  <label className="col-form-label">
-                    Due Date <span className="text-danger">*</span>
-                  </label>
-                  <div className="mb-3 icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Due Date <span className="text-danger">*</span>
+                    </label>
                     <Controller
                       name="due_date"
                       control={control}
-                      rules={{ required: "Due date is required !" }}
+                      rules={{ required: "Due date is required!" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
-                          selected={field.value}
                           value={
                             field.value
-                              ? dayjs(field.value, "dd-MM-yyyy")
+                              ? dayjs(field.value, [
+                                  "DD-MM-YYYY",
+                                  "YYYY-MM-DD",
+                                  dayjs.ISO_8601,
+                                ])
                               : null
                           }
-                          onChange={field.onChange}
-                          dateFormat="dd-MM-yyyy"
+                          format="DD-MM-YYYY"
+                          onChange={(date, dateString) =>
+                            field.onChange(dateString)
+                          }
                         />
                       )}
                     />
+
                     {errors.due_date && (
                       <small className="text-danger">
                         {errors.due_date.message}
