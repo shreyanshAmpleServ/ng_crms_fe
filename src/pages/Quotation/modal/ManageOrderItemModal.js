@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,7 +45,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
         tax_per: 0.0,
         line_tax: 0,
         total_bef_disc: 0,
-        total_amount:0
+        total_amount:0,
+        is_optional:"N"
       },
     ]);
   };
@@ -54,6 +55,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
       toast.error("Please Fill the emplty column first !")
       return
     }
+
     setItemNumber((prev) => [
       ...prev,
       {
@@ -71,10 +73,12 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
         tax_per: 0.0,
         line_tax: 0,
         total_bef_disc: data?.total_bef_disc || 0,
-        total_amount: data?.total_amount || 0
+        total_amount: data?.total_amount || 0,
+    is_optional:"Y"
       },
     ]);
-    deleteRow(index)
+    deleteOptionalRow(index)
+
   };
 
   const updateItem = (index, field, value) => {
@@ -85,8 +89,35 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
     });
   };
 
-  const deleteRow = (index) => {
+  const deleteRow = (data,index) => {
+     
     setItemNumber((prev) => prev.filter((_, i) => i !== index));
+    if(data?.is_optional == "Y")
+    {
+      setOptionalItem((prev) => [
+        ...prev,
+        {
+          parent_id: data?.parent_id ||  null,
+          item_id: data?.item_id,
+          item_name: data?.item_name,
+          quantity: data?.quantity,
+          delivered_qty: data?.delivered_qty || 0,
+          unit_price: data?.unit_price,
+          currency: data?.currency || null,
+          rate: data?.rate,
+          disc_prcnt:data?.disc_prcnt || 0,
+          disc_amount:data?.disc_amount || 0,
+          tax_id: data?.tax_id || null,
+          tax_per:data?.tax_per || 0.0,
+          line_tax: data?.line_tax || 0 ,
+          total_bef_disc: data?.total_bef_disc,
+          total_amount:data?.total_amount,
+        },
+      ])
+    }
+  };
+  const deleteOptionalRow = (index) => {
+    setOptionalItem((prev) => prev.filter((_, i) => i !== index));
   };
   const { loading } = useSelector((state) => state.products);
 
@@ -118,12 +149,27 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
     label: emnt.name + " (" + emnt.rate + "%)",
     tax:emnt.rate
   }));
+  const selectedIds = useMemo(
+    () =>
+      new Set(
+        itemNumber
+          ?.map((item) => item.item_id)
+          ?.filter((id) => id !== null && id !== undefined)
+      ),
+    [itemNumber]
+  );
+  const getFilteredOptions = (currentItemId) =>
+    productList?.filter(
+      (opt) => !selectedIds?.has(opt.value) || opt.value === currentItemId
+    );
+  
+  
   const tabMap = {
     "Line Products": "product",
-    "Optional Products": "optional",
+    // "Optional Products": "optional",
     "terms & Conditions": "terms & Conditions",
   };
-  return (
+  return (<>
     <div>
          <ul
         style={{ backgroundColor: "#dbdbdb" }}
@@ -164,7 +210,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
         </div>
       </div>
       <div className="table-responsive">
-        <table className="table table-view">
+        <table className="table table-view mb-0">
           <thead>
             <tr>
               <th>Item</th>
@@ -191,7 +237,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                         render={({ field }) => (
                           <Select
                             {...field}
-                            options={productList}
+                            // options={productList}
+                            options={getFilteredOptions(i?.item_id)}
                             placeholder="Choose"
                             className="select2"
                             classNamePrefix="react-select"
@@ -336,7 +383,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                   </td>
                   <td>
                     <button
-                      onClick={() => deleteRow(index)}
+                      onClick={() => deleteRow(i,index)}
                       type="button"
                       className="btn btn-danger-light "
                     >
@@ -355,7 +402,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
         </table>
       </div>
     </div>}
-    {activeTab == "optional" && <div>
+    {activeTab == "optional" ? <div>
       <div className="col-md-12 ">
         <div className="mb-1 d-flex justify-content-between">
           {/* <label className="col-form-label fw-bold">Quotation items</label> */}
@@ -384,7 +431,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
             </tr>
           </thead>
           <tbody>
-            {optionalItem.length &&
+            {optionalItem.length > 0 &&
               optionalItem?.map((i, index) => (
                 <tr>
                   <td>
@@ -551,7 +598,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                       />
                     </button>
                     <button
-                      onClick={() => deleteRow(index)}
+                      onClick={() => deleteOptionalRow(index)}
                       type="button"
                       className="btn btn-danger-light "
                     >
@@ -570,7 +617,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
           </tbody>
         </table>
       </div>
-    </div>}
+    </div> : ""}
     {activeTab == "terms & Conditions" && 
     <div>
            <DefaultEditor
@@ -581,6 +628,249 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
 />
     </div>}
     </div>
+   {optionalItem?.length > 0 &&  <div className="accordion mt-2 mb-2" id="optionalProductAccordion">
+  <div className="accordion-item">
+    <h2 className="accordion-header" id="headingOptional">
+      <button
+        className="accordion-button bg-secondary  text-white h1 collapsed"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapseOptional"
+        aria-expanded="false"
+        aria-controls="collapseOptional"
+      >
+        Optional Products
+      </button>
+    </h2>
+    <div
+      id="collapseOptional"
+      className="accordion-collapse collapse"
+      aria-labelledby="headingOptional"
+      data-bs-parent="#optionalProductAccordion"
+    >
+      <div className="accordion-body">
+        {/* ✅ Your Optional Products Table Goes Here */}
+        <div className="table-responsive">
+          <table className="table table-view">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Amount</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            {optionalItem.length > 0 &&
+              optionalItem?.map((i, index) => (
+                <tr>
+                  <td>
+                    <div className="input-table input-table-descripition">
+                      <Controller
+                        name="item_id"
+                        control={control}
+                        disabled={true}
+                        render={({ field }) => (
+                          <input
+                          name="item_id"
+                          className="w-100"
+                          type="text"
+                          value={i.item_name}
+                          disabled={true}
+                          />
+                          // <Select
+                          //   {...field}
+                          //   options={productList}
+                          //   placeholder="Choose"
+                          //   className="select2"
+                          //   classNamePrefix="react-select"
+                          //   disabled={true}
+                          //   // onChange={(selectedOption) => {
+                          //   //   let rate = selectedOption?.unit_price * i?.quantity || 0 ;
+                          //   //   let disc_amount = (rate * i.disc_prcnt)/100
+                          //   //   let total_bef_disc = rate - disc_amount
+                          //   //   let line_tax = (total_bef_disc * i?.tax_per)/100  || 0 ;
+                          //   //   updateItem(index, "item_id", selectedOption?.value || null  );
+                          //   //   updateItem(index, "item_name", selectedOption?.label || null  );
+                          //   //   updateItem(index, "unit_price",  selectedOption?.unit_price || 0 );
+                          //   //   updateItem(index, "rate",rate );
+                          //   //   updateItem(index, "line_tax", line_tax);
+                          //   //   updateItem(index, "total_bef_disc",total_bef_disc);
+                          //   //   updateItem(index, "total_amount",total_bef_disc + line_tax);
+                          //   //   updateItem(index, "disc_amount",disc_amount );
+                          //   //   field.onChange(selectedOption?.value || null);
+                          //   // }}
+                          //   value={   productList?.find( (option) => option.value === i?.item_id ) || "" }
+                          //   // value={i?.item_id}
+                          //   styles={{
+                          //     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                          //     menu: (provided) => ({ ...provided,   zIndex: 9999,  }),
+                          //   }}
+                          //   menuPortalTarget={document.body}
+                          // />
+                        )}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div className="input-table">
+                      <input
+                        name="quantity"
+                        type="number"
+                        value={i.quantity}
+                        disabled={true}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          // Remove leading zeros, but keep a single zero if it's the only value
+                          if (/^0\d+/.test(value)) {
+                            value = value.replace(/^0+/, "");
+                            if (value === "") value = "0";
+                          }
+                          let rate = i?.unit_price * value || 0
+                          let disc_amount = (rate * i.disc_prcnt)/100
+                          let total_bef_disc =  rate - disc_amount|| 0
+                          let line_tax = (total_bef_disc * i?.tax_per)/100  || 0;
+                          updateItem(  index, "total_amount",total_bef_disc - line_tax );
+                          updateItem(  index, "disc_amount",disc_amount );
+                          updateItem(index, "quantity", value || 0);
+                          updateItem(index, "rate",rate );
+                          updateItem( index, "line_tax",  line_tax  );
+                          updateItem( index, "total_bef_disc",  total_bef_disc || 0  );
+                        }}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div className="input-table">
+                      <input
+                        name="unit_price"
+                        type="number"
+                        placeholder="0.0"
+                        value={i?.unit_price}
+                        disabled
+                      />
+                    </div>
+                  </td>
+
+                  {/* <td>
+                    <div className="input-table">
+                      <input name="rate" type="text" disabled value={i?.rate} />
+                    </div>
+                  </td>
+                  
+                  <td>
+                    <div className="input-table">
+                    <input name="disc_prcnt" type="number" value={i?.disc_prcnt} onChange={(e) => {
+                        let value = Number(e.target.value);
+                        if (value < 0) value = 0;
+                        if (value > 100) value = i.disc_prcnt;
+                        e.target.value = value; 
+
+                        let disc_amount = (i.rate * e.target.value)/100
+                        let total_bef_disc = i.rate - disc_amount
+                        let line_tax = (total_bef_disc * i?.tax_per)/100  || 0;
+                        updateItem(  index, "total_amount",total_bef_disc + line_tax );
+                        updateItem(  index, "disc_amount",disc_amount );
+                        updateItem( index,"disc_prcnt",e.target.value || 0);
+                        updateItem( index,"total_bef_disc",total_bef_disc);
+                        updateItem( index,"line_tax",line_tax);
+
+                    }} />
+                    </div>
+                  </td>
+                  <td>
+                    <div className="input-table">
+                      <input name="total_bef_disc"  type="number" value={i?.total_bef_disc} disabled />
+                    </div>
+                  </td>
+                  <td>
+                    <div className="input-table">
+                    <Controller
+                        name="tax_id"
+                        control={control}
+                        render={({ field }) => (
+                          <Select
+                            {...field}
+                            options={TaxList}
+                            placeholder="Select Tax"
+                            className="select2"
+                            classNamePrefix="react-select"
+                            onChange={(selectedOption) => {
+                              
+                              let line_tax = (i.total_bef_disc * selectedOption?.tax)/100  || 0 ;
+                              updateItem(  index, "total_amount",i.total_bef_disc + line_tax );
+                              updateItem(index,"tax_id",selectedOption?.value || null );
+                              updateItem(index,"line_tax",line_tax);
+                              updateItem( index,"tax_per",selectedOption?.tax || 0);
+                              field.onChange(selectedOption?.value || null);
+                            }}
+                            value={ TaxList?.find(  (option) => option.value === i?.tax_id ) || "" }
+                            styles={{
+                              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                              menu: (provided) => ({ ...provided, zIndex: 9999}),
+                            }}
+                            menuPortalTarget={document.body}
+                          />
+                        )}
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    <div className="input-table">
+                      <input name="line_tax" type="text" value={ formatNumber(i?.line_tax)} disabled/>
+                    </div>
+                  </td> */}
+                  <td style={{width:"auto"}}>
+                    <div className="input-table">
+                      <input width={{width:"auto"}} type="text" value={formatNumber(i?.total_amount)} disabled  />
+                    </div>
+                  </td>
+                  <td>
+                    <div className="d-flex gap-2">
+                    <button
+                      onClick={() => syncProductLine(index,i)}
+                      type="button"
+                      className="btn btn-success-light "
+                    >
+                      <i
+                        className="ti ti-plus "
+                        style={{ fontSize: "20px",fontWeight:700 }}
+                      />
+                    </button>
+                    <button
+                      onClick={() => deleteOptionalRow(index)}
+                      type="button"
+                      className="btn btn-danger-light "
+                    >
+                      <i
+                        className="ti ti-trash "
+                        style={{ fontSize: "15px" }}
+                      />
+                    </button>
+                    </div>
+                    {/* <Link to="#" className="btn btn-success-light">
+                        <i className="ti ti-check" />
+                      </Link> */}
+                  </td>
+                </tr>
+              ))}
+              {optionalItem?.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="text-center text-muted">
+                    No optional products
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>}
+
+</>
   );
 };
 

@@ -107,6 +107,7 @@ import CompanyReport from "../pages/Reports/CompanyReport";
 import TaskReport from "../pages/Reports/TaskReport";
 import NoPermissionPage from "../components/common/noPermission";
 import QuoteTemplate from "../pages/QuoteTemplate";
+import PreviewQuotation from "../pages/Quotation/modal/QuotationPdf";
 
 // // Export components individually
 
@@ -650,5 +651,11 @@ export const publicRoutes = [
     element: <Login />,
     route: Route,
     title: "Login",
+  },
+  {
+    path: route.quotaionPdf,
+    element: <PreviewQuotation />,
+    route: Route,
+    title: "Quotation",
   },
 ];

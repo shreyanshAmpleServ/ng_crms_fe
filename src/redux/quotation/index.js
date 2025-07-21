@@ -131,8 +131,8 @@ export const deleteQuotation = createAsyncThunk(
 );
 
 // Fetch a Single order by ID
-export const fetchOrderById = createAsyncThunk(
-  "quotations/fetchOrderById",
+export const fetchQuotationById = createAsyncThunk(
+  "quotations/fetchQuotationById",
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/quotation/${id}`);
@@ -177,7 +177,7 @@ const quotationSlice = createSlice({
   name: "quotations",
   initialState: {
     quotations: {},
-    orderDetail: null,
+    quotationDetail: null,
     salesTypes:[],
     quotationCode:null,
     loading: false,
@@ -266,15 +266,15 @@ const quotationSlice = createSlice({
               state.loading = false;
               state.error = action.payload.message;
             })
-      .addCase(fetchOrderById.pending, (state) => {
+      .addCase(fetchQuotationById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchOrderById.fulfilled, (state, action) => {
+      .addCase(fetchQuotationById.fulfilled, (state, action) => {
         state.loading = false;
-        state.orderDetail = action.payload.data;
+        state.quotationDetail = action.payload.data;
       })
-      .addCase(fetchOrderById.rejected, (state, action) => {
+      .addCase(fetchQuotationById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })

@@ -46,6 +46,7 @@ const Datatable = ({ columns, dataSource,className,border, paginationData,onPage
           // pagination={paginaiton === false ? false : true}
           bordered={border || false}
         style={{ minHeight: "400px" }}
+
           scroll={{ x: "max-content" }}
                   />)
         :

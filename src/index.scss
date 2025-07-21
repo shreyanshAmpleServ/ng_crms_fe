@@ -14,14 +14,25 @@ a {
 .ant-table-cell {
   padding: 5.5px 8px !important; /* adjust as needed */
 }
-
+.bg-optional{
+  background-color: #5b0505 !important;
+  color: #ffffff;
+}
 .ant-table-thead > tr > th {
   padding: 9px 8px !important;
 }
 .ant-tooltip {
   display: none;
 }
-
+.ant-dropdown {
+  z-index: 1050 !important;
+}
+.table-scroll-wrapper {
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+.dropdown-item  {z-index: 1050 !important;}
 ::-webkit-scrollbar {
   display: none;
 }

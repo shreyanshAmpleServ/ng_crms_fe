@@ -1,12 +1,13 @@
 import "bootstrap-daterangepicker/daterangepicker.css";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Table from "../../components/common/dataTableNew/index";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import moment from "moment";
+import { Helmet } from "react-helmet-async";
 import * as XLSX from "xlsx";
 import CollapseHeader from "../../components/common/collapse-header";
 import FlashMessage from "../../components/common/modals/FlashMessage";
@@ -14,22 +15,18 @@ import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent";
 import ExportData from "../../components/datatable/ExportData";
 import SearchBar from "../../components/datatable/SearchBar";
-import SortDropdown from "../../components/datatable/SortDropDown";
-import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import {
   clearMessages
 } from "../../redux/manage-user";
 import { deleteQuotation, fetchquotations, syncQuotationToOrder } from "../../redux/quotation";
 import DeleteAlert from "./alert/DeleteAlert";
 import AddQuotationModal from "./modal/AddQuotationModal.js";
-import FilterComponent from "./modal/FilterComponent";
 import PreviewOrder from "./modal/PreviewQuotation.js";
 import UserGrid from "./UsersGrid";
-import { Helmet } from "react-helmet-async";
-import { syncOrderToInvoice } from "../../redux/order/index.js";
 
 const Quotation = () => {
   const [view, setView] = useState("list");
+  const navigate = useNavigate()
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [selectedDateRange, setSelectedDateRange] = useState({
@@ -170,7 +167,8 @@ const Quotation = () => {
               to="#"
               data-bs-toggle="offcanvas"
               data-bs-target="#offcanvas_preview_order"
-              onClick={() => setSelectedOrder(record)}
+              onClick={() => navigate(`/crms/quotation-pdf/${btoa(record?.id?.toString())}`)}
+              // onClick={() => setSelectedOrder(record)}
             >
               <i className="ti ti-eye text-secondary"></i> Preview
             </Link>

@@ -37,6 +37,7 @@ const initialItem = [
     line_tax: 0,
     total_bef_disc: 0,
     total_amount: 0,
+    is_optional: "N",
   },
 ];
 
@@ -44,7 +45,8 @@ const AddQuotationModal = ({ order, setOrder }) => {
   const dispatch = useDispatch();
   const [itemNumber, setItemNumber] = useState(initialItem);
   const [optionalItem, setOptionalItem] = useState([]);
-  const [termsItems,setIermsItems] = useState("")
+  const [othersItem, setOthersItem] = useState([]);
+  const [termsItems, setIermsItems] = useState("");
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -80,12 +82,13 @@ const AddQuotationModal = ({ order, setOrder }) => {
   } = useForm({
     defaultValues: {
       quotation_code: quotationCode,
+      template_master_id:null,
       vendor_id: "",
       cust_ref_no: "",
       cont_person: "",
       address: "",
       currency: null,
-      due_date: dayjs(new Date()).format("DD-MM-YYYY") ,
+      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -114,12 +117,15 @@ const AddQuotationModal = ({ order, setOrder }) => {
     if (order) {
       reset({
         quotation_code: order?.quotation_code || quotationCode,
+        template_master_id: order?.template_master_id || null,
         vendor_id: order?.vendor_id || "",
         cust_ref_no: order?.cust_ref_no || "",
         cont_person: order?.cont_person || "",
         address: order?.address || "",
         currency: order?.currency || null,
-        due_date: dayjs(new Date(order?.due_date)) ||  dayjs(new Date()).format("DD-MM-YYYY") ,
+        due_date:
+          dayjs(new Date(order?.due_date)) ||
+          dayjs(new Date()).format("DD-MM-YYYY"),
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -158,15 +164,19 @@ const AddQuotationModal = ({ order, setOrder }) => {
           total_amount: Number(item?.total_amount) || 0,
         }))
       );
+      setOptionalItem(order?.optional_items ? JSON.parse(order?.optional_items) : "");
+      setOthersItem(order?.other_items  ? JSON.parse(order?.other_items) : "");
+      setIermsItems(JSON.parse(order?.terms));
     } else {
       reset({
         quotation_code: quotationCode,
         vendor_id: "",
+        template_master_id:null,
         cust_ref_no: "",
         cont_person: "",
         address: "",
         currency: null,
-        due_date: dayjs(new Date()).format("DD-MM-YYYY") ,
+        due_date: dayjs(new Date()).format("DD-MM-YYYY"),
         total_bef_tax: 0,
         disc_prcnt: 0,
         tax_total: 0,
@@ -195,13 +205,13 @@ const AddQuotationModal = ({ order, setOrder }) => {
     dispatch(fetchCurrencies({ is_active: "Y" }));
     dispatch(fetchTaxSetup({ is_active: "Y" }));
     dispatch(fetchQuotationCode());
-    dispatch(fetchquoteTemplate())
+    dispatch(fetchquoteTemplate());
     dispatch(fetchProducts());
   }, [dispatch]);
 
-    const { quoteTemplate , loading:loadingTemp } = useSelector(
-      (state) => state.quoteTemplate,
-    );
+  const { quoteTemplate, loading: loadingTemp } = useSelector(
+    (state) => state.quoteTemplate
+  );
   const { vendor, loading: loadingVendor } = useSelector(
     (state) => state.vendor
   );
@@ -214,7 +224,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
     value: emnt.id,
     label: emnt.template_name,
     crms_template_category: emnt.crms_template_category,
-    terms:emnt.terms,
+    terms: emnt.terms,
   }));
   const vendorList = vendor?.data?.map((emnt) => ({
     value: emnt.id,
@@ -280,29 +290,31 @@ const AddQuotationModal = ({ order, setOrder }) => {
     }
     const closeButton = document.getElementById("close_add_edit_order");
     const formData = new FormData();
-     Object.keys(data).forEach((key) => {
-          if (data[key] !== null && data[key] != "due_date" && data[key] !== undefined) {
-            let value = data[key];
-            if (
-              (key === "due_date" )
-            ) {
-              value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
-            }
-            if (
-              ( key === "apr_date") &&
-              value instanceof Date
-            ) {
-              value = dayjs(data.apr_date).toISOString();
-            }
-            formData.append(key, value);
-          }
-        });
+    Object.keys(data).forEach((key) => {
+      if (
+        data[key] !== null &&
+        data[key] != "due_date" &&
+        data[key] !== undefined
+      ) {
+        let value = data[key];
+        if (key === "due_date") {
+          value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
+        }
+        if (key === "apr_date" && value instanceof Date) {
+          value = dayjs(data.apr_date).toISOString();
+        }
+        formData.append(key, value);
+      }
+    });
     // Object.keys(data).forEach((key) => {
     //   if (data[key] !== null) {
     //     formData.append(key, (key=== "due_date" || key === "apr_date") ? data[key] ? data[key]?.toISOString() : "" : data[key]);
     //   }
     // });
     formData.append("orderItemsData", JSON.stringify(itemNumber));
+    formData.append("terms", JSON.stringify(termsItems));
+    formData.append("optional_items",    JSON.stringify(optionalItem) );
+    formData.append("other_items", JSON.stringify(othersItem));
     order && formData.append("id", order?.id);
     try {
       order
@@ -314,73 +326,75 @@ const AddQuotationModal = ({ order, setOrder }) => {
       closeButton.click();
       dispatch(fetchQuotationCode());
       reset();
-           setItemNumber([
-       {
-         parent_id: null,
-         item_id: null,
-         item_name: "",
-         quantity: 1,
-         delivered_qty: 0,
-         unit_price: 0,
-         currency: null,
-         rate: 0,
-         disc_prcnt: 0,
-         disc_amount: 0,
-         tax_id: null,
-         tax_per: 0.0,
-         line_tax: 0,
-         total_bef_disc: 0,
-         total_amount: 0,
-       },
-     ]);
-         } catch (error) {
-           closeButton.click();
-         }
-       };
-       React.useEffect(() => {
-         const offcanvasElement = document.getElementById(
-           "offcanvas_add_edit_quotation"
-         );
-         if (offcanvasElement) {
-           const handleModalClose = () => {
-             setOrder();
-             reset();
-             setItemNumber([
-       {
-         parent_id: null,
-         item_id: null,
-         item_name: "",
-         quantity: 1,
-         delivered_qty: 0,
-         unit_price: 0,
-         currency: null,
-         rate: 0,
-         disc_prcnt: 0,
-         disc_amount: 0,
-         tax_id: null,
-         tax_per: 0.0,
-         line_tax: 0,
-         total_bef_disc: 0,
-         total_amount: 0,
-       },
-     ]);
-             // setItemNumber(initialItem)
-           };
-           offcanvasElement.addEventListener(
-             "hidden.bs.offcanvas",
-             handleModalClose
-           );
-           return () => {
-             offcanvasElement.removeEventListener(
-               "hidden.bs.offcanvas",
-               handleModalClose
-             );
-           };
-         }
-       }, []);
+      setItemNumber([
+        {
+          parent_id: null,
+          item_id: null,
+          item_name: "",
+          quantity: 1,
+          delivered_qty: 0,
+          unit_price: 0,
+          currency: null,
+          rate: 0,
+          disc_prcnt: 0,
+          disc_amount: 0,
+          tax_id: null,
+          tax_per: 0.0,
+          line_tax: 0,
+          total_bef_disc: 0,
+          total_amount: 0,
+          is_optional: "N",
+        },
+      ]);
+    } catch (error) {
+      closeButton.click();
+    }
+  };
+  React.useEffect(() => {
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_edit_quotation"
+    );
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setOrder();
+        reset();
+        setItemNumber([
+          {
+            parent_id: null,
+            item_id: null,
+            item_name: "",
+            quantity: 1,
+            delivered_qty: 0,
+            unit_price: 0,
+            currency: null,
+            rate: 0,
+            disc_prcnt: 0,
+            disc_amount: 0,
+            tax_id: null,
+            tax_per: 0.0,
+            line_tax: 0,
+            total_bef_disc: 0,
+            total_amount: 0,
+            is_optional: "N",
+          },
+        ]);
+        setOptionalItem([]);
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, []);
   return (
     <div
-      className="offcanvas offcanvas-end offcanvas-large"
+      className="offcanvas offcanvas-end offcanvas-larger"
       tabIndex={-1}
       id="offcanvas_add_edit_quotation"
     >
@@ -470,15 +484,13 @@ const AddQuotationModal = ({ order, setOrder }) => {
                   )}
                 </div>
               </div>
-               {/* Vendor  */}
-               <div className=" col-md-6 mb-3">
+              {/* Vendor  */}
+              <div className=" col-md-6 mb-3">
                 <div className="d-flex align-items-center justify-content-between">
-                  <label className="col-form-label">
-                    Quotation Template
-                  </label>
+                  <label className="col-form-label">Quotation Template</label>
                 </div>
                 <Controller
-                  name="quotation_template_id"
+                  name="template_master_id"
                   // rules={{ required: "Customer is required !" }} // Make the field required
                   control={control}
                   render={({ field }) => (
@@ -490,71 +502,120 @@ const AddQuotationModal = ({ order, setOrder }) => {
                       classNamePrefix="react-select"
                       onChange={(selectedOption) => {
                         field.onChange(selectedOption?.value || null);
-                      
-        const productCategories = selectedOption?.crms_template_category?.filter(
-          (item) => item?.type === "product"
-        );
 
-        const items =
-          productCategories?.flatMap((cat) =>
-            cat?.crms_template_items?.map((i) => {
-              const product = productList?.find((p) => p.value === i?.item_id);
-              const unit_price = Number(product?.unit_price || 0);
-              const rate = unit_price * Number(i?.qty)
-              return {
-              parent_id: null,
-              item_id: i?.item_id,
-              item_name:product?.label || "",
-              quantity: Number(i?.qty) || 1,
-              delivered_qty: 0,
-              unit_price: unit_price,
-              currency: null,
-              rate: rate ||0,
-              disc_prcnt: 0,
-              disc_amount: 0,
-              tax_id: null,
-              tax_per: 0.0,
-              line_tax: 0,
-              total_bef_disc: rate,
-              total_amount: rate,
-            }})
-          ) || [];
-        const optionalProductCategories = selectedOption?.crms_template_category?.filter(
-          (item) => item?.type === "optional"
-        );
+                        const productCategories =
+                          selectedOption?.crms_template_category?.filter(
+                            (item) => item?.type === "product"
+                          );
 
-        const optinalItems =
-        optionalProductCategories?.flatMap((cat) =>
-            cat?.crms_template_items?.map((i) => {
-              const product = productList?.find((p) => p.value === i?.item_id);
-              const unit_price = Number(product?.unit_price || 0);
-              const rate = unit_price * Number(i?.qty)
-              return {
-              parent_id: null,
-              item_id: i?.item_id,
-              item_name: product?.label ||"",
-              quantity: Number(i?.qty) || 1,
-              delivered_qty: 0,
-              unit_price: unit_price,
-              currency: null,
-              rate: rate ||0,
-              disc_prcnt: 0,
-              disc_amount: 0,
-              tax_id: null,
-              tax_per: 0.0,
-              line_tax: 0,
-              total_bef_disc: rate,
-              total_amount: rate,
-            }})
-          ) || [];
+                        const items =
+                          productCategories?.flatMap((cat) =>
+                            cat?.crms_template_items?.map((i) => {
+                              const product = productList?.find(
+                                (p) => p.value === i?.item_id
+                              );
+                              const unit_price = Number(
+                                product?.unit_price || 0
+                              );
+                              const rate = unit_price * Number(i?.qty);
+                              return {
+                                parent_id: null,
+                                item_id: i?.item_id,
+                                item_name: product?.label || "",
+                                quantity: Number(i?.qty) || 1,
+                                delivered_qty: 0,
+                                unit_price: unit_price,
+                                currency: null,
+                                rate: rate || 0,
+                                disc_prcnt: 0,
+                                disc_amount: 0,
+                                tax_id: null,
+                                tax_per: 0.0,
+                                line_tax: 0,
+                                total_bef_disc: rate,
+                                total_amount: rate,
+                                is_optional: "N",
+                              };
+                            })
+                          ) || [];
+                        const optionalProductCategories =
+                          selectedOption?.crms_template_category?.filter(
+                            (item) => item?.type === "optional"
+                          );
 
-        setItemNumber(items);
-        setOptionalItem(optinalItems)
-        setIermsItems(selectedOption?.terms)
+                        const optinalItems =
+                          optionalProductCategories?.flatMap((cat) =>
+                            cat?.crms_template_items?.map((i) => {
+                              const product = productList?.find(
+                                (p) => p.value === i?.item_id
+                              );
+                              const unit_price = Number(
+                                product?.unit_price || 0
+                              );
+                              const rate = unit_price * Number(i?.qty);
+                              return {
+                                parent_id: null,
+                                item_id: i?.item_id,
+                                item_name: product?.label || "",
+                                quantity: Number(i?.qty) || 1,
+                                delivered_qty: 0,
+                                unit_price: unit_price,
+                                currency: null,
+                                rate: rate || 0,
+                                disc_prcnt: 0,
+                                disc_amount: 0,
+                                tax_id: null,
+                                tax_per: 0.0,
+                                line_tax: 0,
+                                total_bef_disc: rate,
+                                total_amount: rate,
+                              };
+                            })
+                          ) || [];
+                        const OthersCategories =
+                          selectedOption?.crms_template_category?.filter(
+                            (item) => item?.type === "others"
+                          );
+
+                        // const othersItems =
+                        //   OthersCategories?.flatMap((cat) =>
+                        //     cat?.crms_template_items?.map((i) => {
+                        //       const product = productList?.find(
+                        //         (p) => p.value === i?.item_id
+                        //       );
+                        //       const unit_price = Number(
+                        //         product?.unit_price || 0
+                        //       );
+                        //       const rate = unit_price * Number(i?.qty);
+                        //       return {
+                        //         parent_id: null,
+                        //         item_id: i?.item_id,
+                        //         item_name: product?.label || "",
+                        //         quantity: Number(i?.qty) || 1,
+                        //         delivered_qty: 0,
+                        //         unit_price: unit_price,
+                        //         currency: null,
+                        //         rate: rate || 0,
+                        //         disc_prcnt: 0,
+                        //         disc_amount: 0,
+                        //         tax_id: null,
+                        //         tax_per: 0.0,
+                        //         line_tax: 0,
+                        //         total_bef_disc: rate,
+                        //         total_amount: rate,
+                        //       };
+                        //     })
+                        //   ) || [];
+
+                        setItemNumber(items);
+                        setOptionalItem(optinalItems);
+                        setOthersItem(OthersCategories);
+                        setIermsItems(selectedOption?.terms);
                       }}
                       value={
                         quoteTempList?.find(
-                          (option) => option.value === watch("quotation_template_id")
+                          (option) =>
+                            option.value === watch("template_master_id")
                         ) || ""
                       }
                       styles={{
@@ -681,22 +742,22 @@ const AddQuotationModal = ({ order, setOrder }) => {
                     </span>
                     <Controller
                       name="due_date"
-                       control={control}
-                                    rules={{ required: "Start date is required !" }} // Make the field required
-                                    render={({ field }) => (
-                                      <DatePicker
-                                        {...field}
-                                        className="form-control"
-                                        value={
-                                          field.value
-                                            ? dayjs(field.value, "DD-MM-YYYY")
-                                            : null
-                                        }
-                                        format="DD-MM-YYYY"
-                                        onChange={(date, dateString) => {
-                                          field.onChange(dateString);
-                                        }}
-                                      />
+                      control={control}
+                      rules={{ required: "Start date is required !" }} // Make the field required
+                      render={({ field }) => (
+                        <DatePicker
+                          {...field}
+                          className="form-control"
+                          value={
+                            field.value
+                              ? dayjs(field.value, "DD-MM-YYYY")
+                              : null
+                          }
+                          format="DD-MM-YYYY"
+                          onChange={(date, dateString) => {
+                            field.onChange(dateString);
+                          }}
+                        />
                       )}
                     />
                     {errors.due_date && (
@@ -732,17 +793,16 @@ const AddQuotationModal = ({ order, setOrder }) => {
                 itemNumber={itemNumber}
                 setItemNumber={setItemNumber}
                 productList={productList}
-                termsItems={termsItems} 
+                termsItems={termsItems}
                 setIermsItems={setIermsItems}
-                optionalItem ={optionalItem}
+                optionalItem={optionalItem}
                 setOptionalItem={setOptionalItem}
               />
               {/* Amount Calculation  */}
               <div className="subtotal-div mb-3">
                 <ul className="mb-3">
                   <li>
-                    <h5>Total Before Tax
-</h5>
+                    <h5>Total Before Tax</h5>
                     <input
                       name="total_bef_tax"
                       type="text"
@@ -791,8 +851,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
                     />
                   </li>
                   <li>
-                    <h5>Total Tax Amount
-</h5>
+                    <h5>Total Tax Amount</h5>
                     <input
                       name="tax_total"
                       type="text"

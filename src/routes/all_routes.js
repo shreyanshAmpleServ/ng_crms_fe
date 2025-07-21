@@ -1,6 +1,6 @@
 export const all_routes = {
   dasshboard: "/crms/dashboard",
-
+  quotaionPdf:"/crms/quotation-pdf/:id",
   login: "/crms/login",
   /*Contact-route*/
   contacts: "/crms/contacts",

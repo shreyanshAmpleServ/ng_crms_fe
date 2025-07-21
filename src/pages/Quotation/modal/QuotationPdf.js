@@ -2,6 +2,11 @@ import { Button } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import { Margin, usePDF } from "react-to-pdf";
+import { fetchQuotationById } from "../../../redux/quotation";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import Loader from "../../../components/common/loader";
 
 const initialItem = [
   {
@@ -23,9 +28,39 @@ const initialItem = [
   },
 ];
 
-const PreviewOrder = ({ order, setOrder, formatNumber }) => {
+const PreviewQuotation = ({ setOrder, formatNumber }) => {
+  const { id } = useParams();
+   const newId = atob(decodeURIComponent(id))
   const [itemNumber, setItemNumber] = useState(initialItem);
   const [optionalItem, setOptionalItem] = useState([]);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetchQuotationById(newId));
+  }, [dispatch]);
+  const {
+    quotationDetail: order,
+    loading,
+    error,
+    success,
+  } = useSelector((state) => state.quotations);
+  function formatNumber(num) {
+    num = Number(num);
+    num = Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
+    if (num === 0 || isNaN(num)) {
+      return "0";
+    }
+    const number = parseFloat(num);
+    const [integerPart, decimalPart] = number.toString().split(".");
+    const formattedInteger = parseInt(integerPart).toLocaleString("en-IN");
+    if (decimalPart !== undefined) {
+      const fixedDecimal = parseFloat(`0.${decimalPart}`)
+        .toFixed(2)
+        .split(".")[1];
+      return `${formattedInteger}.${fixedDecimal}`;
+    }
+    return formattedInteger;
+  }
 
   React.useEffect(() => {
     if (order) {
@@ -48,7 +83,9 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
           total_amount: Number(item?.total_amount) || 0,
         }))
       );
-      setOptionalItem(order?.optional_items ? JSON.parse(order?.optional_items) : "");
+      setOptionalItem(
+        order?.optional_items ? JSON.parse(order?.optional_items) : ""
+      );
     }
   }, [order]);
 
@@ -79,14 +116,16 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
     page: { margin: Margin.MEDIUM },
   });
 
-  return (
-    <div
-      // style={{ height: "200vh" }}
-      className="offcanvas offcanvas-end offcanvas-large "
-      tabIndex={-1}
-      id="offcanvas_preview_order"
+  return (<>
+   {loading? <Loader /> :  <div
+      style={{ width: "980px", margin: "auto" ,height:"100%", overflow:"scroll" }}
+      //   style={{ height: "200vh" }}
+      //   className="offcanvas offcanvas-end offcanvas-large "
+      //   tabIndex={-1}
+      //   id="offcanvas_preview_order"
+      className="border bg-white"
     >
-      <div className=" border-bottom offcanvas-header justify-content-between">
+      <div className=" border-bottom p-1 offcanvas-header justify-content-between">
         <div className="d-flex">
           <h4>{order ? "Preview" : "Add New "} Quotation</h4>
           <span className="text-primary h5 mx-2 fw-bold">
@@ -109,9 +148,17 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
           </button>
         </div>
       </div>
-      <div ref={targetRef} className="position-relative offcanvas-body">
-        <form>
-          <div>
+      <div
+        ref={targetRef}
+        style={{height:"100%",overflow:"scroll"}}
+        className=" px-4 pb-5 position-relative offcanvas-body overflow-scroll"
+      >
+        <form className="overflow-scroll" 
+        style={{height:"100%",overflow:"scroll"}}
+        >
+          <div
+        style={{height:"100%",overflow:"scroll"}}
+        >
             <span
               style={{
                 backgroundColor:
@@ -168,7 +215,8 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
                 {/* <div className=""> <span className="fw-semibold h5" >Status : </span><span>{order?.state === "L" ? "Closed" : order?.state === "L" ? "Canceled" : order?.state === "P" ? "Pending" : "Open"}</span></div> */}
               </div>
             </div>
-            <div className="row">
+            <div className="row overflow-auto "        style={{height:"100%",overflow:"scroll"}}
+            >
               <div className="col-md-4 ">
                 <div className="text-break">
                   <label className="h5 "> Bill To </label>
@@ -219,7 +267,7 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
               <div>
                 <div className="col-md-12 mt-4 ">
                   <div className="mb-1 d-flex justify-content-between">
-                    <label className="h4 fw-bold">Quotaion items</label>
+                    <label className="h4 fw-bold">Quotaion Line Items</label>
                   </div>
                 </div>
                 <div className="table-responsive">
@@ -239,32 +287,32 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
                     <tbody>
                       {itemNumber.length &&
                         itemNumber?.map((i, index) => (
-                          <tr>
-                            <td>
+                            <tr   className={i?.is_optional === "Y" ? "bg-optional" : ""}>
+                            <td  className={i?.is_optional === "Y" ? "bg-optional" : ""}>
                               <div className="input-table input-table-descripition">
                                 {i?.item_name}
                               </div>
                             </td>
 
-                            <td>
+                            <td  className={i?.is_optional === "Y" ? "bg-optional" : ""}>
                               <div className="input-table">{i?.quantity}</div>
                             </td>
 
-                            <td>
+                            <td  className={i?.is_optional === "Y" ? "bg-optional" : ""}>
                               <div className="input-table">{i?.unit_price}</div>
                             </td>
 
-                            <td>
+                            <td  className={i?.is_optional === "Y" ? "bg-optional" : ""}>
                               <div className="input-table">
                                 {formatNumber(i?.rate)}
                               </div>
                             </td>
-                            <td>
+                            <td  className={i?.is_optional === "Y" ? "bg-optional" : ""}>
                               <div className="input-table">
                                 {i?.disc_prcnt}%
                               </div>
                             </td>
-                            <td>
+                            <td  className={i?.is_optional === "Y" ? "bg-optional" : ""}>
                               <div className="input-table">
                                 {formatNumber(i?.total_bef_disc)}
                               </div>
@@ -274,7 +322,7 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
                                 {formatNumber(i?.line_tax)} ({i?.tax_per}%)
                               </div>
                             </td>
-                            <td>
+                            <td style={i?.is_optional === "Y" ? { backgroundColor: "red" } : {}}>
                               <div className="input-table fw-bold">
                                 {formatNumber(i?.total_amount)}
                               </div>
@@ -328,85 +376,75 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
                 </ul>
               </div>
               {/* Optional Items  */}
+              {/* {optionalItem?.length > 0 && <div>
               <div className="col-md-12 mt-2 ">
-                  <div className="mb-1 d-flex justify-content-between">
-                    <label className="h4 fw-bold">Optional Items</label>
-                  </div>
+                <div className="mb-1 d-flex justify-content-between">
+                  <label className="h4 fw-bold">Optional Items</label>
                 </div>
+              </div>
               <div className="table-responsive">
-        <table className="table table-view">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Rate</th>
-              {/* <th>Disc</th>
-              <th>Aft disc</th>
-              <th>Tax</th>
-              <th>Total Amt</th> */}
-            </tr>
-          </thead>
-          <tbody>
-            {optionalItem?.length > 0 &&
-              optionalItem?.map((i, index) => (
-                <tr>
-                  <td>
-                    <div className="input-table input-table-descripition">
-                     {i?.item_name}
-                    </div>
-                  </td>
-                  
-                  <td>
-                    <div className="input-table">
-                     {i?.quantity}
-                    </div>
-                  </td>
+                <table className="table table-view">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Qty</th>
+                      <th>Price</th>
+                      <th>Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {optionalItem?.length > 0 &&
+                      optionalItem?.map((i, index) => (
+                        <tr>
+                          <td>
+                            <div className="input-table input-table-descripition">
+                              {i?.item_name}
+                            </div>
+                          </td>
 
-                  <td>
-                    <div className="input-table">
-                    {formatNumber(i?.unit_price)}
+                          <td>
+                            <div className="input-table">{i?.quantity}</div>
+                          </td>
+
+                          <td>
+                            <div className="input-table">
+                              {formatNumber(i?.unit_price)}
+                            </div>
+                          </td>
+
+                          <td>
+                            <div className="input-table">
+                              {formatNumber(i?.rate)}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+              </div>} */}
+
+             {order?.terms && <div>
+                <div className="bg-gray-100 p-2 mb-2 fw-bold">
+                  Terms & Conditions
+                </div>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: order?.terms && JSON.parse(order?.terms),
+                  }}
+                />
+              </div>}
+              {order?.other_items &&
+                JSON.parse(order?.other_items)?.map((value) => (
+                  <div>
+                    <div className="bg-gray-100 p-2 mb-2 fw-bold">
+                      {value?.category_name}
                     </div>
-                  </td>
-                  
-                  <td>
-                    <div className="input-table">
-                  {formatNumber(i?.rate)}
-                    </div>
-                  </td>
-                  {/* <td>
-                    <div className="input-table">
-                    {i?.disc_prcnt}%
-                    </div>
-                  </td>
-                  <td>
-                    <div className="input-table">
-                    {formatNumber(i?.total_bef_disc)}
-                    </div>
-                  </td>
-                  <td style={{width:"auto"}}>
-                    <div className="input-table">
-                    {formatNumber(i?.line_tax)} ({i?.tax_per}%)
-                    </div>
-                  </td>
-                  <td>
-                    <div className="input-table fw-bold">
-                     {formatNumber(i?.total_amount)}
-                    </div>
-                  </td> */}
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <div className="bg-gray-100 p-2 mb-2 fw-bold">Terms & Conditions</div>
-      <div dangerouslySetInnerHTML={{ __html: order?.terms && JSON.parse(order?.terms) }} />
-      </div>
-      {order?.other_items && JSON.parse(order?.other_items)?.map((value)=> <div>
-        <div className="bg-gray-100 p-2 mb-2 fw-bold">{value?.category_name}</div>
-      {value?.crms_template_items?.map((item)=><div className="mb-2">{item?.description}</div>)}
-      </div>)}
+                    {value?.crms_template_items?.map((item) => (
+                      <div className="mb-2">{item?.description}</div>
+                    ))}
+                  </div>
+                ))}
               {/* Attachment 1  */}
               {/* <div className="col-md-6">
               <div className="mb-3">
@@ -467,8 +505,9 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>}
+    </>
   );
 };
 
-export default PreviewOrder;
+export default PreviewQuotation;

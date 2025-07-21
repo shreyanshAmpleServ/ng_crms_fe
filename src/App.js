@@ -20,6 +20,7 @@ import {
 } from "./routes/router.link";
 import NoPermissionPage from "./components/common/noPermission";
 import RedirectCRMS from "./pages/Redirection";
+import PreviewQuotation from "./pages/Quotation/modal/QuotationPdf";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ console.log("Route :",filteredRoutes)
       <Router>
         {/* {loading && <Loader />} */}
         <Routes>
+        <Route path="/crms/quotation-pdf/:id" element={<PreviewQuotation />} />
           {/* Public Layout and Routes */}
            {!isPermission &&  <Route path="/" element={<PublicLayout />}>
               <Route index element={<RedirectCRMS />} />

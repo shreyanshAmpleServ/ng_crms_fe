@@ -156,6 +156,7 @@
 			padding: 7px 14px;
 			font-weight: $font-weight-medium;
 			color: #424242;
+			z-index: 1050 !important;
 		}
 		.dropdown-menu .dropdown-item i {
 			font-size: $font-size-16;

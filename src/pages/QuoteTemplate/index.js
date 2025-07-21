@@ -124,7 +124,7 @@ const QuoteTemplate = () => {
             >
               <i className="ti ti-trash text-danger"></i> Delete
             </Link>}
-             {/* <Link
+             <Link
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="offcanvas"
@@ -133,7 +133,7 @@ const QuoteTemplate = () => {
             >
               <i className="ti ti-eye text-secondary"></i> Preview
             </Link>
-             <Link
+             {/* <Link
               className="dropdown-item edit-popup"
               to="#"
               // data-bs-toggle="offcanvas"
@@ -362,7 +362,7 @@ const QuoteTemplate = () => {
         </div>
       </div>
       <AddQuotationModal order={selectedOrder} setOrder={setSelectedOrder} />
-      {/* <PreviewOrder order={selectedOrder} setOrder={setSelectedOrder} formatNumber={formatNumber}  /> */}
+      <PreviewOrder order={selectedOrder} setOrder={setSelectedOrder} formatNumber={formatNumber}  />
 
       {/* <AddFile data={null} setData={setSelectedOrder} type={"QuoteTemplate"} type_id={selectedOrder?.id} type_name={selectedOrder?.order_code} /> */}
 
