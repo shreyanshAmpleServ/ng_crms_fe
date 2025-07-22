@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useCallback,useMemo  } from "react";
 import { Link, useParams } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import {
@@ -19,7 +19,9 @@ import ActivitiesKanban from "./ActivitiessKanban.js";
 import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent.js";
-
+import ExportData from "../../components/datatable/ExportData.js";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
 const Activities = () => {
   // const data = activities_data;
   const {name} = useParams()
@@ -27,9 +29,12 @@ const Activities = () => {
   const [filter, setFilter] = useState("");
   const [newFilter,setNewFilter] = useState(name)
   const [isLoading,setIsLoading] = useState(false)
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");  
   const [activity, setActivity] = useState();
   const [paginationData , setPaginationData] = useState()
+    const [search, setSearch] = useState("");
+      const [searchText, setSearchText] = useState("");
+      const [sortOrder, setSortOrder] = useState("ascending"); // Sorting order
   const [selectedDateRange, setSelectedDateRange] = useState({
       startDate: moment().subtract(180, "days"),
       endDate: moment(),
@@ -68,13 +73,18 @@ const Activities = () => {
    };
 
 
-  const data = activities?.data?.map((i) => ({
-    ...i,
-    due_date: i?.due_date.slice(0, 10),
-    owner: i?.owner,
-    activity_type: i?.activity_type,
-    created_date: i?.createddate || new Date(),
-  }));
+ const data = (activities?.data || []).map((i) => ({
+  ...i,
+  due_date: i?.due_date ? i.due_date.slice(0, 10) : '',  // safe fallback
+  owner: i?.owner,
+  activity_type: i?.activity_type,
+  created_date: i?.createddate
+    ? i.createddate.slice(0, 10)
+    : new Date().toISOString().slice(0, 10), // fallback to today
+}));
+
+
+
 
 
 const activityTypes = useSelector((state) => state.activities.activityTypes);
@@ -88,6 +98,12 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
   const isDelete = isAdmin || allPermissions?.delete
 
   const columns = [
+     {
+            title: "Sr.No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
     {
       title: "Title",
       dataIndex: "title",
@@ -114,11 +130,19 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
       sorter: (a, b) => a.activity_type.length - b.activity_type.length,
     },
 
-    {
-      title: "Due Date",
-      dataIndex: "due_date",
-      sorter: (a, b) => a.due_date.length - b.due_date.length,
-    },
+   {
+  title: "Due Date",
+  dataIndex: "due_date",
+  render: (text) => (
+    <div>{text ? moment(text).format("DD-MM-YYYY") : "N/A"}</div>
+  ),
+  sorter: (a, b) => {
+    const dateA = a.due_date ? new Date(a.due_date) : new Date(0);
+    const dateB = b.due_date ? new Date(b.due_date) : new Date(0);
+    return dateA - dateB;
+  },
+},
+
     {
       title: "Owner",
       dataIndex: "owner",
@@ -145,7 +169,7 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
     {
       title: "Created At",
       dataIndex: "created_date",
-      render: (text) => <div>{moment(text).format("DD-MM-YYYY HH:mm A")}</div>,
+      render: (text) => <div>{moment(text).format("DD-MM-YYYY ")}</div>,
       sorter: (a, b) => a.created_date.length - b.created_date.length,
     },
    ...((isDelete || isUpdate) ? [ {
@@ -165,7 +189,7 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
               className="dropdown-item"
               to="#"
               data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add"
+              data-bs-target="#offcanvas_add_activities"
               onClick={() => setActivity(a)}
             >
               <i className="ti ti-edit text-blue" /> Edit
@@ -185,6 +209,85 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
       ),
     }]:[])
   ];
+
+
+  const filteredData = useMemo(() => {
+    let data = activities?.data || [];
+    
+    if (sortOrder === "ascending") {
+      data = [...data].sort(
+        (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
+      );
+    } else if (sortOrder === "descending") {
+      data = [...data].sort(
+        (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
+      );
+    }
+    return data;
+  }, [searchText, sortOrder, activities, columns]);
+
+
+  // ✅ Export to Excel
+  const exportToExcel = useCallback(() => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "data");
+    XLSX.writeFile(workbook, "Activities.xlsx");
+  }, [filteredData]);
+
+  // ✅ Export to PDF
+  const exportToPDF = useCallback(() => {
+    const doc = new jsPDF({ orientation: "landscape" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    const title = "Exported Activities";
+    doc.setFontSize(16);
+    const textWidth = doc.getTextWidth(title);
+    const x = (pageWidth - textWidth) / 2;
+    doc.text(title, x, 15);
+
+    const tableColumns = columns.filter(col => col.title !== "Actions");
+    const head = [tableColumns.map(col => col.title)];
+
+    const body = filteredData.map((row, index) =>
+      tableColumns.map(col => {
+        if (col.title === "Sr.No.") {
+          return (
+            (paginationData?.currentPage - 1) * paginationData?.pageSize +
+            index +
+            1
+          );
+        }
+        return row[col.dataIndex] ?? "";
+      })
+    );
+
+    doc.autoTable({
+      head,
+      body,
+      startY: 25,
+      styles: {
+        fontSize: 7,
+        cellPadding: 1,
+        overflow: "linebreak",
+      },
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255,
+        fontSize: 8,
+        halign: "center",
+      },
+      bodyStyles: {
+        halign: "center",
+        valign: "middle",
+      },
+      theme: "grid",
+      tableWidth: "auto",
+      pageBreak: "auto",
+    });
+
+    doc.save("Activities.pdf");
+  }, [filteredData, columns, paginationData]);
 
   return (
     <>
@@ -232,15 +335,13 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                     </div>
                   {isCreate &&  <div className="col-sm-8">
                       <div className="text-sm-end">
-                        <Link
-                          to="#"
-                          className="btn btn-primary"
-                          data-bs-toggle="offcanvas"
-                          data-bs-target="#offcanvas_add"
-                        >
-                          <i className="ti ti-square-rounded-plus me-2" />
-                          Add
-                        </Link>
+                         <ExportData
+                      exportToPDF={exportToPDF}
+                      exportToExcel={exportToExcel}
+                      label="Add"
+                      id="offcanvas_add_activities"
+                      isCreate={isCreate}
+                    />
                       </div>
                     </div>}
                   </div>
@@ -823,11 +924,12 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                   {isView ? <div className="table-responsive custom-table">
                   {view === "list" ? ( 
                     <Table
+                       dataSource={filteredData}
                       columns={columns}
-                      dataSource={data}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange} 
+                    loading={loading}
+                    isView={isView}
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange} 
                     />
                   ) : (
                     <ActivitiesGrid data={activities?.data} />
