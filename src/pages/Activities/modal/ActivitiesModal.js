@@ -76,8 +76,8 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       status: "",
       is_reminder: "N",
       type_id: null,
-      due_date: dayjs().format("DD-MM-YYYY"),
-      due_time: dayjs().format("HH:mm:ss"),
+      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      due_time: dayjs(new Date()).format("HH:mm:ss"),
       reminder_time: "",
       reminder_type: "",
       owner_id: null,
@@ -88,59 +88,56 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       contact_id: null,
       company_id: null,
       project_id: null,
+      
       createdby: 1,
     },
   });
   const isReminder = watch("is_reminder");
 
-  React.useEffect(
-    () => {
-      if (activity) {
-        reset({
-          title: activity?.title || "",
-          status: activity?.status || "",
-          type_id: activity?.type_id || null,
-due_date: activity.due_date
-        ? dayjs(activity.due_date).format("DD-MM-YYYY")
-        : dayjs().format("DD-MM-YYYY"),          due_time: activity?.due_time || dayjs().format("HH:mm:ss"),
-          reminder_time: activity?.reminder_time || "",
-          reminder_type: activity?.reminder_type || "",
-          owner_id: activity?.owner_id || null,
-          owner_name: activity?.owner_name || "",
-          is_reminder: activity?.is_reminder || "N",
-          description: activity?.description || "",
-          deal_id: activity?.deal_id || null,
-          contact_id: activity?.contact_id || null,
-          company_id: activity?.company_id || null,
-          project_id: activity?.project_id || null,
-          priority: activity?.priority || 0,
-        });
-        setSelectedType(activity?.type_id);
-      } else {
-        reset({
-          title: "",
-          status: "",
-          type_id: null,
-          due_date: new Date(),
-          due_time: dayjs().format("HH:mm:ss"),
-          reminder_time: "",
-          reminder_type: "",
-          owner_id: null,
-          owner_name: "",
-          is_reminder: "N",
-          description: "",
-          deal_id: null,
-          priority: 0,
-          contact_id: null,
-          project_id: null,
-          createdby: 1,
-        });
+ useEffect(() => {
+  if (activity?.type_id) {
+    reset({
+      title: activity?.title || "",
+      status: activity?.status || "",
+      type_id: activity?.type_id || null,
+      due_date: activity?.due_date ? dayjs(new Date(activity.due_date)) : dayjs(), // 👈 FIX
+      due_time: activity?.due_time ? dayjs(new Date(activity.due_time)) : dayjs(), // 👈 FIX
+      reminder_time: activity?.reminder_time || "",
+      reminder_type: activity?.reminder_type || "",
+      owner_id: activity?.owner_id || null,
+      owner_name: activity?.owner_name || "",
+      is_reminder: activity?.is_reminder || "N",
+      description: activity?.description || "",
+      deal_id: activity?.deal_id || null,
+      contact_id: activity?.contact_id || null,
+      company_id: activity?.company_id || null,
+      project_id: activity?.project_id || null,
+      priority: activity?.priority || 0,
+    });
+  } else {
         setSelectedType(null);
-      }
-    },
-    [activity],
-    reset
-  );
+
+    reset({
+      title: "",
+      status: "",
+      type_id: null,
+      due_date: dayjs(),
+      due_time: dayjs(),
+      reminder_time: "",
+      reminder_type: "",
+      owner_id: null,
+      owner_name: "",
+      is_reminder: "N",
+      description: "",
+      deal_id: null,
+      priority: 0,
+      contact_id: null,
+      project_id: null,
+      createdby: 1,
+    });
+  }
+}, [activity, reset]);
+
   React.useEffect(() => {
     dispatch(fetchContacts({ search: searchValue }));
   }, [dispatch, searchValue]);
@@ -189,37 +186,37 @@ due_date: activity.due_date
     { value: "harborview", label: "HarborView" },
   ];
 
-  const onSubmit = async (data) => {
-    const finalData = {
-      ...data,
-      type_id: selectedType,
-    };
-    const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
-    try {
-      activity
-        ? await dispatch(
-            updateActivities({
-              id: activity.id,
-              activityData: {
-                ...finalData,
-                due_date: new Date(finalData.due_date),
-                due_time: new Date(finalData.due_time),
-              },
-            })
-          ).unwrap()
-        : await dispatch(
-            addActivities({
-              ...finalData,
-              due_time: new Date(finalData.due_time),
-            })
-          ).unwrap();
-      closeButton.click();
-      reset();
-      setActivity(null);
-    } catch (error) {
-      closeButton.click();
-    }
+ const onSubmit = async (data) => {
+  const finalData = {
+    ...data,
+    type_id: selectedType,
+    due_date: dayjs(data.due_date, "DD-MM-YYYY").toISOString(),
+        due_time: dayjs(data.due_time, "HH:mm:ss").toISOString(),
+
   };
+
+  const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+
+  try {
+    if (activity) {
+      await dispatch(
+        updateActivities({ id: activity.id, activityData: finalData })
+      ).unwrap();
+    } else {
+      await dispatch(addActivities(finalData)).unwrap();
+    }
+
+    closeButton?.click();
+    reset(activity);
+    setActivity(null);
+
+  } catch (error) {
+    console.error(error);
+    closeButton?.click();
+  }
+};
+
+
 
   const deleteData = () => {
     if (activity) {
