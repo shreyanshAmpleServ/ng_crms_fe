@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 // Fetch All quotations
 export const fetchquotations = createAsyncThunk(
@@ -144,6 +145,29 @@ export const fetchQuotationById = createAsyncThunk(
     }
   },
 );
+// Fetch a Single order by ID
+export const fetchQuotationpPublicById = createAsyncThunk(
+  "quotations/fetchQuotationpPublicById",
+  async ({id,token}, thunkAPI) => {
+    console.log("Token : ",token)
+    const apiClient1 = axios.create({
+      baseURL: process.env.REACT_APP_API_BASE_URL || "233", // Set your API base URL
+      withCredentials: true,
+    });
+    try {
+      const response = await apiClient1.get(`/v1/quotation-public/${id}`, {
+         headers:{
+           Authorization:`Bearer ${token}`}
+        }
+      );
+      return response.data; // Returns the order details
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch quotation",
+      );
+    }
+  },
+);
 // Fetch a Sales Type
 export const fetchSalesType = createAsyncThunk(
   "quotations/fetchSalesType",
@@ -275,6 +299,18 @@ const quotationSlice = createSlice({
         state.quotationDetail = action.payload.data;
       })
       .addCase(fetchQuotationById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchQuotationpPublicById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchQuotationpPublicById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.quotationDetail = action.payload.data;
+      })
+      .addCase(fetchQuotationpPublicById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })

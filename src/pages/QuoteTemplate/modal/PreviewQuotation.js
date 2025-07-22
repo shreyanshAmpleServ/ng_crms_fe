@@ -209,7 +209,7 @@ setItemNumber(order?.quotation_items?.map((item)=>({
             </tr>
           </thead>
           <tbody>
-            {itemNumber.length &&
+            {itemNumber?.length > 0  &&
               itemNumber?.map((i, index) => (
                 <tr>
                   <td>

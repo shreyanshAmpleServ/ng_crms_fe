@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Select from "react-select";
 import { fetchProducts } from "../../../redux/products";
 import DefaultEditor from "react-simple-wysiwyg";
+import ReactQuill from "react-quill";
 
 const ManageOrderItemModal = ({
   itemNumber,
@@ -234,11 +235,29 @@ const ManageOrderItemModal = ({
         <div>
           <div className="card p-3 mb-3">
             {/* <div className="mb-2 d-flex"> */}
-            <DefaultEditor
+            {/* <DefaultEditor
   style={{ height: "250px" }} 
   className="summernote"
   value={termsItems}
   onChange={(content) => setTermsItems(content.target.value )}
+/> */}
+<ReactQuill
+  value={termsItems}
+  onChange={setTermsItems}
+  // onChange={(content) => setTermsItems(content.target.value )}
+  style={{ height: "350px", overflow: "scroll" }}
+  modules={{
+    toolbar: [
+      [{ header: [1, 2,3,4,5,6, false] }],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
+      ['clean'],
+      ['code-block', 'blockquote'],
+      [{ 'align': [] }],
+      ['table'], // Table option if using custom modules/plugins
+    ],
+  }}
 />
               {/* <textarea
                 className="form-control"
