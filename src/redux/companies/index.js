@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast";
 
 // Fetch All Companies
 export const fetchCompanies = createAsyncThunk(
@@ -7,20 +8,20 @@ export const fetchCompanies = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const params = {
-        search:datas?.search || "",
+        search: datas?.search || "",
         page: datas?.page || "",
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
-        endDate : datas?.endDate?.toISOString() || "",
-      }
-      const response = await apiClient.get("/v1/companies",{params});
-      return response.data; // Returns a list of companies
+        endDate: datas?.endDate?.toISOString() || "",
+      };
+      const response = await apiClient.get("/v1/companies", { params });
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch companies",
+        error.response?.data || "Failed to fetch companies"
       );
     }
-  },
+  }
 );
 
 // Add a Company
@@ -29,26 +30,22 @@ export const addCompany = createAsyncThunk(
   async (companyData, thunkAPI) => {
     try {
       const response = await apiClient.post("/v1/companies", companyData);
-      return response.data; // Returns the newly added company
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add company",
+        error.response?.data || "Failed to add company"
       );
     }
-  },
+  }
 );
 
 // Update a Company
 export const updateCompany = createAsyncThunk(
   "companies/updateCompany",
-  async ({id,data}, thunkAPI) => {
-    console.log("Company Data : ", ...data)
-    // const id = companyData.get("id");
-    // companyData.delete("id");
-
+  async ({ id, data }, thunkAPI) => {
     try {
       const response = await apiClient.put(`/v1/companies/${id}`, data);
-      return response.data; // Returns the updated company
+      return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
         return thunkAPI.rejectWithValue({
@@ -57,10 +54,10 @@ export const updateCompany = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update company",
+        error.response?.data || "Failed to update company"
       );
     }
-  },
+  }
 );
 
 // Delete a Company
@@ -75,10 +72,10 @@ export const deleteCompany = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete company",
+        error.response?.data || "Failed to delete company"
       );
     }
-  },
+  }
 );
 
 // Fetch a Single Company by ID
@@ -87,13 +84,13 @@ export const fetchCompanyById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/companies/${id}`);
-      return response.data; // Returns the company details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch company",
+        error.response?.data || "Failed to fetch company"
       );
     }
-  },
+  }
 );
 
 const companySlice = createSlice({
@@ -120,10 +117,12 @@ const companySlice = createSlice({
       .addCase(fetchCompanies.fulfilled, (state, action) => {
         state.loading = false;
         state.companies = action.payload.data;
+        toast.success("Companies fetched successfully");
       })
       .addCase(fetchCompanies.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch companies");
       })
       .addCase(addCompany.pending, (state) => {
         state.loading = true;
@@ -131,12 +130,17 @@ const companySlice = createSlice({
       })
       .addCase(addCompany.fulfilled, (state, action) => {
         state.loading = false;
-        state.companies ={...state.companies, data: [action.payload.data, ...state.companies.data]};
+        state.companies = {
+          ...state.companies,
+          data: [action.payload.data, ...state.companies.data],
+        };
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Company added successfully");
       })
       .addCase(addCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to add company");
       })
       .addCase(updateCompany.pending, (state) => {
         state.loading = true;
@@ -145,18 +149,23 @@ const companySlice = createSlice({
       .addCase(updateCompany.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.companies.data?.findIndex(
-          (company) => company.id === action.payload.data.id,
+          (company) => company.id === action.payload.data.id
         );
         if (index !== -1) {
           state.companies.data[index] = action.payload.data;
         } else {
-          state.companies ={...state.companies , data: [action.payload.data, ...state.companies.data]};
+          state.companies = {
+            ...state.companies,
+            data: [action.payload.data, ...state.companies.data],
+          };
         }
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Company updated successfully");
       })
       .addCase(updateCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to update company");
       })
       .addCase(deleteCompany.pending, (state) => {
         state.loading = true;
@@ -165,14 +174,16 @@ const companySlice = createSlice({
       .addCase(deleteCompany.fulfilled, (state, action) => {
         state.loading = false;
         const filteredData = state.companies.data.filter(
-          (company) => company.id !== action.payload.data.id,
+          (company) => company.id !== action.payload.data.id
         );
-        state.companies = {...state.companies,data:filteredData}
+        state.companies = { ...state.companies, data: filteredData };
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Company deleted successfully");
       })
       .addCase(deleteCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to delete company");
       })
       .addCase(fetchCompanyById.pending, (state) => {
         state.loading = true;
@@ -181,10 +192,12 @@ const companySlice = createSlice({
       .addCase(fetchCompanyById.fulfilled, (state, action) => {
         state.loading = false;
         state.companyDetail = action.payload.data;
+        toast.success("Company details loaded");
       })
       .addCase(fetchCompanyById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to load company details");
       });
   },
 });

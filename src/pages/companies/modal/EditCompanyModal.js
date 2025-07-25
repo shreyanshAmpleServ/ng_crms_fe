@@ -75,7 +75,7 @@ const EditCompanyModal = ({ company }) => {
     //   console.log(`${key}:`, value);
     // }
 
-    const closeButton = document.getElementById("close_company_edit_btn");
+    const closeButton = document.getElementById("offcanvas_edit_company");
     try {
       await dispatch(updateCompany({id:company.id,data:formData}), );
       closeButton.click();
@@ -99,7 +99,7 @@ const EditCompanyModal = ({ company }) => {
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
-          id="close_company_edit_btn"
+          id="offcanvas_edit_company"
         >
           <i className="ti ti-x" />
         </button>

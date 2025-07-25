@@ -112,15 +112,20 @@ const LeadList = () => {
       sorter: (a, b) => a.text == 1 ? "Accounts" : "Contacts" - b.text == 1 ? "Accounts" : "Contacts",
     },
     {
-      title: "Related To User",
-      dataIndex: "crms_m_contact_related_to",
-      render: (text, record, index) => (
-        <div>
-          {`${record?.crms_m_contact_related_to?.firstName + " " + record?.crms_m_contact_related_to?.lastName} `}
-        </div>
-      ),
-      sorter: (a, b) => a.email.length - b.email.length,
-    },
+  title: "Related To User",
+  dataIndex: "crms_m_contact_related_to",
+  render: (text, record) => (
+    <div>
+      {`${record?.crms_m_contact_related_to?.firstName || ""} ${record?.crms_m_contact_related_to?.lastName || ""}`}
+    </div>
+  ),
+  sorter: (a, b) => {
+    const nameA = `${a?.crms_m_contact_related_to?.firstName || ""} ${a?.crms_m_contact_related_to?.lastName || ""}`.toLowerCase();
+    const nameB = `${b?.crms_m_contact_related_to?.firstName || ""} ${b?.crms_m_contact_related_to?.lastName || ""}`.toLowerCase();
+    return nameA.localeCompare(nameB);
+  },
+},
+
     // {
     //   title: "Lead Status",
     //   dataIndex: "crms_m_lost_reasons",
@@ -479,7 +484,7 @@ const LeadList = () => {
                           setSelectedCategory(category)
                         }}
                       />
-                      {/* <ViewIconsToggle view={view} setView={setView} /> */}
+                      <ViewIconsToggle view={view} setView={setView} />
                     </div>
                   </div>
 

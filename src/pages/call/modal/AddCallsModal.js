@@ -195,7 +195,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
             ? "Scheduled"
             : "Completed",
         call_type_id: callsDetails?.call_type_id || null,
-        call_start_date: new Date(callsDetails?.call_start_date) || new Date(),
+        call_start_date: dayjs(callsDetails?.call_start_date) || dayjs().format("DD-MM-YYYY"),
         call_start_time:
           dayjs(callsDetails?.call_start_time) || dayjs().format("HH:mm:ss"),
         duration_minutes: callsDetails?.duration_minutes || null,
@@ -264,35 +264,44 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
   }, [dispatch, callFor, watch("related_to")]);
   
   const onSubmit = async (data) => {
-    const date = dayjs(data.call_start_date, "DD-MM-YYYY");
-    const timeStr = data.call_start_time;
-    const combinedDateTime = dayjs(`${date.format("YYYY-MM-DD")}T${timeStr}`);
- 
-    const closeButton = document.getElementById("offcanvas_add_calls_close");
-    const finalData = {
-      ...data,
-      call_for_contact_id:
-        callFor === "Accounts" ? data.call_for_contact_id : null,
-      call_for_lead_id: callFor === "Leads" ? data.call_for_lead_id : null,
-      call_for_project_id:
-        callFor === "Projects" ? data.call_for_project_id : null,
-        call_start_date: combinedDateTime.toISOString(),
-        call_start_time: combinedDateTime.toISOString(),
-      ongoing_callStatus: isScheduled ? "Scheduled" : "Completed",
-    };
-    try {
-      await dispatch(
-        callsDetails
-          ? updateCalls({ id: callsDetails.id, callData: { ...finalData } })
-          : addCalls(finalData)
-      ).unwrap();
-      reset();
-      closeButton.click();
-      setCallDetails(null);
-    } catch (error) {
-      closeButton.click();
-    }
+  // Parse date and time separately
+  const date = dayjs(data.call_start_date, "DD-MM-YYYY");
+  const time = dayjs(data.call_start_time, "HH:mm:ss");
+
+  // Combine date and time into one dayjs object
+  // Set hours, minutes, seconds from time into date
+  const combinedDateTime = date
+    .hour(time.hour())
+    .minute(time.minute())
+    .second(time.second());
+
+  const closeButton = document.getElementById("offcanvas_add_calls_close");
+
+  const finalData = {
+    ...data,
+    call_for_contact_id: callFor === "Accounts" ? data.call_for_contact_id : null,
+    call_for_lead_id: callFor === "Leads" ? data.call_for_lead_id : null,
+    call_for_project_id: callFor === "Projects" ? data.call_for_project_id : null,
+    call_start_date: combinedDateTime.toISOString(),  // valid ISO string for date+time
+    call_start_time: combinedDateTime.toISOString(),  // send same ISO for time if needed, or only time string if backend expects
+    ongoing_callStatus: isScheduled ? "Scheduled" : "Completed",
   };
+
+  try {
+    await dispatch(
+      callsDetails
+        ? updateCalls({ id: callsDetails.id, callData: { ...finalData } })
+        : addCalls(finalData)
+    ).unwrap();
+
+    reset();
+    closeButton.click();
+    setCallDetails(null);
+  } catch (error) {
+    closeButton.click();
+  }
+};
+
   useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add_calls");
     if (offcanvasElement) {

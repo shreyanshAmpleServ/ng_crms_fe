@@ -367,6 +367,7 @@ React.useEffect(()=>{
                       label="Add"
                       isCreate={isCreate}
                       id="offcanvas_add_company"
+                      
                     />
                     {/* Export End & Add Button  */}
                   </div>

@@ -51,14 +51,15 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       name: "",
       status: "",
       type: "",
-      start_date: dayjs(new Date()).format("DD-MM-YYYY"),
-      end_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      start_date: dayjs().toISOString(),
+end_date: dayjs().toISOString(),
+
       exp_revenue: "",
       camp_cost: "",
       owner_id: null,
       owner_name: "",
       description: "",
-      lead_ids: [],
+      // lead_id: [],
       contact_ids: [],
       is_active: "Y",
     },
@@ -71,20 +72,24 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
           name: campaign?.name || "",
           status: campaign?.status || "",
           type: campaign?.type || null,
-          start_date:
-            campaign?.start_date || dayjs(new Date()).format("DD-MM-YYYY"),
-          end_date:
-            campaign?.end_date || dayjs(new Date()).format("DD-MM-YYYY"),
+          start_date: campaign?.start_date
+  ? dayjs(campaign.start_date).toISOString()
+  : dayjs().toISOString(),
+
+end_date: campaign?.end_date
+  ? dayjs(campaign.end_date).toISOString()
+  : dayjs().toISOString(),
+
           exp_revenue: campaign?.exp_revenue || "",
           camp_cost: campaign?.camp_cost || "",
           owner_id: campaign?.owner_id || null,
           description: campaign?.description || "",
           owner_name: campaign?.owner_name || "",
-          lead_ids:
-            campaign?.campaign_leads?.map((data) => ({
-              label: data.title,
-              value: data.id,
-            })) || [],
+          // lead_id:
+          //   campaign?.campaign_leads?.map((data) => ({
+          //     label: data.title,
+          //     value: data.id,
+          //   })) || [],
           contact_ids:
             campaign?.campaign_contact?.map((data) => ({
               label: `${data?.firstName} ${data?.lastName}`,
@@ -104,7 +109,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
           owner_id: null,
           owner_name: "",
           description: "",
-          lead_ids: [],
+          // lead_id: [],
           contact_ids: [],
           is_active: "Y",
         });
@@ -119,12 +124,12 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
   }, [dispatch, searchValue]);
   const { loading } = useSelector((state) => state?.activities);
   React.useEffect(() => {
-    dispatch(fetchLeads());
+    // dispatch(fetchLeads());
     dispatch(fetchUsers());
   }, [dispatch]);
 
   const { deals } = useSelector((state) => state.deals);
-  const { leads } = useSelector((state) => state.leads);
+  // const { leads } = useSelector((state) => state.leads);
   const { contacts } = useSelector((state) => state.contacts);
   const { users } = useSelector((state) => state.users);
 
@@ -132,9 +137,10 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
     const finalData = {
       ...data,
       contact_ids: data.contact_ids?.map((contact) => contact.value),
-      lead_ids: data.lead_ids?.map((contact) => contact.value),
-      start_date: new Date(data.start_date),
-      end_date: new Date(data.end_date),
+      // lead_id: data.lead_id?.map((contact) => contact.value),
+  start_date: new Date(),
+end_date: new Date(),
+
     };
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -163,7 +169,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
     }
   };
   useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_add");
+    const offcanvasElement = document.getElementById("offcanvas_edit");
     if (offcanvasElement) {
       const handleModalClose = () => {
         setCampaign(null);
@@ -187,7 +193,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       <div
         className="offcanvas offcanvas-end offcanvas-large"
         tabIndex={-1}
-        id="offcanvas_add_compaign"
+        id="offcanvas_edit"
       >
         <div className="offcanvas-header border-bottom">
           <h4>{campaign ? "Update " : "Add New "} Campaign </h4>
@@ -579,7 +585,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                       <label className="col-form-label">Leads</label>
                     </div>
                     <Controller
-                      name="lead_ids"
+                      name="lead_id"
                       control={control}
                       defaultValue={[]} 
                       render={({ field }) => {

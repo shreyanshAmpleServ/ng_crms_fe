@@ -81,8 +81,9 @@ const ProjectsGrid = ({ data  }) => {
                           />
                         ) : (
                           <div
-                            className="text-light bg-danger h1 d-flex justify-content-center align-items-center pt-2"
-                            style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px" }}
+                            className="text-light bg-danger h1 d-flex justify-content-center align-items-center pt-2 "
+                            style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px", display:"flex", position: "relative", // ✅ Fix
+                              zIndex: 1,   }}
                           >
                             <i className="ti ti-pdf" />
                           </div>

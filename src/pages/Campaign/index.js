@@ -145,7 +145,7 @@ const CampaignsList = () => {
       //     )}
       //   </>
       // ),
-      sorter: (a, b) => a.activity_type.length - b.activity_type.length,
+      sorter: (a, b) => a.type.length - b.type.length,
     },
     {
       title: "Status",
@@ -162,7 +162,7 @@ const CampaignsList = () => {
       />
       {text}
     </div>,
-      sorter: (a, b) => a.owner.length - b.owner.length,
+      sorter: (a, b) => a.status.length - b.status.length,
     },
     {
       title: "Created At",
@@ -187,7 +187,7 @@ const CampaignsList = () => {
               className="dropdown-item"
               to="#"
               data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add"
+              data-bs-target="#offcanvas_edit"
               onClick={() => setCampaign(a)}
             >
               <i className="ti ti-edit text-blue" /> Edit

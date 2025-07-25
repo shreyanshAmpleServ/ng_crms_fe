@@ -113,6 +113,8 @@ const AddCompanyModal = () => {
           <i className="ti ti-x" />
         </button>
       </div>
+
+      
       <div className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <input

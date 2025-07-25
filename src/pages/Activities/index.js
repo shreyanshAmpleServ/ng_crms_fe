@@ -354,7 +354,7 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
                     <div className="d-flex align-items-center justify-content-between flex-wrap mb-4 row-gap-2">
                       <div className="d-flex align-items-center flex-wrap row-gap-2">
                         <div className="d-flex align-items-center flex-wrap row-gap-2">
-                          <h4 className="mb-0 me-3">All Activity</h4>
+                          {/* <h4 className="mb-0 me-3">All Activity</h4> */}
                           <div className="active-list">
                           <ul className="mb-0">
                             {activityTypes?.map((item)=><>

@@ -100,8 +100,8 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       title: activity?.title || "",
       status: activity?.status || "",
       type_id: activity?.type_id || null,
-      due_date: activity?.due_date ? dayjs(new Date(activity.due_date)) : dayjs(), // 👈 FIX
-      due_time: activity?.due_time ? dayjs(new Date(activity.due_time)) : dayjs(), // 👈 FIX
+      due_date: activity?.due_date ? dayjs(new Date(activity.due_date)) : dayjs(), 
+      due_time: activity?.due_time ? dayjs(new Date(activity.due_time)) : dayjs(), 
       reminder_time: activity?.reminder_time || "",
       reminder_type: activity?.reminder_type || "",
       owner_id: activity?.owner_id || null,
@@ -115,7 +115,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       priority: activity?.priority || 0,
     });
   } else {
-        setSelectedType(null);
+    setSelectedType(null);
 
     reset({
       title: "",
@@ -141,9 +141,13 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   React.useEffect(() => {
     dispatch(fetchContacts({ search: searchValue }));
   }, [dispatch, searchValue]);
-  React.useEffect(() => {
-    dispatch(fetchProjects(searchProjectValue));
-  }, [dispatch, searchProjectValue]);
+  // React.useEffect(() => {
+  //   dispatch(fetchProjects(searchProjectValue));
+  // }, [dispatch, searchProjectValue]);
+  useEffect(() => {
+  dispatch(fetchProjects({ search: searchProjectValue })); // ✅ only string passed
+}, [searchProjectValue]);
+
   const { loading } = useSelector((state) => state?.activities);
   React.useEffect(() => {
     dispatch(fetchCompanies());
@@ -155,10 +159,11 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   const { companies } = useSelector((state) => state.companies);
   const { deals } = useSelector((state) => state.deals);
   const { contacts } = useSelector((state) => state.contacts);
-  const { projects } = useSelector((state) => state.projects);
+    const { projects } = useSelector((state) => state.projects);
+
+
   const { users } = useSelector((state) => state.users);
   const activityTypes = useSelector((state) => state.activities.activityTypes);
-
   const options1 = [
     // { value: "", label: "Select" },
     { value: "M", label: "Minutes" },
@@ -230,7 +235,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
     setSelectedType(activityTypes?.[0]?.id);
   }, [activityTypes, activity]);
   useEffect(() => {
-    const offcanvasElement = document.getElementById("offcanvas_add");
+    const offcanvasElement = document.getElementById("offcanvas_add_activities");
     if (offcanvasElement) {
       const handleModalClose = () => {
         setActivity(null);
@@ -247,7 +252,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
         );
       };
     }
-  }, []);
+  }, [setActivity]);
   return (
     <>
       {/* Add New Activity */}
@@ -795,39 +800,44 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                       <label className="col-form-label">Project</label>
                     </div>
                     <Controller
-                      name="project_id"
-                      control={control}
-                      // rules={{ required: "Contact is required !" }} // Validation rule
-                      render={({ field }) => {
-                        const selectedValue = projects?.data?.find(
-                          (contact) => contact.id === field.value
-                        );
-                        return (
-                          <Select
-                            {...field}
-                            className="select"
-                            options={projects?.data?.map((i) => ({
-                              label: `${i?.name}`,
-                              value: i?.id,
-                            }))}
-                            isSearchable
-                            onInputChange={(e) => setSearchProjectValue(e)}
-                            classNamePrefix="react-select"
-                            value={
-                              selectedValue
-                                ? {
-                                    label: `${selectedValue.name}`,
-                                    value: selectedValue.id,
-                                  }
-                                : null
-                            } // Ensure correct default value
-                            onChange={(selectedOption) =>
-                              field.onChange(selectedOption.value)
-                            } // Store only the value
-                          />
-                        );
-                      }}
-                    />
+  name="project_id"
+  control={control}
+  render={({ field }) => {
+    const selectedValue = projects?.data?.find(
+      (project) => project.id === field.value
+    );
+
+    return (
+      <Select
+        {...field}
+        className="select"
+        options={
+          projects?.data?.map((project) => ({
+            label: project.name,
+            value: project.id,
+          })) || []
+        }
+        isSearchable
+        onInputChange={(inputValue) => {
+          if (typeof inputValue === "string") {
+            setSearchProjectValue(inputValue); // ✅ Set only string
+          }
+        }}
+        classNamePrefix="react-select"
+        value={
+          selectedValue
+            ? {
+                label: selectedValue.name,
+                value: selectedValue.id,
+              }
+            : null
+        }
+        onChange={(selectedOption) => field.onChange(selectedOption?.value)}
+      />
+    );
+  }}
+/>
+
                     {/* {errors.contact_id && (
                       <small className="text-danger">
                         {errors.contact_id.message}

@@ -227,6 +227,7 @@ const AddFiles = ({ data, setData }) => {
       className="offcanvas offcanvas-end offcanvas-large"
       tabIndex={-1}
       id="offcanvas_add_documents"
+      
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">Add Document</h5>
@@ -371,11 +372,13 @@ const AddFiles = ({ data, setData }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3">
+                      <div className="mb-3"
+                      >
                         <label className="col-form-label">
                           Upload Attachment{" "}
                           {!data && <span className="text-danger">*</span>}
                         </label>
+                        
                         <input
                           type="file"
                           className="form-control"
