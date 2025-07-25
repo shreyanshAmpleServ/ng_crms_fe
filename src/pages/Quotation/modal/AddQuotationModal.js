@@ -46,7 +46,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
   const [itemNumber, setItemNumber] = useState(initialItem);
   const [optionalItem, setOptionalItem] = useState([]);
   const [othersItem, setOthersItem] = useState([]);
-  const [termsItems, setIermsItems] = useState("");
+  const [termsItems, setTermsItems] = useState("");
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -162,11 +162,12 @@ const AddQuotationModal = ({ order, setOrder }) => {
           line_tax: Number(item?.line_tax) || 0,
           total_bef_disc: Number(item?.total_bef_disc) || 0,
           total_amount: Number(item?.total_amount) || 0,
+          is_optional: item?.is_optional || "N",
         }))
       );
       setOptionalItem(order?.optional_items ? JSON.parse(order?.optional_items) : "");
       setOthersItem(order?.other_items  ? JSON.parse(order?.other_items) : "");
-      setIermsItems(JSON.parse(order?.terms));
+      setTermsItems(JSON.parse(order?.terms));
     } else {
       reset({
         quotation_code: quotationCode,
@@ -414,6 +415,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div className="row">
+              <div  className={`row ${order ? "col-md-6" : "col-md-12"}`}>
               {/* Vendor  */}
               <div className=" col-md-6 mb-3">
                 <div className="d-flex align-items-center justify-content-between">
@@ -610,7 +612,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
                         setItemNumber(items);
                         setOptionalItem(optinalItems);
                         setOthersItem(OthersCategories);
-                        setIermsItems(selectedOption?.terms);
+                        setTermsItems(selectedOption?.terms);
                       }}
                       value={
                         quoteTempList?.find(
@@ -788,13 +790,14 @@ const AddQuotationModal = ({ order, setOrder }) => {
                   />
                 </div>
               </div>
+            
               {/* Order Items  */}
               <ManageOrderItemModal
                 itemNumber={itemNumber}
                 setItemNumber={setItemNumber}
                 productList={productList}
                 termsItems={termsItems}
-                setIermsItems={setIermsItems}
+                setTermsItems={setTermsItems}
                 optionalItem={optionalItem}
                 setOptionalItem={setOptionalItem}
               />
@@ -958,6 +961,11 @@ const AddQuotationModal = ({ order, setOrder }) => {
                   />
                 </div>
               </div>
+              </div>
+             {order && <div className="col-md-6 border h-auto overflow-scroll border-top-0">
+                <div style={{ fontSize:"15px"}} className="fw-bold text-center p-2 pt-0 border-bottom">Activities</div>
+
+              </div>}
             </div>
           </div>
           <div className="d-flex align-items-center justify-content-end">

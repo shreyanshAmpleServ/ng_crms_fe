@@ -21,6 +21,7 @@ import {
 import NoPermissionPage from "./components/common/noPermission";
 import RedirectCRMS from "./pages/Redirection";
 import PreviewQuotation from "./pages/Quotation/modal/QuotationPdf";
+import 'react-quill/dist/quill.snow.css';
 
 const App = () => {
   const dispatch = useDispatch();

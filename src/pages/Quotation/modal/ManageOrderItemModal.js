@@ -7,6 +7,7 @@ import Select from "react-select";
 import { fetchCurrencies } from "../../../redux/currency";
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
 import DefaultEditor from "react-simple-wysiwyg";
+import ReactQuill from "react-quill";
 
 const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsItems,setTermsItems , optionalItem, setOptionalItem}) => {
     const [activeTab, setActiveTab] = useState("product");
@@ -169,6 +170,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
     // "Optional Products": "optional",
     "terms & Conditions": "terms & Conditions",
   };
+  console.log("TERms ",termsItems)
   return (<>
     <div>
          <ul
@@ -209,8 +211,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
           </Link>
         </div>
       </div>
-      <div className="table-responsive">
-        <table className="table table-view mb-0">
+      <div className="table-responsive w-full overflow-x-auto">
+        <table  className="table table-view   mb-0">
           <thead>
             <tr>
               <th>Item</th>
@@ -229,7 +231,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
             {itemNumber.length &&
               itemNumber?.map((i, index) => (
                 <tr>
-                  <td>
+                  <td className={`${i?.is_optional === "Y" ? "bg-optional": ""}`}>
                     <div className="input-table input-table-descripition">
                       <Controller
                         name="item_id"
@@ -267,9 +269,11 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                           />
                         )}
                       />
+                            {i?.is_optional ==="Y" &&   <div className="badge ms-2 badge-soft-success">Optional</div>}
+
                     </div>
                   </td>
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <div className="input-table">
                       <input
                         name="quantity"
@@ -296,7 +300,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                       />
                     </div>
                   </td>
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <div className="input-table">
                       <input
                         name="unit_price"
@@ -308,13 +312,13 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                     </div>
                   </td>
 
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <div className="input-table">
                       <input name="rate" type="text" disabled value={i?.rate} />
                     </div>
                   </td>
                   
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <div className="input-table">
                     <input name="disc_prcnt" type="number" value={i?.disc_prcnt} onChange={(e) => {
                         let value = Number(e.target.value);
@@ -334,12 +338,12 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                     }} />
                     </div>
                   </td>
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <div className="input-table">
                       <input name="total_bef_disc"  type="number" value={i?.total_bef_disc} disabled />
                     </div>
                   </td>
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <div className="input-table">
                     <Controller
                         name="tax_id"
@@ -371,17 +375,17 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                       />
                     </div>
                   </td>
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <div className="input-table">
                       <input name="line_tax" type="text" value={ formatNumber(i?.line_tax)} disabled/>
                     </div>
                   </td>
-                  <td style={{width:"auto"}}>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`} style={{width:"auto"}}>
                     <div className="input-table">
                       <input width={{width:"auto"}} type="text" value={formatNumber(i?.total_amount)} disabled  />
                     </div>
                   </td>
-                  <td>
+                  <td className={`${i?.is_optional === "Y"? "bg-optional": ""}`}>
                     <button
                       onClick={() => deleteRow(i,index)}
                       type="button"
@@ -620,11 +624,28 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
     </div> : ""}
     {activeTab == "terms & Conditions" && 
     <div>
-           <DefaultEditor
-  style={{ height: "350px" }} 
+           {/* <DefaultEditor
+  style={{ height: "350px" ,overflow:"scroll"}} 
   className="summernote"
   value={termsItems}
   onChange={(content) => setTermsItems(content.target.value )}
+/> */}
+<ReactQuill
+  value={termsItems}
+  onChange={setTermsItems}
+  style={{ height: "350px", overflow: "scroll"}}
+  modules={{
+    toolbar: [
+      [{ header: [1, 2,3,4,5,6, false] }],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'image'],
+      ['clean'],
+      ['code-block', 'blockquote'],
+      [{ 'align': [] }],
+      ['table'], // Table option if using custom modules/plugins
+    ],
+  }}
 />
     </div>}
     </div>
@@ -632,24 +653,25 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
   <div className="accordion-item">
     <h2 className="accordion-header" id="headingOptional">
       <button
-        className="accordion-button bg-secondary  text-white h1 collapsed"
+        className="accordion-button bg-optional1  text-white collapsed"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#collapseOptional"
         aria-expanded="false"
         aria-controls="collapseOptional"
       >
-        Optional Products
+      <span className="h5">  Optional Products</span>
       </button>
     </h2>
     <div
       id="collapseOptional"
-      className="accordion-collapse collapse"
+      className="accordion-collapse collapse show"
       aria-labelledby="headingOptional"
       data-bs-parent="#optionalProductAccordion"
+      aria-expanded="true"
+      aria-controls="collapseOptional"
     >
       <div className="accordion-body">
-        {/* ✅ Your Optional Products Table Goes Here */}
         <div className="table-responsive">
           <table className="table table-view">
             <thead>
