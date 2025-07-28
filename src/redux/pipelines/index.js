@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast"; // ✅ Added
 
 // Fetch All Pipelines
 export const fetchPipelines = createAsyncThunk(
@@ -7,21 +8,21 @@ export const fetchPipelines = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const params = {
-        search:datas?.search || "",
+        search: datas?.search || "",
         page: datas?.page || "",
         size: datas?.size || "",
         startDate: datas?.startDate?.toISOString() || "",
-        endDate : datas?.endDate?.toISOString() || "",
-        status:datas?.status || ""
-      }
-      const response = await apiClient.get("/v1/pipelines",{params});
-      return response.data; // Returns a list of pipelines
+        endDate: datas?.endDate?.toISOString() || "",
+        status: datas?.status || "",
+      };
+      const response = await apiClient.get("/v1/pipelines", { params });
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch pipelines",
+        error.response?.data || "Failed to fetch pipelines"
       );
     }
-  },
+  }
 );
 
 // Fetch a Pipeline by ID
@@ -30,13 +31,13 @@ export const fetchPipelineById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/pipelines/${id}`);
-      return response.data; // Returns the pipeline details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch pipeline",
+        error.response?.data || "Failed to fetch pipeline"
       );
     }
-  },
+  }
 );
 
 // Create a Pipeline
@@ -45,13 +46,13 @@ export const createPipeline = createAsyncThunk(
   async (pipelineData, thunkAPI) => {
     try {
       const response = await apiClient.post("/v1/pipelines", pipelineData);
-      return response.data; // Returns the newly created pipeline
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to create pipeline",
+        error.response?.data || "Failed to create pipeline"
       );
     }
-  },
+  }
 );
 
 // Update a Pipeline
@@ -60,7 +61,7 @@ export const updatePipeline = createAsyncThunk(
   async ({ id, pipelineData }, thunkAPI) => {
     try {
       const response = await apiClient.put(`/v1/pipelines/${id}`, pipelineData);
-      return response.data; // Returns the updated pipeline
+      return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
         return thunkAPI.rejectWithValue({
@@ -69,10 +70,10 @@ export const updatePipeline = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update pipeline",
+        error.response?.data || "Failed to update pipeline"
       );
     }
-  },
+  }
 );
 
 // Delete a Pipeline
@@ -87,10 +88,10 @@ export const deletePipeline = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete pipeline",
+        error.response?.data || "Failed to delete pipeline"
       );
     }
-  },
+  }
 );
 
 // Fetch Pipeline Data with Deals
@@ -99,13 +100,13 @@ export const fetchPipelineDeals = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/pipelines/${id}/deals`);
-      return response.data; // Returns pipeline data with deals
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch pipeline deals",
+        error.response?.data || "Failed to fetch pipeline deals"
       );
     }
-  },
+  }
 );
 
 export const updateDealStage = createAsyncThunk(
@@ -117,15 +118,15 @@ export const updateDealStage = createAsyncThunk(
         {
           stageId,
           pipelineId,
-        },
+        }
       );
-      return response.data; // Returns updated deal and associated pipeline details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update deal stage",
+        error.response?.data || "Failed to update deal stage"
       );
     }
-  },
+  }
 );
 
 const pipelineSlice = createSlice({
@@ -157,7 +158,9 @@ const pipelineSlice = createSlice({
       .addCase(fetchPipelines.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch pipelines");
       })
+
       .addCase(fetchPipelineById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -169,20 +172,28 @@ const pipelineSlice = createSlice({
       .addCase(fetchPipelineById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch pipeline");
       })
+
       .addCase(createPipeline.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(createPipeline.fulfilled, (state, action) => {
         state.loading = false;
-        state.pipelines ={...state.pipelines, data: [action.payload.data, ...state.pipelines.data]};
+        state.pipelines = {
+          ...state.pipelines,
+          data: [action.payload.data, ...state.pipelines.data],
+        };
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Pipeline created successfully");
       })
       .addCase(createPipeline.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to create pipeline");
       })
+
       .addCase(updatePipeline.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -190,19 +201,25 @@ const pipelineSlice = createSlice({
       .addCase(updatePipeline.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.pipelines.data?.findIndex(
-          (pipeline) => pipeline.id === action.payload.data.id,
+          (pipeline) => pipeline.id === action.payload.data.id
         );
         if (index !== -1) {
           state.pipelines.data[index] = action.payload.data;
         } else {
-          state.pipelines ={...state.pipelines, data: [ ...state.pipelines,action.payload.data]};
+          state.pipelines = {
+            ...state.pipelines,
+            data: [...state.pipelines, action.payload.data],
+          };
         }
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Pipeline updated successfully");
       })
       .addCase(updatePipeline.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to update pipeline");
       })
+
       .addCase(deletePipeline.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -210,15 +227,18 @@ const pipelineSlice = createSlice({
       .addCase(deletePipeline.fulfilled, (state, action) => {
         state.loading = false;
         const filteredData = state.pipelines.data.filter(
-          (pipeline) => pipeline.id !== action.payload.data.id,
+          (pipeline) => pipeline.id !== action.payload.data.id
         );
-        state.pipelines = {...state.pipelines,data:filteredData}
+        state.pipelines = { ...state.pipelines, data: filteredData };
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Pipeline deleted successfully");
       })
       .addCase(deletePipeline.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to delete pipeline");
       })
+
       .addCase(fetchPipelineDeals.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -230,8 +250,9 @@ const pipelineSlice = createSlice({
       .addCase(fetchPipelineDeals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch pipeline deals");
       })
-      // Update deal stage
+
       .addCase(updateDealStage.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -239,10 +260,12 @@ const pipelineSlice = createSlice({
       .addCase(updateDealStage.fulfilled, (state, action) => {
         state.loading = false;
         state.deals = action.payload.data;
+        toast.success("Deal stage updated successfully");
       })
       .addCase(updateDealStage.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to update deal stage");
       });
   },
 });

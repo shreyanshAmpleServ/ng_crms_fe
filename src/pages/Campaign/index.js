@@ -333,7 +333,7 @@ const CampaignsList = () => {
                       exportToPDF={exportToPDF}
                       exportToExcel={exportToExcel}
                       label="Add"
-                      id="offcanvas_add_compaign"
+                      id="offcanvas_edit"
                       isCreate={isCreate}
                     />
                     {/* Export End & Add Button  */}

@@ -20,7 +20,7 @@ import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
 import { fetchCountries } from "../../../redux/country";
-import { deleteMappedState, fetchMappedStates } from "../../../redux/mappedState";
+import { deleteMappedState, fetchMappedStates,  } from "../../../redux/mappedState";
 import { Helmet } from "react-helmet-async";
 import { map } from "jquery";
 
@@ -219,15 +219,15 @@ const StatesList = () => {
             <div className="content">
                 {error && (
                     <FlashMessage
-                        type="error"
-                        message={error}
+                        // type="error"
+                        // message={error}
                         onClose={() => dispatch(clearMessages())}
                     />
                 )}
                 {success && (
                     <FlashMessage
-                        type="success"
-                        message={success}
+                        // type="success"
+                        // message={success}
                         onClose={() => dispatch(clearMessages())}
                     />
                 )}

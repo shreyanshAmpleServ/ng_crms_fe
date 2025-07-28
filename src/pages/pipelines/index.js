@@ -285,14 +285,14 @@ const PipelineList = () => {
           <FlashMessage
             type="error"
             message={error}
-            onClose={() => dispatch(clearMessages())}
+            // onClose={() => dispatch(clearMessages())}
           />
         )}
         {success && (
           <FlashMessage
             type="success"
             message={success}
-            onClose={() => dispatch(clearMessages())}
+            // onClose={() => dispatch(clearMessages())}
           />
         )}
         <div className="row">

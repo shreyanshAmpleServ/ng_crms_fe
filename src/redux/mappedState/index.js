@@ -1,19 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast"; // ✅ Toast added
 
 // Fetch All States
 export const fetchMappedStates = createAsyncThunk(
     "states/fetchMappedStates",
     async (datas, thunkAPI) => {
         try {
-           const params  ={}
-            if(datas?.country_code) params.country_id = datas?.country_code
-            if(datas?.search) params.search = datas?.search
-            if(datas?.page) params.page = datas?.page
-            if(datas?.size) params.size = datas?.size
-            if(datas?.is_active) params.is_active = datas?.is_active
-            const response = await apiClient.get("/v1/mapped-states",{params});
-            return response.data; // Returns a list of states
+            const params = {};
+            if (datas?.country_code) params.country_id = datas?.country_code;
+            if (datas?.search) params.search = datas?.search;
+            if (datas?.page) params.page = datas?.page;
+            if (datas?.size) params.size = datas?.size;
+            if (datas?.is_active) params.is_active = datas?.is_active;
+            const response = await apiClient.get("/v1/mapped-states", { params });
+            return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data || "Failed to fetch states"
@@ -28,7 +29,7 @@ export const addMappedState = createAsyncThunk(
     async (stateData, thunkAPI) => {
         try {
             const response = await apiClient.post("/v1/mapped-states", stateData);
-            return response.data; // Returns the newly added state
+            return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data || "Failed to add state"
@@ -43,7 +44,7 @@ export const updateMappedState = createAsyncThunk(
     async ({ id, stateData }, thunkAPI) => {
         try {
             const response = await apiClient.put(`/v1/mapped-states/${id}`, stateData);
-            return response.data; // Returns the updated state
+            return response.data;
         } catch (error) {
             if (error.response?.status === 404) {
                 return thunkAPI.rejectWithValue({
@@ -82,7 +83,7 @@ export const fetchMappedStateById = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await apiClient.get(`/v1/mapped-states/${id}`);
-            return response.data; // Returns the state details
+            return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data || "Failed to fetch state"
@@ -119,6 +120,7 @@ const statesSlice = createSlice({
             .addCase(fetchMappedStates.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to fetch states"); // ✅
             })
             .addCase(addMappedState.pending, (state) => {
                 state.loading = true;
@@ -126,12 +128,17 @@ const statesSlice = createSlice({
             })
             .addCase(addMappedState.fulfilled, (state, action) => {
                 state.loading = false;
-                state.mappedStates ={...state.mappedStates, data: [action.payload.data, ...state.mappedStates.data]};   
+                state.mappedStates = {
+                    ...state.mappedStates,
+                    data: [action.payload.data, ...state.mappedStates.data],
+                };
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "State added successfully"); // ✅
             })
             .addCase(addMappedState.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to add state"); // ✅
             })
             .addCase(updateMappedState.pending, (state) => {
                 state.loading = true;
@@ -142,18 +149,21 @@ const statesSlice = createSlice({
                 const index = state.mappedStates?.data?.findIndex(
                     (stateItem) => stateItem.id === action.payload.data.id
                 );
-
                 if (index !== -1) {
                     state.mappedStates.data[index] = action.payload.data;
                 } else {
-                    state.mappedStates ={...state.mappedStates, data: [ ...state.mappedStates,action.payload.data]};
+                    state.mappedStates = {
+                        ...state.mappedStates,
+                        data: [...state.mappedStates, action.payload.data],
+                    };
                 }
-
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "State updated successfully"); // ✅
             })
             .addCase(updateMappedState.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to update state"); // ✅
             })
             .addCase(deleteMappedState.pending, (state) => {
                 state.loading = true;
@@ -164,12 +174,17 @@ const statesSlice = createSlice({
                 const filterData = state.mappedStates.data.filter(
                     (stateItem) => stateItem.id !== action.payload.data.id
                 );
-                state.mappedStates= {...state.mappedStates,data:filterData}
+                state.mappedStates = {
+                    ...state.mappedStates,
+                    data: filterData,
+                };
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "State deleted successfully"); // ✅
             })
             .addCase(deleteMappedState.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to delete state"); // ✅
             })
             .addCase(fetchMappedStateById.pending, (state) => {
                 state.loading = true;
@@ -182,6 +197,7 @@ const statesSlice = createSlice({
             .addCase(fetchMappedStateById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to fetch state"); // ✅
             });
     },
 });

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast"; // ✅ added toast import
 
 // manufacturer Slice
 
@@ -8,7 +9,7 @@ export const fetchManufacturer = createAsyncThunk(
     "manufacturers/fetchManufacturer",
     async (datas, thunkAPI) => {
         try {
-            const params  ={}
+            const params  = {}
             if(datas?.search) params.search = datas?.search
             if(datas?.page) params.page = datas?.page
             if(datas?.size) params.size = datas?.size
@@ -104,6 +105,7 @@ const manufacturersSlice = createSlice({
             .addCase(fetchManufacturer.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to fetch manufacturers"); // ✅ toast
             })
             .addCase(addManufacturer.pending, (state) => {
                 state.loading = true;
@@ -111,12 +113,17 @@ const manufacturersSlice = createSlice({
             })
             .addCase(addManufacturer.fulfilled, (state, action) => {
                 state.loading = false;
-                state.manufacturers ={...state.manufacturers, data: [action.payload.data, ...state.manufacturers.data]}; 
+                state.manufacturers = {
+                    ...state.manufacturers,
+                    data: [action.payload.data, ...state.manufacturers.data]
+                };
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Manufacturer added successfully"); // ✅ toast
             })
             .addCase(addManufacturer.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to add manufacturer"); // ✅ toast
             })
             .addCase(updateManufacturer.pending, (state) => {
                 state.loading = true;
@@ -130,13 +137,18 @@ const manufacturersSlice = createSlice({
                 if (index !== -1) {
                     state.manufacturers.data[index] = action.payload.data;
                 } else {
-                    state.manufacturers ={...state.manufacturers, data: [ ...state.manufacturers,action.payload.data]};
+                    state.manufacturers = {
+                        ...state.manufacturers,
+                        data: [...state.manufacturers, action.payload.data]
+                    };
                 }
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Manufacturer updated successfully"); // ✅ toast
             })
             .addCase(updateManufacturer.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to update manufacturer"); // ✅ toast
             })
             .addCase(deleteManufacturer.pending, (state) => {
                 state.loading = true;
@@ -147,17 +159,17 @@ const manufacturersSlice = createSlice({
                 const filterData = state.manufacturers.data.filter(
                     (data) => data.id !== action.payload.data.id
                 );
-                state.manufacturers= {...state.manufacturers,data:filterData}
+                state.manufacturers = { ...state.manufacturers, data: filterData };
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Manufacturer deleted successfully"); // ✅ toast
             })
             .addCase(deleteManufacturer.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to delete manufacturer"); // ✅ toast
             });
     },
 });
 
 export const { clearMessages } = manufacturersSlice.actions;
 export default manufacturersSlice.reducer;
-
-

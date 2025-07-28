@@ -224,7 +224,7 @@ const AddFiles = ({ data, setData }) => {
 
   return (
     <div
-      className="offcanvas offcanvas-end offcanvas-large"
+      className="offcanvas offcanvas-end offcanvas-large "
       tabIndex={-1}
       id="offcanvas_add_documents"
       
@@ -241,14 +241,14 @@ const AddFiles = ({ data, setData }) => {
           <i className="ti ti-x" />
         </button>
       </div>
-      <div className="offcanvas-body">
-        <div className="modal-body">
+      <div className="offcanvas-body  ">
+        <div className="modal-body ">
           <div className="add-info-fieldset">
             
             <fieldset id="first-field-file">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="contact-input-set">
-                  <div className="row">
+                  <div className="row ">
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">

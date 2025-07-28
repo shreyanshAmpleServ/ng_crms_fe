@@ -252,11 +252,11 @@ const ContactList = () => {
     dispatch(fetchContacts({search:searchText , ...selectedDateRange, page: currentPage, size: pageSize })); 
   };
   // Show FlashMessage when success or error changes
-  React.useEffect(() => {
-    if (error || success) {
-      setShowFlashModal(true);
-    }
-  }, [error, success]);
+  // React.useEffect(() => {
+  //   if (error || success) {
+  //     setShowFlashModal(true);
+  //   }
+  // }, [error, success]);
   const [showFlashModal, setShowFlashModal] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

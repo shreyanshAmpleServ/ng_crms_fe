@@ -183,12 +183,12 @@ const LeadList = () => {
     (state) => state.leads,
   );
 
-  // Show FlashMessage when success or error changes
-  React.useEffect(() => {
-    if (error || success) {
-      setShowFlashModal(true);
-    }
-  }, [error, success]);
+  // // Show FlashMessage when success or error changes
+  // React.useEffect(() => {
+  //   if (error || success) {
+  //     setShowFlashModal(true);
+  //   }
+  // }, [error, success]);
 
   const handleCloseFlashMessage = () => {
     setShowFlashModal(false);

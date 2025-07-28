@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast"; // ✅ Added
 
 // Fetch All Sources
 export const fetchSources = createAsyncThunk(
@@ -7,13 +8,13 @@ export const fetchSources = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await apiClient.get("/v1/sources");
-      return response.data; // Returns a list of sources
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch sources",
       );
     }
-  },
+  }
 );
 
 // Add a Source
@@ -22,13 +23,13 @@ export const addSource = createAsyncThunk(
   async (sourceData, thunkAPI) => {
     try {
       const response = await apiClient.post("/v1/sources", sourceData);
-      return response.data; // Returns the newly added source
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to add source",
       );
     }
-  },
+  }
 );
 
 // Update a Source
@@ -37,7 +38,7 @@ export const updateSource = createAsyncThunk(
   async ({ id, sourceData }, thunkAPI) => {
     try {
       const response = await apiClient.put(`/v1/sources/${id}`, sourceData);
-      return response.data; // Returns the updated source
+      return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
         return thunkAPI.rejectWithValue({
@@ -49,7 +50,7 @@ export const updateSource = createAsyncThunk(
         error.response?.data || "Failed to update source",
       );
     }
-  },
+  }
 );
 
 // Delete a Source
@@ -67,7 +68,7 @@ export const deleteSource = createAsyncThunk(
         error.response?.data || "Failed to delete source",
       );
     }
-  },
+  }
 );
 
 // Fetch a Single Source by ID
@@ -76,13 +77,13 @@ export const fetchSourceById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/sources/${id}`);
-      return response.data; // Returns the source details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch source",
       );
     }
-  },
+  }
 );
 
 const sourcesSlice = createSlice({
@@ -113,7 +114,9 @@ const sourcesSlice = createSlice({
       .addCase(fetchSources.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch sources");
       })
+
       .addCase(addSource.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -122,11 +125,14 @@ const sourcesSlice = createSlice({
         state.loading = false;
         state.sources = [action.payload.data, ...state.sources];
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Source added successfully");
       })
       .addCase(addSource.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to add source");
       })
+
       .addCase(updateSource.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -134,21 +140,22 @@ const sourcesSlice = createSlice({
       .addCase(updateSource.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.sources?.findIndex(
-          (source) => source.id === action.payload.data.id,
+          (source) => source.id === action.payload.data.id
         );
-
         if (index !== -1) {
           state.sources[index] = action.payload.data;
         } else {
           state.sources = [action.payload.data, ...state.sources];
         }
-
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Source updated successfully");
       })
       .addCase(updateSource.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to update source");
       })
+
       .addCase(deleteSource.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -156,14 +163,17 @@ const sourcesSlice = createSlice({
       .addCase(deleteSource.fulfilled, (state, action) => {
         state.loading = false;
         state.sources = state.sources.filter(
-          (source) => source.id !== action.payload.data.id,
+          (source) => source.id !== action.payload.data.id
         );
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Source deleted successfully");
       })
       .addCase(deleteSource.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to delete source");
       })
+
       .addCase(fetchSourceById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -175,6 +185,7 @@ const sourcesSlice = createSlice({
       .addCase(fetchSourceById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch source");
       });
   },
 });

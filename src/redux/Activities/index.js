@@ -1,13 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast";
 
-// Fetch All Activities
+// Fetch Activity Types
 export const fetchActivityTypes = createAsyncThunk(
   "activities/fetchActivityType",
   async (_, thunkAPI) => {
     try {
       const response = await apiClient.get("/v1/activityTypes");
-      return response.data; // Returns a list of activities
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch activities"
@@ -15,36 +16,23 @@ export const fetchActivityTypes = createAsyncThunk(
     }
   }
 );
+
 // Fetch All Activities
 export const fetchActivities = createAsyncThunk(
   "activities/fetchActivities",
   async (reqBody, thunkAPI) => {
     try {
       const params = {};
-      if (reqBody?.search) {
-        params.search = reqBody.search;
-      }
-      if (reqBody?.filter) {
-        params.filter = reqBody.filter;
-      }
-      if (reqBody?.filter2) {
-        params.filter2 = reqBody.filter2;
-      }
-      if (reqBody?.startDate) {
-        params.startDate = reqBody?.startDate?.toISOString();
-      }
-      if (reqBody?.endDate) {
-        params.endDate = reqBody?.endDate?.toISOString();
-      }
-      if (reqBody?.page) {
-        params.page = reqBody?.page;
-      }
-      if (reqBody?.size) {
-        params.size = reqBody?.size;
-      }
+      if (reqBody?.search) params.search = reqBody.search;
+      if (reqBody?.filter) params.filter = reqBody.filter;
+      if (reqBody?.filter2) params.filter2 = reqBody.filter2;
+      if (reqBody?.startDate) params.startDate = reqBody.startDate?.toISOString();
+      if (reqBody?.endDate) params.endDate = reqBody.endDate?.toISOString();
+      if (reqBody?.page) params.page = reqBody.page;
+      if (reqBody?.size) params.size = reqBody.size;
 
       const response = await apiClient.get(`/v1/activities`, { params });
-      return response.data; // Returns a list of activities
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch activities"
@@ -52,7 +40,8 @@ export const fetchActivities = createAsyncThunk(
     }
   }
 );
-// Fetch All Activities
+
+// Fetch Grouped Activities
 export const fetchGroupedActivities = createAsyncThunk(
   "activities/fetchGroupedActivities",
   async (data, thunkAPI) => {
@@ -66,10 +55,9 @@ export const fetchGroupedActivities = createAsyncThunk(
       if (data?.orderBy) params.orderBy = data.orderBy;
       if (data?.sortBy) params.sortBy = data.sortBy;
       if (data?.search) params.search = data.search;
-      const response = await apiClient.get(`/v1/grouped-activities`, {
-        params,
-      });
-      return response.data; // Returns a list of activities
+
+      const response = await apiClient.get(`/v1/grouped-activities`, { params });
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch activities"
@@ -78,57 +66,52 @@ export const fetchGroupedActivities = createAsyncThunk(
   }
 );
 
-// Add a Activities
+// Add Activity
 export const addActivities = createAsyncThunk(
   "activities/addActivities",
   async (activityData, thunkAPI) => {
     try {
       const response = await apiClient.post("/v1/activities", activityData);
-      return response.data; // Returns the newly added company
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add company"
+        error.response?.data || "Failed to add activity"
       );
     }
   }
 );
-// Update a Activities
+
+// Update Activity
 export const updateActivities = createAsyncThunk(
   "activities/updateActivities",
   async ({ id, activityData }, thunkAPI) => {
     try {
-      const response = await apiClient.put(
-        `/v1/activities/${id}`,
-        activityData
-      );
-      return response.data; // Returns the updated company
+      const response = await apiClient.put(`/v1/activities/${id}`, activityData);
+      return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
-        return thunkAPI.rejectWithValue({
-          status: 404,
-          message: "Company not found",
-        });
+        return thunkAPI.rejectWithValue({ status: 404, message: "Activity not found" });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update company"
+        error.response?.data || "Failed to update activity"
       );
     }
   }
 );
-// Delete a Activities
+
+// Delete Activity
 export const deleteActivities = createAsyncThunk(
   "activities/deleteActivities",
   async (id, thunkAPI) => {
-    console.log("Delete", id);
     try {
       const response = await apiClient.delete(`/v1/activities/${id}`);
       return {
         data: { id },
-        message: response.data.message || "Activities deleted successfully",
+        message: response.data.message || "Activity deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete Activites"
+        error.response?.data || "Failed to delete activity"
       );
     }
   }
@@ -152,6 +135,7 @@ const acticitiesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch Activities
       .addCase(fetchActivities.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -163,7 +147,10 @@ const acticitiesSlice = createSlice({
       .addCase(fetchActivities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch activities");
       })
+
+      // Add Activity
       .addCase(addActivities.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -175,11 +162,15 @@ const acticitiesSlice = createSlice({
           data: [action.payload.data, ...state.activities.data],
         };
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Activity added successfully");
       })
       .addCase(addActivities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to add activity");
       })
+
+      // Update Activity
       .addCase(updateActivities.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -194,15 +185,19 @@ const acticitiesSlice = createSlice({
         } else {
           state.activities = {
             ...state.activities,
-            data: [action.payload.data, ...state.activities],
+            data: [action.payload.data, ...state.activities.data],
           };
         }
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Activity updated successfully");
       })
       .addCase(updateActivities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to update activity");
       })
+
+      // Delete Activity
       .addCase(deleteActivities.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -214,11 +209,15 @@ const acticitiesSlice = createSlice({
         );
         state.activities = { ...state.activities, data: filteredData };
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Activity deleted successfully");
       })
       .addCase(deleteActivities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to delete activity");
       })
+
+      // Fetch Activity Types
       .addCase(fetchActivityTypes.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -230,7 +229,10 @@ const acticitiesSlice = createSlice({
       .addCase(fetchActivityTypes.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch activity types");
       })
+
+      // Fetch Grouped Activities
       .addCase(fetchGroupedActivities.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -242,6 +244,7 @@ const acticitiesSlice = createSlice({
       .addCase(fetchGroupedActivities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch grouped activities");
       });
   },
 });

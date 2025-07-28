@@ -213,11 +213,11 @@ const LeadList = () => {
   );
 
   // Show FlashMessage when success or error changes
-  React.useEffect(() => {
-    if (error || success) {
-      setShowFlashModal(true);
-    }
-  }, [error, success]);
+  // React.useEffect(() => {
+  //   if (error || success) {
+  //     setShowFlashModal(true);
+  //   }
+  // }, [error, success]);
 
   const handleCloseFlashMessage = () => {
     setShowFlashModal(false);

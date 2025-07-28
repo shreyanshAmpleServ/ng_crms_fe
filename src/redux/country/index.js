@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast"; // ✅ toast import
 
 // Fetch All Countries
 export const fetchCountries = createAsyncThunk(
@@ -115,6 +116,7 @@ const countriesSlice = createSlice({
             .addCase(fetchCountries.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to fetch countries"); // ✅
             })
             .addCase(addCountry.pending, (state) => {
                 state.loading = true;
@@ -124,10 +126,12 @@ const countriesSlice = createSlice({
                 state.loading = false;
                 state.countries = [action.payload.data, ...state.countries];
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Country added successfully"); // ✅
             })
             .addCase(addCountry.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to add country"); // ✅
             })
             .addCase(updateCountry.pending, (state) => {
                 state.loading = true;
@@ -146,10 +150,12 @@ const countriesSlice = createSlice({
                 }
 
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Country updated successfully"); // ✅
             })
             .addCase(updateCountry.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to update country"); // ✅
             })
             .addCase(deleteCountry.pending, (state) => {
                 state.loading = true;
@@ -161,10 +167,12 @@ const countriesSlice = createSlice({
                     (countryItem) => countryItem.id !== action.payload.data.id
                 );
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Country deleted successfully"); // ✅
             })
             .addCase(deleteCountry.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to delete country"); // ✅
             })
             .addCase(fetchCountryById.pending, (state) => {
                 state.loading = true;
@@ -177,23 +185,10 @@ const countriesSlice = createSlice({
             .addCase(fetchCountryById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to fetch country"); // ✅
             });
     },
 });
 
 export const { clearMessages } = countriesSlice.actions;
 export default countriesSlice.reducer;
-
-
-
-
-
-
-
-
-
-
-
-
-
-

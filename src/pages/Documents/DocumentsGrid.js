@@ -72,7 +72,8 @@ const ProjectsGrid = ({ data  }) => {
                 <div className="card-body">
                   <div className="d-flex align-items-center justify-content-between mb-3">
                     <div className="d-flex align-items-center">
-                      <Link target="_blank"    style={{ margin: "0px",width:"4rem",padding:"5px", borderRadius: "5px" }} className="dropdown-item" to={fileUrl}>
+                      <Link target="_blank"    style={{ margin: "0px",width:"4rem",padding:"5px", borderRadius: "5px" , 
+  }} className="dropdown-item" to={fileUrl}>
                         {imageExtensions.includes(extension) ? (
                           <img
                             src={fileUrl}
@@ -81,9 +82,8 @@ const ProjectsGrid = ({ data  }) => {
                           />
                         ) : (
                           <div
-                            className="text-light bg-danger h1 d-flex justify-content-center align-items-center pt-2 "
-                            style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px", display:"flex", position: "relative", // ✅ Fix
-                              zIndex: 1,   }}
+                            className="text-light bg-danger h1 d-flex justify-content-center align-items-center pt-2  "
+                            style={{ width: "3rem", height: "3rem", margin: "0px", borderRadius: "5px",   }}
                           >
                             <i className="ti ti-pdf" />
                           </div>

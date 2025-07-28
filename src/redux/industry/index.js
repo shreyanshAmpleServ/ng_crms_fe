@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
-
-// Industry Slice
+import toast from "react-hot-toast"; // ✅ Toast added
 
 // Fetch All Industries
 export const fetchIndustries = createAsyncThunk(
@@ -38,10 +37,7 @@ export const updateIndustry = createAsyncThunk(
   "industries/updateIndustry",
   async ({ id, industryData }, thunkAPI) => {
     try {
-      const response = await apiClient.put(
-        `/v1/industries/${id}`,
-        industryData
-      );
+      const response = await apiClient.put(`/v1/industries/${id}`, industryData);
       return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
@@ -102,7 +98,9 @@ const industriesSlice = createSlice({
       .addCase(fetchIndustries.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch industries");
       })
+
       .addCase(addIndustry.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -111,11 +109,14 @@ const industriesSlice = createSlice({
         state.loading = false;
         state.industries = [action.payload.data, ...state.industries];
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Industry added successfully");
       })
       .addCase(addIndustry.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to add industry");
       })
+
       .addCase(updateIndustry.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -131,11 +132,14 @@ const industriesSlice = createSlice({
           state.industries = [action.payload.data, ...state.industries];
         }
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Industry updated successfully");
       })
       .addCase(updateIndustry.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to update industry");
       })
+
       .addCase(deleteIndustry.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -146,10 +150,12 @@ const industriesSlice = createSlice({
           (industry) => industry.id !== action.payload.data.id
         );
         state.success = action.payload.message;
+        toast.success(action.payload.message || "Industry deleted successfully");
       })
       .addCase(deleteIndustry.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to delete industry");
       });
   },
 });

@@ -1,15 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast"; // ✅ toast added
 
 // Fetch All Currencies
 export const fetchCurrencies = createAsyncThunk(
     "currencies/fetchCurrencies",
     async (data, thunkAPI) => {
         try {
-            const params = {}
-            if(data?.is_active) params.is_active= data.is_active
-            const response = await apiClient.get("/v1/currencies",{params});
-            return response.data; // Returns a list of currencies
+            const params = {};
+            if (data?.is_active) params.is_active = data.is_active;
+            const response = await apiClient.get("/v1/currencies", { params });
+            return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data || "Failed to fetch currencies"
@@ -24,7 +25,7 @@ export const addCurrency = createAsyncThunk(
     async (currencyData, thunkAPI) => {
         try {
             const response = await apiClient.post("/v1/currencies", currencyData);
-            return response.data; // Returns the newly added currency
+            return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data || "Failed to add currency"
@@ -39,7 +40,7 @@ export const updateCurrency = createAsyncThunk(
     async ({ id, currencyData }, thunkAPI) => {
         try {
             const response = await apiClient.put(`/v1/currencies/${id}`, currencyData);
-            return response.data; // Returns the updated currency
+            return response.data;
         } catch (error) {
             if (error.response?.status === 404) {
                 return thunkAPI.rejectWithValue({
@@ -78,7 +79,7 @@ export const fetchCurrencyById = createAsyncThunk(
     async (id, thunkAPI) => {
         try {
             const response = await apiClient.get(`/v1/currencies/${id}`);
-            return response.data; // Returns the currency details
+            return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error.response?.data || "Failed to fetch currency"
@@ -115,6 +116,7 @@ const currenciesSlice = createSlice({
             .addCase(fetchCurrencies.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to fetch currencies"); // ✅
             })
             .addCase(addCurrency.pending, (state) => {
                 state.loading = true;
@@ -124,10 +126,12 @@ const currenciesSlice = createSlice({
                 state.loading = false;
                 state.currencies = [action.payload.data, ...state.currencies];
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Currency added successfully"); // ✅
             })
             .addCase(addCurrency.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to add currency"); // ✅
             })
             .addCase(updateCurrency.pending, (state) => {
                 state.loading = true;
@@ -138,18 +142,18 @@ const currenciesSlice = createSlice({
                 const index = state.currencies?.findIndex(
                     (currency) => currency.id === action.payload.data.id
                 );
-
                 if (index !== -1) {
                     state.currencies[index] = action.payload.data;
                 } else {
                     state.currencies = [action.payload.data, ...state.currencies];
                 }
-
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Currency updated successfully"); // ✅
             })
             .addCase(updateCurrency.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to update currency"); // ✅
             })
             .addCase(deleteCurrency.pending, (state) => {
                 state.loading = true;
@@ -161,10 +165,12 @@ const currenciesSlice = createSlice({
                     (currency) => currency.id !== action.payload.data.id
                 );
                 state.success = action.payload.message;
+                toast.success(action.payload.message || "Currency deleted successfully"); // ✅
             })
             .addCase(deleteCurrency.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to delete currency"); // ✅
             })
             .addCase(fetchCurrencyById.pending, (state) => {
                 state.loading = true;
@@ -177,6 +183,7 @@ const currenciesSlice = createSlice({
             .addCase(fetchCurrencyById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                toast.error(action.payload.message || "Failed to fetch currency"); // ✅
             });
     },
 });

@@ -186,15 +186,15 @@ const isDelete = isAdmin ? true : allPermissions?.delete
       <div className="content">
         {error && (
           <FlashMessage
-            type="error"
-            message={error}
+            // type="error"
+            // message={error}
             onClose={() => dispatch(clearMessages())}
           />
         )}
         {success && (
           <FlashMessage
-            type="success"
-            message={success}
+            // type="success"
+            // message={success}
             onClose={() => dispatch(clearMessages())}
           />
         )}

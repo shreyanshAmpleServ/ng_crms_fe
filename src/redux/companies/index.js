@@ -117,7 +117,7 @@ const companySlice = createSlice({
       .addCase(fetchCompanies.fulfilled, (state, action) => {
         state.loading = false;
         state.companies = action.payload.data;
-        toast.success("Companies fetched successfully");
+        // toast.success("Companies fetched successfully");
       })
       .addCase(fetchCompanies.rejected, (state, action) => {
         state.loading = false;
