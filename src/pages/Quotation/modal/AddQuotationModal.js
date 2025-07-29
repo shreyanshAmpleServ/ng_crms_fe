@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import { fetchquoteTemplate } from "../../../redux/quoteTemplate";
 import { fetchProducts } from "../../../redux/products";
+import { AllActivities } from "./Activities";
 
 const initialItem = [
   {
@@ -50,6 +51,9 @@ const AddQuotationModal = ({ order, setOrder }) => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+  const [isNewMail,setIsNewMail] = useState(false)
+  const [threadId,setThreadId] = useState()
+  const [msgId,setMsgId ]= useState()
 
   const { salesTypes } = useSelector((state) => state.orders);
   const { quotationCode, loading } = useSelector((state) => state.quotations);
@@ -327,6 +331,9 @@ const AddQuotationModal = ({ order, setOrder }) => {
       closeButton.click();
       dispatch(fetchQuotationCode());
       reset();
+      setMsgId()
+      setThreadId()
+      setIsNewMail()
       setItemNumber([
         {
           parent_id: null,
@@ -380,6 +387,9 @@ const AddQuotationModal = ({ order, setOrder }) => {
           },
         ]);
         setOptionalItem([]);
+        setMsgId()
+        setThreadId()
+        setIsNewMail()
       };
       offcanvasElement.addEventListener(
         "hidden.bs.offcanvas",
@@ -964,6 +974,9 @@ const AddQuotationModal = ({ order, setOrder }) => {
               </div>
              {order && <div className="col-md-6 border h-auto overflow-scroll border-top-0">
                 <div style={{ fontSize:"15px"}} className="fw-bold text-center p-2 pt-0 border-bottom">Activities</div>
+                <AllActivities isNewMail={isNewMail} setIsNewMail={setIsNewMail}
+threadId={threadId} setThreadId={setThreadId}
+msgId={msgId} setMsgId={setMsgId} id={order?.id} vendor={order?.quotation_vendor} />
 
               </div>}
             </div>

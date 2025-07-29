@@ -23,6 +23,8 @@ import DeleteAlert from "./alert/DeleteAlert";
 import AddQuotationModal from "./modal/AddQuotationModal.js";
 import PreviewOrder from "./modal/PreviewQuotation.js";
 import UserGrid from "./UsersGrid";
+import GmailSection from "../../utils/gmailAccess.js";
+import SendMailForm from "../../utils/sendMailFrom.js";
 
 const Quotation = () => {
   const [view, setView] = useState("list");
@@ -429,6 +431,7 @@ const Quotation = () => {
                     <ViewIconsToggle view={view} setView={setView} /> */}
                   </div>
                 </div>
+            
 
               {isView ?  <div className="table-responsive custom-table">
                   {view === "list" ? (

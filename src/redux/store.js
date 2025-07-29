@@ -51,6 +51,7 @@ import projectReportReducer from "./projectReport";
 import TaskReportReducer from "./TaskReport";
 import ngAuthReducer from "./redirectCrms";
 import quoteTemplateReducer from "./quoteTemplate";
+import gmailMessageReducer from "./gmailAccess";
 
 const store = configureStore({
   reducer: {
@@ -105,6 +106,7 @@ const store = configureStore({
     taskReport: TaskReportReducer,
     ngAuth: ngAuthReducer,
     quoteTemplate: quoteTemplateReducer,
+    gmailMessage: gmailMessageReducer,
   },
 });
 
