@@ -84,6 +84,16 @@ const LeadList = () => {
         return nameA.localeCompare(nameB);
       },
     },
+    //  {
+    //   title: "Name",
+    //   dataIndex: "dealName",
+    //   render: (text, record, index) => (
+    //     <Link to={`/crms/deals/${record.id}`} key={index}>
+    //       {record.dealName}
+    //     </Link>
+    //   ),
+    //   sorter: (a, b) => a.dealName.localeCompare(b.dealName),
+    // },
     {
       title: "Company Name",
       dataIndex: "lead_company",

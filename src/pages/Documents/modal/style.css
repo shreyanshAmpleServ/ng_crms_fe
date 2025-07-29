@@ -1,0 +1,5 @@
+/* style.css */
+.dropdown-item {
+  z-index: 1046 !important;
+  position: relative;
+}
