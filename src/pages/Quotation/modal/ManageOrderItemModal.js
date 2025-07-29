@@ -170,7 +170,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
     // "Optional Products": "optional",
     "terms & Conditions": "terms & Conditions",
   };
-  console.log("TERms ",termsItems)
+  // console.log("TERms ",termsItems)
   return (<>
     <div>
          <ul
