@@ -166,9 +166,9 @@ const CampaignsList = () => {
     },
     {
       title: "Created At",
-      dataIndex: "created_date",
+      dataIndex: "createdDate",
       render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
-      sorter: (a, b) => a.created_date.length - b.created_date.length,
+      sorter: (a, b) => a.createdDate.length - b.createdDate.length,
     },
    ...((isDelete || isUpdate) ? [ {
       title: "Action",

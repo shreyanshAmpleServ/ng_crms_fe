@@ -201,22 +201,23 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
   const onSubmit = async (data) => {
     const formData = new FormData();
 
-    // Append all form fields
-    Object?.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] !== undefined) {
-        // Convert complex data to strings if needed
-         let value = data[key];
-                if (
-                  (key === "dateOfBirth" )
-                ) {
-                  value = dayjs(data.dateOfBirth, "DD-MM-YYYY").toISOString();
-                }
-        formData.append(
-          key,
-          typeof data[key] === "object" ? JSON.stringify(value) : value
-        );
-      }
-    });
+  Object?.keys(data).forEach((key) => {
+  if (data[key] !== null && data[key] !== undefined) {
+    let value = data[key];
+
+    // Handle dateOfBirth formatting
+    if (key === "dateOfBirth") {
+      value = dayjs(value, "DD-MM-YYYY").toISOString();
+    }
+
+    // Convert objects to string if necessary
+    formData.append(
+      key,
+      typeof value === "object" ? JSON.stringify(value) : value
+    );
+  }
+});
+
 
     if (selectedLogo) {
       formData.append("image", selectedLogo);
@@ -368,7 +369,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           placeholder="Enter First Name"
                           className="form-control"
                           {...register("firstName", {
-                            required: "First name is required !",
+                            required: "First Name is required !",
                           })}
                         />
                         {errors.firstName && (
@@ -388,7 +389,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           type="text"
                           className="form-control"
                           {...register("lastName", {
-                            required: "Last name is required !",
+                            required: "Last Name is required !",
                           })}
                         />
                         {errors.lastName && (
@@ -408,7 +409,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           type="text"
                           className="form-control"
                           {...register("jobTitle", {
-                            required: "Job title is required !",
+                            required: "Job Title is required !",
                           })}
                         />
                         {errors.jobTitle && (

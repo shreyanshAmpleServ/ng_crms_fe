@@ -1,7 +1,6 @@
 import React, { memo, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Select from "react-select";
-
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { createLead, updateLead } from "../../../redux/leads";
@@ -327,7 +326,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
               >
                 <div className="accordion-body border-top">
                   <div className="row">
-                    <div className="col-md-12">
+                    {/* <div className="col-md-12">
                       <div className="mb-3">
                         <div className="profile-upload">
                           <div className="profile-upload-img">
@@ -380,6 +379,59 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           </div>
                         </div>
                       </div>
+                    </div> */}
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <div className="profile-upload">
+                          <div className="profile-upload-img">
+                            {selectedLogo ? (
+                              <img
+                                src={URL.createObjectURL(selectedLogo)}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                                // style={{image}}
+                              />
+                            ) : selectedLead ? (
+                              <img
+                                src={selectedLead.image}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <span>
+                                <i className="ti ti-photo" />
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              className="profile-remove"
+                              onClick={() => setSelectedLogo(null)}
+                            >
+                              <i className="ti ti-x" />
+                            </button>
+                            {/* <img
+                              src="assets/img/profiles/avatar-20.jpg"
+                              alt="img"
+                              className="preview1"
+                            />
+                            <button type="button" className="profile-remove">
+                              <i className="ti ti-x" />
+                            </button> */}
+                          </div>
+                          <div className="profile-upload-content">
+                            <label className="profile-upload-btn">
+                              <i className="ti ti-file-broken" /> Upload File
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="input-img"
+                                onChange={handleLogoChange}
+                              />
+                            </label>
+                            <p>JPG, GIF or PNG. Max size of 800 Kb</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -392,7 +444,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           placeholder="Enter First Name"
                           className="form-control"
                           {...register("first_name", {
-                            required: "First name is required !",
+                            required: "First  Name is required !",
                           })}
                         />
                         {errors.first_name && (
@@ -492,7 +544,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Title<span className="text-danger">*</span>
+                          Title <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -587,25 +639,25 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Mobile<span className="text-danger">*</span>
+                          Mobile <span className="text-danger">*</span>
                         </label>
                         <input
-                          type="number"
+                          type="text" // use "text" to avoid browser-specific issues with type="number"
                           placeholder="Enter Mobile"
-                          className="form-control"
+                          className={`form-control ${errors.mobile ? "is-invalid" : ""}`}
                           {...register("mobile", {
-                            required: "Mobile no. is required !",
+                            required: "Mobile number is required!",
                             minLength: {
                               value: 9,
-                              message: "Mobile must be at least 9 digits !",
+                              message: "Mobile must be at least 9 digits!",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Mobile must be at most 12 digits !",
+                              message: "Mobile must be at most 12 digits!",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Mobile must contain only numbers !",
+                              message: "Mobile must contain only numbers!",
                             },
                           })}
                         />
@@ -616,26 +668,30 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         )}
                       </div>
                     </div>
+
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">Phone</label>
-                        <input
-                          type="number"
+                        <label className="col-form-label">
+  Phone&nbsp;<span className="text-danger">*</span>
+</label>
+
+                         <input
+                          type="text" // use "text" to avoid browser-specific issues with type="number"
                           placeholder="Enter Phone"
-                          className="form-control"
+                          className={`form-control ${errors.Phone ? "is-invalid" : ""}`}
                           {...register("phone", {
-                            // required: "Phone is required !",
+                            required: "Phone number is required!",
                             minLength: {
                               value: 9,
-                              message: "Phone must be at least 9 digits",
+                              message: "Phone must be at least 9 digits!",
                             },
                             maxLength: {
                               value: 12,
-                              message: "Phone must be at most 12 digits",
+                              message: "Phone must be at most 12 digits!",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
-                              message: "Phone must contain only numbers",
+                              message: "Phone must contain only numbers!",
                             },
                           })}
                         />
@@ -684,7 +740,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             <Select
                               {...field}
                               options={sourceList}
-                              placeholder="Choose"
+                              placeholder="Select"
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -717,7 +773,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             <Select
                               {...field}
                               options={industriesList}
-                              placeholder="Choose"
+                              placeholder="Select"
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -749,7 +805,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             <Select
                               {...field}
                               options={lostReasonsList}
-                              placeholder="Choose"
+                              placeholder="Select"
                               className="select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -770,6 +826,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                       </div>
                     </div>
                     <div className="col-md-6">
+                      
                       <div className="mb-3">
                         <label className="col-form-label">
                           Owner <span className="text-danger">*</span>
@@ -782,7 +839,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             <Select
                               {...field}
                               options={usersList}
-                              placeholder="Choose"
+                              placeholder="Select"
                               className="select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) => {
@@ -798,6 +855,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             />
                           )}
                         />
+                        
                         {errors.lead_owner && (
                           <small className="text-danger">
                             {errors.lead_owner.message}
@@ -819,16 +877,26 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          No of Employees
-                          <span className="text-danger">*</span>
+                          No of Employees&nbsp;<span className="text-danger">*</span>
                         </label>
-                        <input
-                          type="number"
-                          placeholder="Enter No Of Employee"
-                          step="0.01"
-                          className="form-control"
+                         <input
+                          type="text" // use "text" to avoid browser-specific issues with type="number"
+                          placeholder="Enter Employees"
+                          className={`form-control ${errors.Employees ? "is-invalid" : ""}`}
                           {...register("no_of_employees", {
-                            required: " No of Employees is required !",
+                            required: " Employees  is required!",
+                            minLength: {
+                              value: 9,
+                              message: "Employees must be at least 9 digits!",
+                            },
+                            maxLength: {
+                              value: 12,
+                              message: "Employees must be at most 12 digits!",
+                            },
+                            pattern: {
+                              value: /^[0-9]+$/,
+                              message: "Employees must contain only numbers!",
+                            },
                           })}
                         />
                         {errors.no_of_employees && (
@@ -841,8 +909,8 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Annual Revenue
-                          <span className="text-danger">*</span>
+                          Annual Revenue&nbsp;
+                          <span className="text-danger gap-2">*</span>
                         </label>
                         <input
                           type="number"
@@ -850,7 +918,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           step="0.01"
                           className="form-control"
                           {...register("annual_revenue", {
-                            required: "Annual revenue is required !",
+                            required: "Annual Revenue is required !",
                           })}
                         />
                         {errors.annual_revenue && (
@@ -894,7 +962,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             <Select
                               {...field}
                               options={currencyLists}
-                              placeholder="Choose"
+                              placeholder="Select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption.value)
@@ -1006,7 +1074,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             <Select
                               {...field}
                               options={countryList}
-                              placeholder="Choose"
+                              placeholder="Select"
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) => {

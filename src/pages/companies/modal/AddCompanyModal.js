@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addCompany } from "../../../redux/companies/";
 
-const AddCompanyModal = () => {
+const AddCompanyModal = ({ company }) => {
   const [selectedLogo, setSelectedLogo] = useState(null);
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.companies);
@@ -148,15 +148,23 @@ const AddCompanyModal = () => {
                       <div className="mb-3">
                         <div className="profile-upload">
                           <div className="profile-upload-img">
-                            <span>
-                              <i className="ti ti-photo" />
-                            </span>
-                            {selectedLogo && (
+                            {selectedLogo ? (
                               <img
                                 src={URL.createObjectURL(selectedLogo)}
                                 alt="Company Logo"
-                                className="preview"
+                                className="preview w-100 h-100 object-fit-cover"
+                                // style={{image}}
                               />
+                            ) : company ? (
+                              <img
+                                src={company.image}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <span>
+                                <i className="ti ti-photo" />
+                              </span>
                             )}
                             <button
                               type="button"
@@ -165,18 +173,26 @@ const AddCompanyModal = () => {
                             >
                               <i className="ti ti-x" />
                             </button>
+                            {/* <img
+                              src="assets/img/profiles/avatar-20.jpg"
+                              alt="img"
+                              className="preview1"
+                            />
+                            <button type="button" className="profile-remove">
+                              <i className="ti ti-x" />
+                            </button> */}
                           </div>
                           <div className="profile-upload-content">
                             <label className="profile-upload-btn">
-                              <i className="ti ti-file-broken" /> Upload Logo
+                              <i className="ti ti-file-broken" /> Upload File
                               <input
                                 type="file"
-                                className="input-img"
                                 accept="image/*"
+                                className="input-img"
                                 onChange={handleLogoChange}
                               />
                             </label>
-                            <p>JPG, GIF or PNG. Max size of 800K</p>
+                            <p>JPG, GIF or PNG. Max size of 800 Kb</p>
                           </div>
                         </div>
                       </div>
@@ -188,9 +204,10 @@ const AddCompanyModal = () => {
                         </label>
                         <input
                           type="text"
+                          placeholder="Company Name"
                           className="form-control"
                           {...register("name", {
-                            required: "Company name is required !",
+                            required: "Company Name is required !",
                           })}
                         />
                         {errors.name && (
@@ -207,6 +224,7 @@ const AddCompanyModal = () => {
                         </label>
                         <input
                           type="text"
+                          placeholder=" Registration Number"
                           className="form-control"
                           {...register("registrationNumber")}
                         />
@@ -219,6 +237,7 @@ const AddCompanyModal = () => {
                         </label>
                         <input
                           type="email"
+                          placeholder="Email"
                           className="form-control"
                           {...register("email", {
                             required: "Email is required !",
@@ -238,9 +257,10 @@ const AddCompanyModal = () => {
                         </label>
                         <input
                           type="number"
+                          placeholder="Phone"
                           className="form-control"
                           {...register("phone", {
-                            required: "Phone number is required !",
+                            required: "Phone Number is required !",
                             minLength: {
                               value: 9,
                               message: "Phone must be at least 9 digits",
@@ -267,6 +287,7 @@ const AddCompanyModal = () => {
                         <label className="col-form-label">Website</label>
                         <input
                           type="text"
+                          placeholder="Website"
                           className="form-control"
                           {...register("website")}
                         />
@@ -281,7 +302,7 @@ const AddCompanyModal = () => {
                           type="text"
                           className="form-control"
                           {...register("industryType", {
-                            required: "Industry type is required !",
+                            required: "Industry Type is required !",
                           })}
                         />
                         {errors.industryType && (
@@ -321,7 +342,7 @@ const AddCompanyModal = () => {
                           type="text"
                           className="form-control"
                           {...register("businessType", {
-                            required: "Business type is required !",
+                            required: "Business Type is required !",
                           })}
                         />
                         {errors.businessType && (
@@ -342,7 +363,7 @@ const AddCompanyModal = () => {
                           type="text"
                           className="form-control"
                           {...register("primaryContactName", {
-                            required: "Primary contact name is required !",
+                            required: "Primary Contact Name is required !",
                           })}
                         />
                         {errors.primaryContactName && (
@@ -362,7 +383,7 @@ const AddCompanyModal = () => {
                           type="text"
                           className="form-control"
                           {...register("primaryContactRole", {
-                            required: "Primary contact role is required !",
+                            required: "Primary Contact Role is required !",
                           })}
                         />
                         {errors.primaryContactRole && (
@@ -382,7 +403,7 @@ const AddCompanyModal = () => {
                           type="email"
                           className="form-control"
                           {...register("primaryContactEmail", {
-                            required: "Primary contact email is required !",
+                            required: "Primary Contact Email is required !",
                           })}
                         />
                         {errors.primaryContactEmail && (
@@ -402,7 +423,7 @@ const AddCompanyModal = () => {
                           type="number"
                           className="form-control"
                           {...register("primaryContactPhone", {
-                            required: "Primary contact phone is required !",
+                            required: "Primary Contact Phone is required !",
                             minLength: {
                               value: 9,
                               message: "Phone must be at least 9 digits",

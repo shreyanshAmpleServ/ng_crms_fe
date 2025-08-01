@@ -137,19 +137,23 @@ const EditCompanyModal = ({ company }) => {
                       <div className="mb-3">
                         <div className="profile-upload">
                           <div className="profile-upload-img">
-                          {selectedLogo && (<span>
-                              <i className="ti ti-photo" />
-                            </span>)}
-                            {selectedLogo && (
+                            {selectedLogo ? (
                               <img
-                                src={
-                                  selectedLogo instanceof File
-                                    ? URL.createObjectURL(selectedLogo)
-                                    : selectedLogo // Assume URL for existing logo
-                                }
+                                src={URL.createObjectURL(selectedLogo)}
                                 alt="Company Logo"
-                                className="preview"
+                                className="preview w-100 h-100 object-fit-cover"
+                                // style={{image}}
                               />
+                            ) : company ? (
+                              <img
+                                src={company.image}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <span>
+                                <i className="ti ti-photo" />
+                              </span>
                             )}
                             <button
                               type="button"
@@ -158,18 +162,26 @@ const EditCompanyModal = ({ company }) => {
                             >
                               <i className="ti ti-x" />
                             </button>
+                            {/* <img
+                              src="assets/img/profiles/avatar-20.jpg"
+                              alt="img"
+                              className="preview1"
+                            />
+                            <button type="button" className="profile-remove">
+                              <i className="ti ti-x" />
+                            </button> */}
                           </div>
                           <div className="profile-upload-content">
                             <label className="profile-upload-btn">
-                              <i className="ti ti-file-broken" /> Upload Logo
+                              <i className="ti ti-file-broken" /> Upload File
                               <input
                                 type="file"
-                                className="input-img"
                                 accept="image/*"
+                                className="input-img"
                                 onChange={handleLogoChange}
                               />
                             </label>
-                            <p>JPG, GIF or PNG. Max size of 800K</p>
+                            <p>JPG, GIF or PNG. Max size of 800 Kb</p>
                           </div>
                         </div>
                       </div>

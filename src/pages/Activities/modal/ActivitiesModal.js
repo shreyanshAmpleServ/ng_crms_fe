@@ -94,8 +94,8 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   });
   const isReminder = watch("is_reminder");
 
- useEffect(() => {
-  if (activity?.type_id) {
+ React.useEffect(() => {
+  if (activity) {
     reset({
       title: activity?.title || "",
       status: activity?.status || "",
@@ -114,8 +114,9 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       project_id: activity?.project_id || null,
       priority: activity?.priority || 0,
     });
+   setSelectedType(activity?.type_id);
+
   } else {
-    setSelectedType(null);
 
     reset({
       title: "",
@@ -135,6 +136,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       project_id: null,
       createdby: 1,
     });
+     setSelectedType(null);
   }
 }, [activity, reset]);
 
@@ -161,6 +163,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   const { contacts } = useSelector((state) => state.contacts);
     const { projects } = useSelector((state) => state.projects);
 
+   console.log("Projects in Redux =>", projects);
 
   const { users } = useSelector((state) => state.users);
   const activityTypes = useSelector((state) => state.activities.activityTypes);
@@ -195,13 +198,12 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   const finalData = {
     ...data,
     type_id: selectedType,
+
     due_date: dayjs(data.due_date, "DD-MM-YYYY").toISOString(),
         due_time: dayjs(data.due_time, "HH:mm:ss").toISOString(),
 
   };
-
   const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
-
   try {
     if (activity) {
       await dispatch(
@@ -216,7 +218,6 @@ const ActivitiesModal = ({ setActivity, activity }) => {
     setActivity(null);
 
   } catch (error) {
-    console.error(error);
     closeButton?.click();
   }
 };
@@ -231,9 +232,9 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       setActivity(null);
     }
   };
-  useEffect(() => {
-    setSelectedType(activityTypes?.[0]?.id);
-  }, [activityTypes, activity]);
+  // useEffect(() => {
+  //   setSelectedType(activityTypes?.[0]?.id);
+  // }, [activityTypes, activity]);
   useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add_activities");
     if (offcanvasElement) {
@@ -252,7 +253,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
         );
       };
     }
-  }, [setActivity]);
+  }, []);
   return (
     <>
       {/* Add New Activity */}
@@ -340,7 +341,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                     {errors.type_id ||
                       (!selectedType && (
                         <small className="text-danger">
-                          {"Activity type is required !"}
+                          
                         </small>
                       ))}
                   </div>

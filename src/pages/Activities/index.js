@@ -168,9 +168,9 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
     },
     {
       title: "Created At",
-      dataIndex: "created_date",
+      dataIndex: "createddate",
       render: (text) => <div>{moment(text).format("DD-MM-YYYY ")}</div>,
-      sorter: (a, b) => a.created_date - b.created_date,
+      sorter: (a, b) => a.createddate - b.createddate,
     },
    ...((isDelete || isUpdate) ? [ {
       title: "Action",
