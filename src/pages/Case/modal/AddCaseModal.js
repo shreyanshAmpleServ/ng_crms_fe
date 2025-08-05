@@ -148,8 +148,10 @@ const AddCaseModal = ({ cases, setCases }) => {
         : await dispatch(addCases(FinalData)).unwrap();
       closeButton.click();
       reset();
+      dispatch(fetchCasesCode());
     } catch (error) {
       closeButton.click();
+      dispatch(fetchCasesCode());
     }
   };
   React.useEffect(() => {
