@@ -857,7 +857,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                             <Select
                               {...field}
                               options={currencyLists}
-                              placeholder="Choose"
+                              placeholder="Select..."
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption.value)
