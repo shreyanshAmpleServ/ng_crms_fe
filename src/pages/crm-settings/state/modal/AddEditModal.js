@@ -117,7 +117,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                     <Select
                       {...field}
                       options={CountriesList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       isDisabled={!CountriesList.length} // Disable if no stages are available
                       classNamePrefix="react-select"
                       className="select2"

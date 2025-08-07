@@ -439,7 +439,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={sourceList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -472,7 +473,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={industriesList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -504,7 +506,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={lostReasonsList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -537,7 +540,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={usersList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -742,7 +746,8 @@ const EditLeadModal = ({ lead }) => {
                               className="select"
                               classNamePrefix="react-select"
                               options={countries}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value

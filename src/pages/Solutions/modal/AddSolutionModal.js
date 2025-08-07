@@ -189,7 +189,8 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                     <Select
                       {...field}
                       options={usersList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) => {
@@ -233,7 +234,8 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                     <Select
                       {...field}
                       options={productsList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -269,7 +271,8 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                 <Select
                   className="select"
                   options={OrderStatusOptions}
-                  placeholder="Choose"
+                  placeholder="Select..."
+
                   classNamePrefix="react-select"
                   onChange={(selectedOption) => {
                     setValue("status", selectedOption.value);

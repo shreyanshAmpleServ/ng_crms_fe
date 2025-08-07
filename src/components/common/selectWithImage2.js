@@ -61,7 +61,8 @@ export const SelectWithImage2 = () => {
         valueTemplate={customValueTemplate}
         onChange={(e) => setSelectedOption(e.value)}
         style={{ width: "100%" }}
-        placeholder="Choose"
+        placeholder="Select..."
+
       />
     </div>
   );

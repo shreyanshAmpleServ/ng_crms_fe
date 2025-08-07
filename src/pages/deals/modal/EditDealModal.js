@@ -271,7 +271,8 @@ const EditDealModal = ({ deal }) => {
                         { label: "Choose", value: "" },
                         ...pipelineList,
                       ]}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       classNamePrefix="react-select"
                       onChange={(selected) => onPipelineChange(selected)}
                     />
@@ -299,7 +300,8 @@ const EditDealModal = ({ deal }) => {
                     <Select
                       {...field}
                       options={stages}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       isDisabled={!stages?.length} // Disable if no stages are available
                       classNamePrefix="react-select"
                     />
@@ -348,7 +350,8 @@ const EditDealModal = ({ deal }) => {
                     <Select
                       {...field}
                       options={currencyLists}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       classNamePrefix="react-select"
                     />
                   )}
@@ -376,7 +379,8 @@ const EditDealModal = ({ deal }) => {
                     <Select
                       {...field}
                       options={duration}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       classNamePrefix="react-select"
                     />
                   )}
@@ -487,7 +491,8 @@ const EditDealModal = ({ deal }) => {
                     <Select
                       {...field}
                       options={priorityList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       classNamePrefix="react-select"
                     />
                   )}
@@ -513,7 +518,8 @@ const EditDealModal = ({ deal }) => {
                   //   <Select
                   //   {...field}
                   //   options={sourceList}
-                  //   placeholder="Choose"
+                  //   placeholder="Select..."
+
                   //   className="select2"
                   //   classNamePrefix="react-select"
                   //   onChange={(selectedOption) =>
@@ -526,7 +532,8 @@ const EditDealModal = ({ deal }) => {
                     <Select
                       {...field}
                       options={status}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       classNamePrefix="react-select"
                     />
                    )} 

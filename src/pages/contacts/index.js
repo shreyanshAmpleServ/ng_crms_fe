@@ -986,7 +986,8 @@ const ContactDetails = () => {
                       <Select
                         className="select2"
                         options={statusList}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -1095,7 +1096,8 @@ const ContactDetails = () => {
                             <Select
                               className="select2"
                               options={dealsopen}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               classNamePrefix="react-select"
                             />
                           </div>
@@ -1109,7 +1111,8 @@ const ContactDetails = () => {
                             <Select
                               className="select2"
                               options={documentType}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               classNamePrefix="react-select"
                             />
                           </div>
@@ -1138,7 +1141,8 @@ const ContactDetails = () => {
                             <Select
                               className="select2"
                               options={LocaleData}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               classNamePrefix="react-select"
                             />
                           </div>
@@ -1388,7 +1392,8 @@ const ContactDetails = () => {
                 <Select
                   className="select2"
                   options={accountType}
-                  placeholder="Choose"
+                  placeholder="Select..."
+
                   classNamePrefix="react-select"
                 />
               </div>

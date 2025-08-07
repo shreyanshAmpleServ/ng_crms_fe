@@ -241,7 +241,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                             {...field}
                             // options={productList}
                             options={getFilteredOptions(i?.item_id)}
-                            placeholder="Choose"
+                            placeholder="Select..."
+
                             className="select2"
                             classNamePrefix="react-select"
                             onChange={(selectedOption) => {
@@ -447,7 +448,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                           <Select
                             {...field}
                             options={productList}
-                            placeholder="Choose"
+                            placeholder="Select..."
+
                             className="select2"
                             classNamePrefix="react-select"
                             onChange={(selectedOption) => {
@@ -704,7 +706,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                           // <Select
                           //   {...field}
                           //   options={productList}
-                          //   placeholder="Choose"
+                          //   placeholder="Select..."
+
                           //   className="select2"
                           //   classNamePrefix="react-select"
                           //   disabled={true}

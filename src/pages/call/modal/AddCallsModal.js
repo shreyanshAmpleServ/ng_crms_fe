@@ -384,7 +384,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         render={({ field }) => (
                           <Select
                             {...field}
-                            placeholder="Choose"
+                            placeholder="Select..."
                             classNamePrefix="react-select"
                             options={options1}
                             onChange={(selectedOption) => {
@@ -426,7 +426,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         render={({ field }) => (
                           <Select
                             {...field}
-                            placeholder="Choose"
+                            placeholder="Select..."
                             classNamePrefix="react-select"
                             isLoading={calForLoading}
                             onInputChange={(e) =>
@@ -539,7 +539,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                           <Select
                             {...field}
                             options={options3}
-                            placeholder="Choose"
+                            placeholder="Select..."
                             className="select2"
                             classNamePrefix="react-select"
                             onChange={(selectedOption) =>
@@ -566,7 +566,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                           <Select
                             {...field}
                             options={constactList}
-                            placeholder="Choose"
+                            placeholder="Select..."
                             isLoading={loadingContact ? true : false}
                             className="select2"
                             classNamePrefix="react-select"
@@ -646,7 +646,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                           {...field}
                           options={usersList}
                           isLoading={loadingUser && true}
-                          placeholder="Choose"
+                          placeholder="Select..."
                           className="select2"
                           classNamePrefix="react-select"
                           onChange={(selectedOption) => {
@@ -692,7 +692,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                       <Select
                         {...field}
                         options={callPurposeList}
-                        placeholder="Choose"
+                        placeholder="Select..."
                         className="select2"
                         classNamePrefix="react-select"
                         onChange={(selectedOption) =>
@@ -736,7 +736,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                       <Select
                         {...field}
                         options={callTypeList}
-                        placeholder="Choose"
+                        placeholder="Select..."
                         className="select2"
                         classNamePrefix="react-select"
                         onChange={(selectedOption) =>
@@ -777,7 +777,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         <Select
                           {...field}
                           options={callStatusList}
-                          placeholder="Choose"
+                          placeholder="Select..."
                           className="select2"
                           classNamePrefix="react-select"
                           onChange={(selectedOption) =>
@@ -888,21 +888,20 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                       {!isScheduled && <span className="text-danger">*</span>}
                     </label>
                     <input
-                      type="Number"
-                      className="form-control"
-                      {...register(
-                        "duration_minutes",
-                        !isScheduled && {
-                          required: "Duration is required !",
-                          valueAsNumber: true,
-                        }
-                      )}
-                    />
-                    {errors.duration_minutes && (
-                      <small className="text-danger">
-                        {errors.duration_minutes.message}
-                      </small>
-                    )}
+  type="text"
+  className="form-control no-spinner"
+  placeholder="Enter Duration"
+  {...register("duration_minutes", {
+    required: !isScheduled && "Duration is required!",
+    valueAsNumber: true,
+  })}
+/>
+{errors.duration_minutes && (
+  <small className="text-danger">
+    {errors.duration_minutes.message}
+  </small>
+)}
+
                   </div>
                 </div>
               )}
@@ -911,6 +910,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                   <label className="col-form-label">Call Subject</label>
                   <input
                     type="text"
+                    placeholder="Enter Call subJ"
                     className="form-control"
                     {...register("call_subject")}
                   />
@@ -952,7 +952,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                         <Select
                           {...field}
                           options={reminderTypes}
-                          placeholder="Choose"
+                          placeholder="Select..."
                           className="select2"
                           classNamePrefix="react-select"
                           onChange={(selectedOption) =>
@@ -1007,7 +1007,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                       <Select
                         {...field}
                         options={options2}
-                        placeholder="Choose"
+                        placeholder="Select..."
                         className="select2"
                         classNamePrefix="react-select"
                         onChange={(selectedOption) =>

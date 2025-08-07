@@ -735,7 +735,7 @@ const donutSeries =
                             onClick={() =>{
                               setMonthlyDealFilter({
                                 id: null,
-                                name: "Select Pipline",
+                                name: "All",
                               })
                               setWhoChange("MonthlyDeal")
                             }}

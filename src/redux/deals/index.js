@@ -17,7 +17,7 @@ export const fetchDeals = createAsyncThunk(
         priority: datas?.priority || "",
       };
       const response = await apiClient.get("/v1/deals", { params });
-      return response.data; // Returns a list of deals
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch deals"
@@ -31,16 +31,15 @@ export const addDeal = createAsyncThunk(
   "deals/addDeal",
   async (dealData, thunkAPI) => {
     try {
-      // const response = await apiClient.post("/v1/deals", dealData);
       const response = await toast.promise(
         apiClient.post("/v1/deals", dealData),
         {
-          loading: " Deal adding...",
+          loading: "Deal adding...",
           success: (res) => res.data.message || "Deal added successfully!",
           error: "Failed to add deal",
         }
       );
-      return response.data; // Returns the newly added deal
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to add deal"
@@ -54,16 +53,15 @@ export const updateDeal = createAsyncThunk(
   "deals/updateDeal",
   async ({ id, dealData }, thunkAPI) => {
     try {
-      // const response = await apiClient.put(`/v1/deals/${id}`, dealData);
       const response = await toast.promise(
         apiClient.put(`/v1/deals/${id}`, dealData),
         {
-          loading: " Deal updating...",
+          loading: "Deal updating...",
           success: (res) => res.data.message || "Deal updated successfully!",
           error: "Failed to update deal",
         }
       );
-      return response.data; // Returns the updated deal
+      return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
         return thunkAPI.rejectWithValue({
@@ -78,19 +76,27 @@ export const updateDeal = createAsyncThunk(
   }
 );
 
-// Delete a Deal
+// ✅ Delete a Deal (toast added here)
 export const deleteDeal = createAsyncThunk(
   "deals/deleteDeal",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/deals/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/deals/${id}`),
+        {
+          loading: "Deleting deal...",
+          success: (res) => res.data.message || "Deal deleted successfully!",
+          error: (err) =>
+            err?.response?.data?.message || "Failed to delete deal",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "Deal deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete deal"
+        error.response?.data || { message: "Failed to delete deal" }
       );
     }
   }
@@ -102,7 +108,7 @@ export const fetchDealById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/deals/${id}`);
-      return response.data; // Returns the deal details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch deal"
@@ -110,7 +116,8 @@ export const fetchDealById = createAsyncThunk(
     }
   }
 );
-// Update pipline stage
+
+// Update pipeline stage
 export const updateDealStage = createAsyncThunk(
   "deals/updateDealStage",
   async (dealData, thunkAPI) => {
@@ -119,10 +126,10 @@ export const updateDealStage = createAsyncThunk(
         `/v1/pipelines/update-stage/${dealData.id}`,
         dealData?.deal
       );
-      return response.data; // Returns the newly added deal
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add deal"
+        error.response?.data || "Failed to update stage"
       );
     }
   }
@@ -180,24 +187,14 @@ const dealsSlice = createSlice({
       .addCase(updateDeal.fulfilled, (state, action) => {
         state.loading = false;
         const updatedDeal = action.payload.data;
-        const filteredDeals = state.deals.data?.filter(deal => deal.id !== updatedDeal.id) || [];
-      
-        // Insert the updated deal at the top
+        const filteredDeals = state.deals.data?.filter(
+          (deal) => deal.id !== updatedDeal.id
+        ) || [];
+
         state.deals = {
           ...state.deals,
           data: [updatedDeal, ...filteredDeals],
         };
-        // const index = state.deals.data?.findIndex(
-        //   (deal) => deal.id === action.payload.data.id
-        // );
-        // if (index !== -1) {
-        //   state.deals.data[index] = action.payload.data;
-        // } else {
-        //   state.deals = {
-        //     ...state.deals,
-        //     data: [ action.payload.data, ...state.deals.data ],
-        //   };
-        // }
         state.success = action.payload.message;
       })
       .addCase(updateDeal.rejected, (state, action) => {

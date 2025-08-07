@@ -194,7 +194,8 @@ const ManageTaxModal = ({ tax, setTax }) => {
                       <Select
                         {...field}
                         options={manufacturerList}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         className="select2"
                         classNamePrefix="react-select"
                         onChange={(selectedOption) =>

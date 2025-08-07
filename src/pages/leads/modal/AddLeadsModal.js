@@ -678,7 +678,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                          <input
                           type="text" // use "text" to avoid browser-specific issues with type="number"
                           placeholder="Enter Phone"
-                          className={`form-control ${errors.Phone ? "is-invalid" : ""}`}
+                          className={`form-control ${errors.phone? "is-invalid" : ""}`}
                           {...register("phone", {
                             required: "Phone number is required!",
                             minLength: {
@@ -885,18 +885,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           className={`form-control ${errors.Employees ? "is-invalid" : ""}`}
                           {...register("no_of_employees", {
                             required: " Employees  is required!",
-                            minLength: {
-                              value: 9,
-                              message: "Employees must be at least 9 digits!",
-                            },
-                            maxLength: {
-                              value: 12,
-                              message: "Employees must be at most 12 digits!",
-                            },
-                            pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Employees must contain only numbers!",
-                            },
+                           
                           })}
                         />
                         {errors.no_of_employees && (
@@ -914,7 +903,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         </label>
                         <input
                           type="number"
-                          placeholder="Enter Annual Revanue"
+                          placeholder="Enter Annual Reveanue"
                           step="0.01"
                           className="form-control"
                           {...register("annual_revenue", {
@@ -1117,7 +1106,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                               {...field}
                               isLoading={loadingState}
                               options={stateList}
-                              placeholder="Choose"
+                              placeholder="Select..."
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -1195,7 +1184,8 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                               className="select"
                               classNamePrefix="react-select"
                               options={countries}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value

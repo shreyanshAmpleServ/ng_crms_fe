@@ -61,15 +61,20 @@ const LeadList = () => {
             
         },
     {
-      title: "Title",
-      dataIndex: "title",
-      render: (text) => (
-        <div className="text-wrap" style={{maxWidth:"10rem"}}>
-          {`${text}`}
-        </div>
-      ),
-      sorter: (a, b) => a.title.localeCompare(b.title),
-    },
+  title: "Title",
+  dataIndex: "title",
+  render: (text) => (
+    <div className="text-wrap" style={{ maxWidth: "10rem" }}>
+      {text || "-"}
+    </div>
+  ),
+  sorter: (a, b) => {
+    const titleA = a.title || "";
+    const titleB = b.title || "";
+    return titleA.localeCompare(titleB);
+  },
+},
+
     {
       title: "Lead Name",
       dataIndex: "leadName",
@@ -139,11 +144,15 @@ const LeadList = () => {
     },
 
     {
-      title: "Assignee",
-      dataIndex: "DealContacts",
-      render: (text) => <span>{text}</span>,
-      sorter: (a, b) =>(<div className="text-wrap" style={{maxWidth:"10rem"}}>{a.DealContacts.localeCompare(b.DealContacts)}</div>),
-    },
+  title: "Assignee",
+  dataIndex: "DealContacts",
+  render: (text) => (
+    <div className="text-wrap" style={{ maxWidth: "10rem" }}>
+      {text}
+    </div>
+  ),
+  sorter: (a, b) => a.DealContacts?.localeCompare(b.DealContacts),
+},
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -193,7 +202,7 @@ const LeadList = () => {
     (state) => state.leads,
   );
 
-  // // Show FlashMessage when success or error changes
+  // Show FlashMessage when success or error changes
   // React.useEffect(() => {
   //   if (error || success) {
   //     setShowFlashModal(true);
@@ -482,6 +491,7 @@ React.useEffect(()=>{
       <AddLeadsModal setSelectedLead={setSelectedLead} selectedLead={selectedLead} />
       <EditLeadsModal lead={selectedLead} />
       <DeleteAlert
+      label="Lead"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         onDelete={deleteData}

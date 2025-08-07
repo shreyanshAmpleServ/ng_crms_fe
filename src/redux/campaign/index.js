@@ -82,18 +82,27 @@ export const deleteCampaign = createAsyncThunk(
   "campaigns/deleteCampaign",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/campaign/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/campaign/${id}`),
+        {
+          loading: "Deleting campaign...",
+          success: (res) => res.data.message || "Campaign deleted successfully!",
+          error: (err) =>
+            err?.response?.data?.message || "Failed to delete campaign",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "Campaign deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete campaign"
+        error.response?.data || { message: "Failed to delete campaign" }
       );
     }
   }
 );
+
 
 // Fetch a Single campaign by ID
 export const fetchCampaignById = createAsyncThunk(

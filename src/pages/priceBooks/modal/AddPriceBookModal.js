@@ -193,7 +193,8 @@ const AddInvoiceModal = ({ order, setOrder }) => {
                   <Select
                     className="select"
                     options={priceModelOptions}
-                    placeholder="Choose"
+                    placeholder="Select..."
+
                     classNamePrefix="react-select"
                     onChange={(selectedOption) => {
                       setValue("model", selectedOption.value);

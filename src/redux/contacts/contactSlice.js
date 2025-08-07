@@ -8,7 +8,7 @@ export const fetchContacts = createAsyncThunk(
   async (datas, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/contacts?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`);
-      return response.data; // Returns a list of contacts
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || 'Failed to fetch contacts');
     }
@@ -20,16 +20,15 @@ export const addContact = createAsyncThunk(
   'contacts/addContact',
   async (contactData, thunkAPI) => {
     try {
-      // const response = await apiClient.post('/v1/contacts', contactData);
       const response = await toast.promise(
         apiClient.post('/v1/contacts', contactData),
         {
-          loading: " Contact adding...",
+          loading: "Contact adding...",
           success: (res) => res.data.message || "Contact added successfully!",
           error: "Failed to add contact",
         }
       );
-      return response.data; // Returns the newly added contact
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || 'Failed to add contact');
     }
@@ -39,22 +38,19 @@ export const addContact = createAsyncThunk(
 // Update a Contact
 export const updateContact = createAsyncThunk(
   'contacts/updateContact',
-  async (contactData , thunkAPI) => {
+  async (contactData, thunkAPI) => {
     try {
-      // const response = await apiClient.put(`/v1/contacts/${contactData.get('id')}`, contactData);
       const response = await toast.promise(
         apiClient.put(`/v1/contacts/${contactData.get('id')}`, contactData),
         {
-          loading: " Contact updating...",
+          loading: "Contact updating...",
           success: (res) => res.data.message || "Contact updated successfully!",
           error: "Failed to update contact",
         }
       );
-      return response.data; // Returns the updated contact
+      return response.data;
     } catch (error) {
-
       if (error.response?.status === 404) {
-        // Handle 404 Not Found explicitly
         return thunkAPI.rejectWithValue({
           status: 404,
           message: 'Not found',
@@ -65,17 +61,23 @@ export const updateContact = createAsyncThunk(
   }
 );
 
-// Delete a Contact
+// ✅ Delete a Contact with toast
 export const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/contacts/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/contacts/${id}`),
+        {
+          loading: 'Deleting contact...',
+          success: (res) => res.data.message || 'Contact deleted successfully!',
+          error: 'Failed to delete contact',
+        }
+      );
       return {
         data: { id },
         message: response.data.message || 'Contact deleted successfully',
       };
-      return id; // Returns the ID of the deleted contact
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || 'Failed to delete contact');
     }
@@ -88,12 +90,13 @@ export const fetchContactById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/contacts/${id}`);
-      return response.data; // Returns the contact details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || 'Failed to fetch contact');
     }
   }
 );
+
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: {
@@ -118,12 +121,10 @@ const contactsSlice = createSlice({
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.loading = false;
         state.contacts = action.payload.data;
-
       })
       .addCase(fetchContacts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
-
       })
       .addCase(addContact.pending, (state) => {
         state.loading = true;
@@ -131,13 +132,15 @@ const contactsSlice = createSlice({
       })
       .addCase(addContact.fulfilled, (state, action) => {
         state.loading = false;
-        state.contacts ={...state.contacts, data: [action.payload.data, ...state.contacts.data]};
+        state.contacts = {
+          ...state.contacts,
+          data: [action.payload.data, ...state.contacts.data],
+        };
         state.success = action.payload.message;
       })
       .addCase(addContact.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-
       })
       .addCase(updateContact.pending, (state) => {
         state.loading = true;
@@ -145,14 +148,17 @@ const contactsSlice = createSlice({
       })
       .addCase(updateContact.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.contacts.data?.findIndex(contact => contact.id === action.payload.data.id);
-
+        const index = state.contacts.data?.findIndex(
+          (contact) => contact.id === action.payload.data.id
+        );
         if (index !== -1) {
           state.contacts.data[index] = action.payload.data;
         } else {
-          state.contacts ={...state.contacts , data: [action.payload.data, ...state.contacts.data]};
+          state.contacts = {
+            ...state.contacts,
+            data: [action.payload.data, ...state.contacts.data],
+          };
         }
-
         state.success = action.payload.message;
       })
       .addCase(updateContact.rejected, (state, action) => {
@@ -165,10 +171,10 @@ const contactsSlice = createSlice({
       })
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.loading = false;
-        let filteredData = state.contacts.data.filter(
-          (data) => data.id !== action.payload.data.id,
+        const filteredData = state.contacts.data.filter(
+          (data) => data.id !== action.payload.data.id
         );
-        state.contacts = {...state.contacts,data:filteredData}
+        state.contacts = { ...state.contacts, data: filteredData };
         state.success = action.payload.message;
       })
       .addCase(deleteContact.rejected, (state, action) => {
@@ -181,14 +187,14 @@ const contactsSlice = createSlice({
       })
       .addCase(fetchContactById.fulfilled, (state, action) => {
         state.loading = false;
-        state.contactDetail = action.payload.data; // Save the contact detail
+        state.contactDetail = action.payload.data;
       })
       .addCase(fetchContactById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });
-
   },
 });
+
 export const { clearMessages } = contactsSlice.actions;
 export default contactsSlice.reducer;

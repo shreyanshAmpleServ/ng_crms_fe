@@ -60,7 +60,8 @@ const TodoModal = () => {
                           <Select
                             className="select"  classNamePrefix="react-select"
                             options={optionsChoose}
-                            placeholder="Choose"
+                            placeholder="Select..."
+
                           />
                         </div>
                       </div>
@@ -234,7 +235,8 @@ const TodoModal = () => {
                           <Select
                             className="select"  classNamePrefix="react-select"
                             options={optionsChoose}
-                            placeholder="Choose"
+                            placeholder="Select..."
+
                           />
                         </div>
                       </div>

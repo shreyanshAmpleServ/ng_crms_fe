@@ -1007,7 +1007,8 @@ const DealDetail = ({deal_name}) => {
                       <Select
                         className="select2"
                         options={statusList}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -1120,7 +1121,8 @@ const DealDetail = ({deal_name}) => {
                             <Select
                               className="select2"
                               options={dealsopen}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               classNamePrefix="react-select"
                             />
                           </div>
@@ -1134,7 +1136,8 @@ const DealDetail = ({deal_name}) => {
                             <Select
                               className="select2"
                               options={documentType}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               classNamePrefix="react-select"
                             />
                           </div>
@@ -1163,7 +1166,8 @@ const DealDetail = ({deal_name}) => {
                             <Select
                               className="select2"
                               options={LocaleData}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               classNamePrefix="react-select"
                             />
                           </div>
@@ -1413,7 +1417,8 @@ const DealDetail = ({deal_name}) => {
                 <Select
                   className="select2"
                   options={accountType}
-                  placeholder="Choose"
+                  placeholder="Select..."
+
                   classNamePrefix="react-select"
                 />
               </div>
@@ -1795,7 +1800,8 @@ const DealDetail = ({deal_name}) => {
                     className="select2"
                     classNamePrefix="react-select"
                     options={status}
-                    placeholder="Choose"
+                    placeholder="Select..."
+
                   />
                 </div>
                 <div className="mb-3">

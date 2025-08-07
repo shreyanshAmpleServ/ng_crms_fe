@@ -394,7 +394,8 @@ const EditContactModal = ({contact}) => {
                               <Select
                                 {...field}
                                 options={dealsopen}
-                                placeholder="Choose"
+                                placeholder="Select..."
+
                                 className="select2"
                                 classNamePrefix="react-select"
                                 onChange={(selectedOption) =>
@@ -478,7 +479,8 @@ const EditContactModal = ({contact}) => {
                               <Select
                                 {...field}
                                 options={activities}
-                                placeholder="Choose"
+                                placeholder="Select..."
+
                                 className="select2"
                                 classNamePrefix="react-select"
                                 onChange={(selectedOption) =>
@@ -505,7 +507,8 @@ const EditContactModal = ({contact}) => {
                               <Select
                                 {...field}
                                 options={industries}
-                                placeholder="Choose"
+                                placeholder="Select..."
+
                                 className="select"
                                 classNamePrefix="react-select"
                                 onChange={(selectedOption) =>
@@ -649,7 +652,8 @@ const EditContactModal = ({contact}) => {
                               className="select"
                               classNamePrefix="react-select"
                               options={countries}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value

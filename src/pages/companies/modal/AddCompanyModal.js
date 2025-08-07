@@ -204,7 +204,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="text"
-                          placeholder="Company Name"
+                          placeholder="Enter Company Name"
                           className="form-control"
                           {...register("name", {
                             required: "Company Name is required !",
@@ -224,7 +224,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="text"
-                          placeholder=" Registration Number"
+                          placeholder="Enter Registration Number"
                           className="form-control"
                           {...register("registrationNumber")}
                         />
@@ -237,7 +237,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="email"
-                          placeholder="Email"
+                          placeholder="Enter Email"
                           className="form-control"
                           {...register("email", {
                             required: "Email is required !",
@@ -256,8 +256,8 @@ const AddCompanyModal = ({ company }) => {
                           Phone <span className="text-danger">*</span>
                         </label>
                         <input
-                          type="number"
-                          placeholder="Phone"
+                          type="text"
+                          placeholder="Enter Phone"
                           className="form-control"
                           {...register("phone", {
                             required: "Phone Number is required !",
@@ -287,7 +287,7 @@ const AddCompanyModal = ({ company }) => {
                         <label className="col-form-label">Website</label>
                         <input
                           type="text"
-                          placeholder="Website"
+                          placeholder="Enter Website"
                           className="form-control"
                           {...register("website")}
                         />
@@ -300,6 +300,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="text"
+                          placeholder="Enter Industry Type"
                           className="form-control"
                           {...register("industryType", {
                             required: "Industry Type is required !",
@@ -316,7 +317,8 @@ const AddCompanyModal = ({ company }) => {
                       <div className="mb-3">
                         <label className="col-form-label">Annual Revenue</label>
                         <input
-                          type="number"
+                          type="text"
+                          placeholder="Enter Annual Revenue"
                           step="0.01"
                           className="form-control"
                           {...register("annualRevenue")}
@@ -327,7 +329,8 @@ const AddCompanyModal = ({ company }) => {
                       <div className="mb-3">
                         <label className="col-form-label">Employee Count</label>
                         <input
-                          type="number"
+                          type="text"
+                          placeholder="Enter Employee Count"
                           className="form-control"
                           {...register("employeeCount")}
                         />
@@ -340,6 +343,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="text"
+                          placeholder="Enter Business Type"
                           className="form-control"
                           {...register("businessType", {
                             required: "Business Type is required !",
@@ -361,6 +365,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="text"
+                          placeholder="Enter Primary Contact Name"
                           className="form-control"
                           {...register("primaryContactName", {
                             required: "Primary Contact Name is required !",
@@ -381,6 +386,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="text"
+                          placeholder="Enter Primary Contact Role"
                           className="form-control"
                           {...register("primaryContactRole", {
                             required: "Primary Contact Role is required !",
@@ -401,6 +407,7 @@ const AddCompanyModal = ({ company }) => {
                         </label>
                         <input
                           type="email"
+                          placeholder="Enter Primary Contact Email"
                           className="form-control"
                           {...register("primaryContactEmail", {
                             required: "Primary Contact Email is required !",
@@ -420,7 +427,8 @@ const AddCompanyModal = ({ company }) => {
                           <span className="text-danger">*</span>
                         </label>
                         <input
-                          type="number"
+                          type="phone"
+                          placeholder="Enter Primary Contact Phone"
                           className="form-control"
                           {...register("primaryContactPhone", {
                             required: "Primary Contact Phone is required !",
@@ -450,6 +458,7 @@ const AddCompanyModal = ({ company }) => {
                         <label className="col-form-label">Address</label>
                         <textarea
                           className="form-control"
+                          placeholder="Enter Address"
                           rows="3"
                           {...register("address")}
                         ></textarea>

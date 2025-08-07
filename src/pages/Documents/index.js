@@ -19,7 +19,7 @@ import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import { deleteAttachment, fetchAttachment } from "../../redux/attachment/index.js";
 import {
   clearMessages
-} from "../../redux/projects";
+} from "../../redux/attachment";
 import DeleteAlert from "./alert/DeleteAlert";
 import ProjectGrid from "./DocumentsGrid.js";
 import AddAttachmentModal from "./modal/AddDocumentModal.js";
@@ -393,14 +393,14 @@ const DocumentLists = () => {
           <FlashMessage
             type="error"
             message={error}
-            // onClose={() => dispatch(clearMessages())}
+            onClose={() => dispatch(clearMessages())}
           />
         )}
         {success && (
           <FlashMessage
             type="success"
             message={success}
-            // onClose={() => dispatch(clearMessages())}
+            onClose={() => dispatch(clearMessages())}
           />
         )}
 
@@ -509,7 +509,7 @@ const DocumentLists = () => {
       <AddAttachmentModal data={selectedProject} setData={setSelectedProject} />
       {/* <EditProjectModal project={selectedProject} /> */}
       <DeleteAlert
-        label="Project"
+        label="Documents"
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}

@@ -115,7 +115,8 @@
                                 classNamePrefix="react-select"
                                 options={companyName}
                                 defaultValue={companyName[1]}
-                                placeholder="Choose"
+                                placeholder="Select..."
+
                               />
                           </div>
                         </div>
@@ -194,7 +195,8 @@
                                  classNamePrefix="react-select"
                                 options={dealsopen}
                                 defaultValue={dealsopen[2]}
-                                placeholder="Choose"
+                                placeholder="Select..."
+
                               />
                           </div>
                         </div>
@@ -375,7 +377,8 @@
                                  classNamePrefix="react-select"
                                 options={countries}
                                 defaultValue={countries[2]}
-                                placeholder="Choose"
+                                placeholder="Select..."
+
                               />
                           </div>
                         </div>

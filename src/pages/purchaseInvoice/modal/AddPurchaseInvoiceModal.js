@@ -328,7 +328,8 @@ const handleAvatarChange = (e) => {
                    <Select
                      {...field}
                      options={vendorList}
-                     placeholder="Choose"
+                     placeholder="Select..."
+
                      className="select2"
                      classNamePrefix="react-select"
                      onChange={(selectedOption) => {
@@ -427,7 +428,8 @@ const handleAvatarChange = (e) => {
                 <Select
                   className="select"
                   options={salesTypesOption}
-                  placeholder="Choose"
+                  placeholder="Select..."
+
                   classNamePrefix="react-select"
                   onChange={(selectedOption) => {
                     setValue("sales_type",selectedOption.value)
@@ -453,7 +455,8 @@ const handleAvatarChange = (e) => {
                    <Select
                      {...field}
                      options={CurrencyList}
-                     placeholder="Choose"
+                     placeholder="Select..."
+
                      className="select2"
                      classNamePrefix="react-select"
                      onChange={(selectedOption) =>
@@ -504,7 +507,8 @@ const handleAvatarChange = (e) => {
                 <Select
                   className="select"
                   options={OrderStatusOptions}
-                  placeholder="Choose"
+                  placeholder="Select..."
+
                   classNamePrefix="react-select"
                   onChange={(selectedOption) => {
                     setValue("status",selectedOption.value)

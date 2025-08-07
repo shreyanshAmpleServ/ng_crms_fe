@@ -343,6 +343,14 @@ const DealsDashboard = () => {
 
   return (
     <>
+    <style>
+        {`
+          .sticky-header{
+            z-index: 900 !important;
+           
+          }
+        `}
+      </style>
       <Helmet>
         <title>DCC CRMS - Dashboard</title>
         <meta name="Dashboard" content="This is Dashboard page of DCC CRMS." />
@@ -427,9 +435,9 @@ const DealsDashboard = () => {
                   </div>
                 </div>
                 <div className="card-body">
-                  <div  style={{height:"38.7vh" , marginBottom:"15px", overflowY:"scroll"}} className="scroll-containe table-responsive custom-table">
+                  <div  style={{height:"38.7vh",  marginBottom:"15px", overflowY:"scroll"}} className="scroll-containe table-responsive custom-table">
                     <table className="table dataTable" id="deals-project">
-                      <thead className="thead-light">
+                      <thead className="thead-light sticky-sm-top sticky-header ">
                         <tr>
                           <th>Deal Name</th>
                           <th>Stage</th>
@@ -479,7 +487,7 @@ const DealsDashboard = () => {
                       Deals By Stage
                     </h4>
                     <div
-                      style={{ width: "34%" }}
+                      style={{height:"6.7vh", width: "34%" }}
                       className="d-flex align-items-center flex-wrap row-gap-2"
                     >
                       <div className="dropdown w-100 me-2">
@@ -493,7 +501,7 @@ const DealsDashboard = () => {
                             className="text-truncate"
                           >
                             {" "}
-                            {dealStageFilter?.name || "Select Pipline"}{" "}
+                            {dealStageFilter?.name || "Select Pipeline"}{" "}
                           </div>
                         </Link>
                         <div className="dropdown-menu w-100 dropdown-menu-end">
@@ -502,13 +510,13 @@ const DealsDashboard = () => {
                             onClick={() =>{
                               setDealStageFilter({
                                 id: null,
-                                name: "Select Pipline",
+                                name: "All Pipeline",
                               });
                             setWhoChange("DealStage")}
                             }
                             className="dropdown-item"
                           >
-                            All Pipline
+                            All Pipeline
                           </Link>
                           {pipelines?.data?.map((item) => (
                             <Link
@@ -586,7 +594,7 @@ const DealsDashboard = () => {
                             className="text-truncate"
                           >
                             {" "}
-                            {lostDealFilter?.name || "Select Pipline"}{" "}
+                            {lostDealFilter?.name || "Select Pipeline"}{" "}
                           </div>
                         </Link>
                         <div className="dropdown-menu w-100 dropdown-menu-end">
@@ -595,13 +603,13 @@ const DealsDashboard = () => {
                             onClick={() =>{
                               setLostDealFilter({
                                 id: null,
-                                name: "Select Pipline",
+                                name: "All Pipeline",
                               })
                               setWhoChange("LostDeal")
                            } }
                             className="dropdown-item"
                           >
-                            All Pipline
+                            All Pipeline
                           </Link>
                           {pipelines?.data?.map((item) => (
                             <Link
@@ -677,7 +685,7 @@ const DealsDashboard = () => {
                             className="text-truncate"
                           >
                             {" "}
-                            {wonDealFilter?.name || "Select Pipline"}{" "}
+                            {wonDealFilter?.name || "Select Pipeline"}{" "}
                           </div>
                         </Link>
                         <div className="dropdown-menu w-100 dropdown-menu-end">
@@ -686,13 +694,13 @@ const DealsDashboard = () => {
                             onClick={() =>{
                               setWonDealFilter({
                                 id: null,
-                                name: "Select Pipline",
+                                name: "All Pipeline",
                               })
                               setWhoChange("WinDeal")
                             }}
                             className="dropdown-item"
                           >
-                            All Pipline
+                            All Pipeline
                           </Link>
                           {pipelines?.data?.map((item) => (
                             <Link
@@ -771,7 +779,7 @@ const DealsDashboard = () => {
                             className="text-truncate"
                           >
                             {" "}
-                            {monthlyDealFilter?.name || "Select Pipline"}{" "}
+                            {monthlyDealFilter?.name || "Select Pipeline"}{" "}
                           </div>
                         </Link>
                         <div className="dropdown-menu w-100 dropdown-menu-end">
@@ -780,13 +788,13 @@ const DealsDashboard = () => {
                             onClick={() =>{
                               setMonthlyDealFilter({
                                 id: null,
-                                name: "Select Pipline",
+                                name: "All Pipeline",
                               })
                               setWhoChange("MonthlyDeal")
                             }}
                             className="dropdown-item"
                           >
-                            All Pipline
+                            All Pipeline
                           </Link>
                           {pipelines?.data?.map((item) => (
                             <Link

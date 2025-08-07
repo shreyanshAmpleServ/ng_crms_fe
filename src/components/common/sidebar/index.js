@@ -8,7 +8,8 @@ import {
   setMobileSidebar,
 } from "../../../redux/common/commonSlice";
 import { SidebarData } from "../data/json/sidebarData";
-
+import { FaAddressBook } from "react-icons/fa"; // CRM Icon
+import { FiSettings } from "react-icons/fi";
 const Sidebar = () => {
   const Location = useLocation();
   const expandMenu = useSelector((state) => state.common?.expandMenu);
@@ -145,7 +146,7 @@ const Sidebar = () => {
                   </Link>
                 </li>
               </ul> */}
-
+  
               <ul>
                 {SidebarData?.map((mainLabel, index) => (
                   <li className="clinicdropdown" key={index}>
@@ -158,9 +159,11 @@ const Sidebar = () => {
                         );
                       }}
                     >
-                      <h6 className="submenu-hdr-label fw-bold">
-                        {mainLabel?.label}
-                      </h6>
+                     <h6 className="submenu-hdr-label fw-bold d-flex align-items-center gap-2">
+  {mainLabel?.label === "CRM" && <FaAddressBook size={10} />}
+  {mainLabel?.label === "SETTINGS" && <FiSettings size={10} />}
+  {mainLabel?.label}
+</h6>
                       {openMain === mainLabel.label ? (
                         <IoIosArrowDown />
                       ) : (

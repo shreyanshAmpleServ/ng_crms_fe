@@ -35,7 +35,8 @@
                       <Select
                         className="select2"
                         options={salestypelist}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -48,7 +49,8 @@
                       <Select
                         className="select2"
                         options={status}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -69,7 +71,8 @@
                       <Select
                         className="select2"
                         options={optionssymbol}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                          classNamePrefix="react-select"
                       />
                     </div>
@@ -82,7 +85,8 @@
                       <Select
                         className="select2"
                         options={duration}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -188,7 +192,8 @@
                       <Select
                         className="select2"
                         options={socialMedia}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                          classNamePrefix="react-select"
                       />
                     </div>
@@ -213,7 +218,8 @@
                       <Select
                         className="select2"
                         options={priorityList}
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                          classNamePrefix="react-select"
                       />
                     </div>

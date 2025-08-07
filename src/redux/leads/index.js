@@ -14,11 +14,9 @@ export const fetchLeads = createAsyncThunk(
         startDate: datas?.startDate?.toISOString() || "",
         endDate: datas?.endDate?.toISOString() || "",
         status: datas?.status || "",
-        // priority : datas?.priority || ""
       };
       const response = await apiClient.get(`/v1/leads`, { params });
-      // const response = await apiClient.get(`/v1/leads?search=${datas?.search || ""}&page=${datas?.page || ""}&size=${datas?.size || ""}&startDate=${datas?.startDate?.toISOString() || ""}&endDate=${datas?.endDate?.toISOString() || ""}`);
-      return response.data; // Returns a list of leads
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch leads"
@@ -33,7 +31,7 @@ export const fetchLeadById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const response = await apiClient.get(`/v1/leads/${id}`);
-      return response.data; // Returns the lead details
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch lead"
@@ -47,16 +45,15 @@ export const createLead = createAsyncThunk(
   "leads/createLead",
   async (leadData, thunkAPI) => {
     try {
-      // const response = await apiClient.post("/v1/leads", leadData);
       const response = await toast.promise(
         apiClient.post("/v1/leads", leadData),
         {
-          loading: " Lead adding...",
+          loading: "Lead adding...",
           success: (res) => res.data.message || "Lead added successfully!",
           error: "Failed to add lead",
         }
       );
-      return response.data; // Returns the newly created lead
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to create lead"
@@ -70,16 +67,15 @@ export const updateLead = createAsyncThunk(
   "leads/updateLead",
   async ({ id, leadData }, thunkAPI) => {
     try {
-      // const response = await apiClient.put(`/v1/leads/${id}`, leadData);
       const response = await toast.promise(
         apiClient.put(`/v1/leads/${id}`, leadData),
         {
-          loading: " Lead updating...",
+          loading: "Lead updating...",
           success: (res) => res.data.message || "Lead updated successfully!",
           error: "Failed to update lead",
         }
       );
-      return response.data; // Returns the updated lead
+      return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
         return thunkAPI.rejectWithValue({
@@ -94,12 +90,19 @@ export const updateLead = createAsyncThunk(
   }
 );
 
-// Delete a Lead
+// ✅ Delete a Lead (WITH TOAST)
 export const deleteLead = createAsyncThunk(
   "leads/deleteLead",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/leads/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/leads/${id}`),
+        {
+          loading: "Deleting lead...",
+          success: (res) => res.data.message || "Lead deleted successfully!",
+          error: "Failed to delete lead",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "Lead deleted successfully",
@@ -112,15 +115,15 @@ export const deleteLead = createAsyncThunk(
   }
 );
 
-// Fetch All Leads statuses
+// Fetch All Lead Statuses
 export const fetchLeadStatuses = createAsyncThunk(
   "leads/fetchLeadStatuses",
   async (datas, thunkAPI) => {
     try {
-      const params = {}
-    if(datas) params.search = datas
-      const response = await apiClient.get("/v1/lead-statuses",{params});
-      return response.data; // Returns a list of leads
+      const params = {};
+      if (datas) params.search = datas;
+      const response = await apiClient.get("/v1/lead-statuses", { params });
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch lead statuses"
@@ -128,6 +131,7 @@ export const fetchLeadStatuses = createAsyncThunk(
     }
   }
 );
+
 const leadSlice = createSlice({
   name: "leads",
   initialState: {
@@ -204,23 +208,13 @@ const leadSlice = createSlice({
       })
       .addCase(updateLead.fulfilled, (state, action) => {
         state.loading = false;
-        const updatedlead = action.payload.data;
-        const filteredLeads = state.leads.data?.filter(lead => lead.id !== updatedlead.id) || [];
+        const updatedLead = action.payload.data;
+        const filteredLeads =
+          state.leads.data?.filter((lead) => lead.id !== updatedLead.id) || [];
         state.leads = {
-              ...state.leads,
-              data: [updatedlead, filteredLeads],
-            };
-        // const index = state.leads.data?.findIndex(
-        //   (lead) => lead.id === action.payload.data.id
-        // );
-        // if (index !== -1) {
-        //   state.leads.data[index] = action.payload.data;
-        // } else {
-        //   state.leads = {
-        //     ...state.leads,
-        //     data: [...state.leads.data, action.payload.data],
-        //   };
-        // }
+          ...state.leads,
+          data: [updatedLead, ...filteredLeads],
+        };
         state.success = action.payload.message;
       })
       .addCase(updateLead.rejected, (state, action) => {

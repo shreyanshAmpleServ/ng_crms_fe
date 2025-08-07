@@ -60,12 +60,19 @@ export const updateCompany = createAsyncThunk(
   }
 );
 
-// Delete a Company
+// ✅ Delete a Company with toast
 export const deleteCompany = createAsyncThunk(
   "companies/deleteCompany",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/companies/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/companies/${id}`),
+        {
+          loading: "Deleting company...",
+          success: (res) => res.data.message || "Company deleted successfully!",
+          error: "Failed to delete company",
+        }
+      );
       return {
         data: { id },
         message: response.data.message || "Company deleted successfully",
@@ -117,7 +124,6 @@ const companySlice = createSlice({
       .addCase(fetchCompanies.fulfilled, (state, action) => {
         state.loading = false;
         state.companies = action.payload.data;
-        // toast.success("Companies fetched successfully");
       })
       .addCase(fetchCompanies.rejected, (state, action) => {
         state.loading = false;
@@ -178,12 +184,10 @@ const companySlice = createSlice({
         );
         state.companies = { ...state.companies, data: filteredData };
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Company deleted successfully");
       })
       .addCase(deleteCompany.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to delete company");
       })
       .addCase(fetchCompanyById.pending, (state) => {
         state.loading = true;

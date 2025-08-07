@@ -223,7 +223,7 @@ end_date: new Date(),
                     <input
                       type="text"
                       value={watch("name")}
-                      placeholder="Enter name"
+                      placeholder="Enter Name"
                       className="form-control"
                       {...register("name", {
                         required: "Name is required !",

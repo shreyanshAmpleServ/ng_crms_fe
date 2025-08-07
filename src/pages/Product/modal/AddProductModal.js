@@ -325,7 +325,8 @@ const AddProductModal = ({ product, setProduct }) => {
                       options={CategoryList}
                       isLoading={loadingCat}
                       onInputChange={(e) => setSearchProductCategory(e)}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -369,7 +370,8 @@ const AddProductModal = ({ product, setProduct }) => {
                       options={vendorList}
                       isLoading={loadingVendor}
                       onInputChange={(e) => setSearchVendor(e)}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -414,7 +416,8 @@ const AddProductModal = ({ product, setProduct }) => {
                       options={manufacturerList}
                       isLoading={loadingMnf}
                       onInputChange={(e) => setSearchManufacturer(e)}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -480,7 +483,8 @@ const AddProductModal = ({ product, setProduct }) => {
                       options={CurrencyList}
                       isLoading={loadingCurrency}
                       onInputChange={(e) => setSearchCurrency(e)}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -535,7 +539,8 @@ const AddProductModal = ({ product, setProduct }) => {
                       options={TaxList}
                       isLoading={loadingTAx}
                       onInputChange={(e) => setSearchTax(e)}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>

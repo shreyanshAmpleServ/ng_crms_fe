@@ -73,7 +73,8 @@ const CampaignModal = () => {
                       <Select
                         options={campaignType}
                         className="select"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -94,7 +95,8 @@ const CampaignModal = () => {
                       <Select
                         options={currencySymbol}
                         className="select"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -224,7 +226,8 @@ const CampaignModal = () => {
                       <Select
                         options={campaignType}
                         className="select"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -249,7 +252,8 @@ const CampaignModal = () => {
                       <Select
                         options={currencySymbol}
                         className="select"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>

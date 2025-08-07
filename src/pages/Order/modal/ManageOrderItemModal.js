@@ -167,7 +167,8 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
                           <Select
                             {...field}
                             options={productList}
-                            placeholder="Choose"
+                            placeholder="Select..."
+
                             className="select2"
                             classNamePrefix="react-select"
                             onChange={(selectedOption) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
+// import { createLead, updateLead } from "../../../redux/leads";
 
 import { updateLead } from "../../../redux/leads";
 import { useForm, Controller } from "react-hook-form";
@@ -439,7 +440,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={sourceList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -472,7 +474,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={industriesList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -504,7 +507,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={lostReasonsList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -537,7 +541,8 @@ const EditLeadModal = ({ lead }) => {
                             <Select
                               {...field}
                               options={usersList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -742,7 +747,8 @@ const EditLeadModal = ({ lead }) => {
                               className="select"
                               classNamePrefix="react-select"
                               options={countries}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value

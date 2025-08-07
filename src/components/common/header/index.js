@@ -29,6 +29,8 @@ const Header = () => {
   const mobileSidebar = useSelector((state) => state.common?.mobileSidebar);
   const miniSidebar = useSelector((state) => state.common?.miniSidebar);
 
+
+
   const [showDeleteModal,setShowDeleteModal] = useState(false)
 
   const {  isAuthenticated } = useSelector((state) =>
@@ -111,7 +113,7 @@ const Header = () => {
   return (
     <>
       {/* Header */}
-      <div id="header" className="header border ">
+      <div id="header" className="header border">
         {/* Logo */}
         <div
           className="header-left active border"
@@ -128,6 +130,8 @@ const Header = () => {
               className="bg-light"
             />
           </Link>
+          
+
           <Link id="toggle_btn" to="#" onClick={toggleMiniSidebar}>
             <i className="ti ti-arrow-bar-to-left" />
           </Link>
@@ -370,7 +374,7 @@ const Header = () => {
                             </Link>
                           </li>
                           <li>
-                            <Link to={`${route.activities}/Task`}>
+                            <Link to={route.taskReport}>
                               <div className="menu-details">
                                 <span className="menu-list-icon bg-success">
                                   <i className="ti ti-list-check" />

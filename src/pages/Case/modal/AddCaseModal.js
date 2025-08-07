@@ -251,7 +251,8 @@ const AddCaseModal = ({ cases, setCases }) => {
                     <Select
                       {...field}
                       options={usersList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) => {
@@ -295,7 +296,8 @@ const AddCaseModal = ({ cases, setCases }) => {
                     <Select
                       {...field}
                       options={productsList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -419,7 +421,8 @@ const AddCaseModal = ({ cases, setCases }) => {
                     <Select
                       {...field}
                       options={dealsList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -462,7 +465,8 @@ const AddCaseModal = ({ cases, setCases }) => {
                     <Select
                       {...field}
                       options={contactsList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -505,7 +509,8 @@ const AddCaseModal = ({ cases, setCases }) => {
                     <Select
                       {...field}
                       options={caseReasonList}
-                      placeholder="Choose"
+                      placeholder="Select..."
+
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>

@@ -95,6 +95,7 @@ useEffect(() => {
               </label>
               <input
                 type="text"
+                placeholder=" Project Name "
                 className="form-control"
                 {...register("name", { required: "Project name is required!" })}
               />
@@ -115,7 +116,7 @@ useEffect(() => {
                   <Select
                     {...field}
                     options={arrProjectTiming}
-                    placeholder="Choose"
+                    placeholder="Select..."
                     classNamePrefix="react-select"
                   />
                 )}
@@ -133,6 +134,7 @@ useEffect(() => {
               </label>
               <input
                 type="number"
+                placeholder="budget"
                 step="0.01"
                 className="form-control"
                 {...register("amount", { required: "Budget is required!" })}
@@ -223,6 +225,7 @@ useEffect(() => {
               <label>Description</label>
               <textarea
                 className="form-control"
+                 placeholder="Description"
                 rows={3}
                 {...register("description")}
               />
@@ -235,6 +238,7 @@ useEffect(() => {
                   <input
                     type="radio"
                     value="Y"
+                   
                     {...register("is_active")}
                     defaultChecked
                   />{" "}

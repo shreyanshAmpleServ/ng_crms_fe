@@ -71,7 +71,8 @@ const CompaignComplete = () => {
                       <Select
                         options={campaignType}
                         className="select2"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -93,7 +94,8 @@ const CompaignComplete = () => {
                       <Select
                         options={currencySymbol}
                         className="select"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -229,7 +231,8 @@ const CompaignComplete = () => {
                       <Select
                         options={campaignType}
                         className="select2"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>
@@ -255,7 +258,8 @@ const CompaignComplete = () => {
                       <Select
                         options={currencySymbol}
                         className="select"
-                        placeholder="Choose"
+                        placeholder="Select..."
+
                         classNamePrefix="react-select"
                       />
                     </div>

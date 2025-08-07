@@ -228,10 +228,10 @@ const AddDealModel = () => {
                     <Select
                       {...field}
                       options={[
-                        { label: "Choose", value: "" },
+                        { label: "Select...", value: "" },
                         ...pipelineList,
                       ]}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       classNamePrefix="react-select"
                       onChange={(selected) => onPipelineChange(selected)}
                     />
@@ -260,7 +260,7 @@ const AddDealModel = () => {
                       {...field}
                       isLoading={loading}
                       options={stages}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       isDisabled={!stages.length} // Disable if no stages are available
                       classNamePrefix="react-select"
                     />
@@ -310,7 +310,7 @@ const AddDealModel = () => {
                     <Select
                       {...field}
                       options={currencyLists}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       classNamePrefix="react-select"
                     />
                   )}
@@ -338,7 +338,7 @@ const AddDealModel = () => {
                     <Select
                       {...field}
                       options={duration}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       classNamePrefix="react-select"
                     />
                   )}
@@ -386,7 +386,7 @@ const AddDealModel = () => {
                       isMulti
                       className="select2"
                       classNamePrefix="react-select"
-                      placeholder="Choose contacts"
+                      placeholder="Select..."
                     />
                   )}
                 />
@@ -440,7 +440,9 @@ const AddDealModel = () => {
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">Tags</label>
-                <TagsInput value={tags} onChange={setTags} />
+
+                <TagsInput value={tags}
+                onChange={setTags} />
               </div>
             </div>
 
@@ -457,7 +459,7 @@ const AddDealModel = () => {
                     <Select
                       {...field}
                       options={priorityList}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       classNamePrefix="react-select"
                     />
                   )}
@@ -483,7 +485,7 @@ const AddDealModel = () => {
                     <Select
                       {...field}
                       options={sourceList}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -503,7 +505,7 @@ const AddDealModel = () => {
                     <Select
                       {...field}
                       options={status}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       classNamePrefix="react-select"
                     />
                   )}

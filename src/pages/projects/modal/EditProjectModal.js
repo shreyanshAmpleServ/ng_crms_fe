@@ -96,7 +96,8 @@ const EditProjectModal = ({ project }) => {
                   <Select
                     {...field}
                     options={arrProjectTiming}
-                    placeholder="Choose"
+                    placeholder="Select..."
+
                     classNamePrefix="react-select"
                   />
                 )}

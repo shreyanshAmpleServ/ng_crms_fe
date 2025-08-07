@@ -520,7 +520,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           Primary Phone  <span className="text-danger">*</span>
                         </label>
                         <input
-                          placeholder="Enter Phone 1"
+                          placeholder="Enter Phone"
                           type="number"
                           className="form-control"
                           {...register("phone1", {
@@ -824,7 +824,8 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                             <Select
                               {...field}
                               options={industries}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -997,7 +998,8 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                             <Select
                               {...field}
                               options={countryList}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) => {
@@ -1040,7 +1042,8 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               {...field}
                               options={stateList}
                               isLoading={stateLoading}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               className="select2"
                               classNamePrefix="react-select"
                               onChange={(selectedOption) =>
@@ -1120,7 +1123,8 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               className="select"
                               classNamePrefix="react-select"
                               options={countries}
-                              placeholder="Choose"
+                              placeholder="Select..."
+
                               onChange={(selectedOption) =>
                                 field.onChange(selectedOption?.value || null)
                               } // Send only value

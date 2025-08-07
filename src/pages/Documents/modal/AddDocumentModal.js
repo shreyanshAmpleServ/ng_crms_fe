@@ -262,7 +262,7 @@ const AddFiles = ({ data, setData }) => {
                             <Select
                               {...field}
                               options={DocumentRelatedType}
-                              placeholder="Choose"
+                              placeholder="Select"
                               classNamePrefix="react-select"
                               value={
                                 DocumentRelatedType?.find(
@@ -298,7 +298,7 @@ const AddFiles = ({ data, setData }) => {
                           render={({ field }) => (
                             <Select
                               {...field}
-                              placeholder="Choose"
+                              placeholder="Select..."
                               classNamePrefix="react-select"
                               options={related_options}
                               isLoading={isLoading}
@@ -340,6 +340,7 @@ const AddFiles = ({ data, setData }) => {
                         </label>
                         <input
                           type="text"
+                          placeholder="Document Type "
                           className="form-control"
                           {...register("file_type", {
                             required: "Title is required !",
@@ -359,6 +360,7 @@ const AddFiles = ({ data, setData }) => {
                         </label>
                         <input
                           type="text"
+                          placeholder=" Document Title  "
                           className="form-control"
                           {...register("filename", {
                             required: "Title is required !",
