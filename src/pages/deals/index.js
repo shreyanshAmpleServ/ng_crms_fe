@@ -57,12 +57,12 @@ const DealList = () => {
       width: 50,
       render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
   },
-    {
-      title: "S.No.",      
-      width: 50,
-      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+  //   {
+  //     title: "S.No.",      
+  //     width: 50,
+  //     render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+  //     // sorter: (a, b) => a.code.localeCompare(b.name),
+  // },
     {
       title: "Name",
       dataIndex: "dealName",

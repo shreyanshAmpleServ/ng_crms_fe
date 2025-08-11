@@ -408,6 +408,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Contact Person"
                     className="form-control"
                     {...register("cont_person", {
                       required: "Contact person to is required !",
@@ -428,6 +429,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Bill To"
                     className="form-control"
                     {...register("billto", {
                       required: "Bill to is required !",
@@ -448,6 +450,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Ship To "
                     className="form-control"
                     {...register("shipto", {
                       required: "Ship to is required !",
@@ -730,6 +733,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Address"
                     className="form-control"
                     {...register("address", {
                       required: "Address is required !",

@@ -441,7 +441,9 @@ const AddDealModel = () => {
               <div className="mb-3">
                 <label className="col-form-label">Tags</label>
 
-                <TagsInput value={tags}
+                <TagsInput 
+                value={tags}
+                placeHolder="Enter Tage"
                 onChange={setTags} />
               </div>
             </div>

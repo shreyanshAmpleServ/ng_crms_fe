@@ -310,8 +310,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                     <Select
                       {...field}
                       options={usersList}
-                      placeholder="Select..."
-
+                      placeholder="Choose"
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>{
@@ -444,8 +443,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                     <Select
                       {...field}
                       options={countryList}
-                      placeholder="Select..."
-
+                      placeholder="Choose"
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) => {
@@ -484,8 +482,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                     <Select
                       {...field}
                       options={stateList}
-                      placeholder="Select..."
-
+                      placeholder="Choose"
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>

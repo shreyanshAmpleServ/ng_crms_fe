@@ -95,6 +95,7 @@ const Header = () => {
       navigate(selectedOption.path);
     }
   };
+  
   const user1 = localStorage.getItem("user")
   const decodedUser = user1 ? atob(user1) : null;
   const isAdmin = decodedUser?.includes("admin");
@@ -114,28 +115,44 @@ const Header = () => {
     <>
       {/* Header */}
       <div id="header" className="header border">
-        {/* Logo */}
-        <div
-          className="header-left active border"
-          onMouseEnter={toggleExpandMenu}
-          onMouseLeave={toggleExpandMenu2}
-        >
-          <Link to={route.dasshboard} className="logo logo-normal">
-            <Logo base_path={base_path} />
-          </Link>
-          <Link to={route.dasshboard} className="logo-small">
-            <ImageWithDatabase
-              src={logo_path}
-              alt="Logo"
-              className="bg-light"
-            />
-          </Link>
-          
+   <div
+  className="header-left active border d-flex align-items-center"
+  onMouseEnter={toggleExpandMenu}
+  onMouseLeave={toggleExpandMenu2}
+>
+  {/* Logo */}
+  <Link to={route.dasshboard} className="logo logo-normal">
+    <Logo base_path={base_path} />
+  </Link>
 
-          <Link id="toggle_btn" to="#" onClick={toggleMiniSidebar}>
-            <i className="ti ti-arrow-bar-to-left" />
-          </Link>
-        </div>
+  <Link to={route.dasshboard} className="logo-small">
+    <ImageWithDatabase
+      src={logo_path}
+      alt="Logo"
+      className="bg-light"
+    />
+  </Link>
+
+  {/* CRMS - Hamesha dikhe except jab sidebar mini hai left side mein */}
+  {/* {!miniSidebar && (
+    <Link
+      to="/crm"
+      className="text-primary fw-bold px-2"
+      id="crm_btn"
+      style={{ minWidth: "40px" }}
+    >
+      CRMS
+    </Link>
+  )} */}
+
+  {/* Sidebar toggle button - hamesha visible */}
+  <Link id="toggle_btn" to="#" onClick={toggleMiniSidebar}>
+    <i className="ti ti-arrow-bar-to-left" />
+  </Link>
+</div>
+
+
+
         {/* /Logo */}
         <Link
           id="mobile_btn"

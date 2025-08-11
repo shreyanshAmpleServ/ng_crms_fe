@@ -46,6 +46,11 @@ const Solutions = () => {
 
   const columns = [
     {
+      title: "Sr.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+  },
+    {
       title: " Title",
       dataIndex: "title",
       sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
@@ -198,29 +203,76 @@ const Solutions = () => {
     XLSX.writeFile(workbook, "Solutions.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Solution", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "solution_product") {
-            return row.case_product?.name || ""; 
-          }
-          if (col.dataIndex === "solution_user_owner") {
-            return row.cases_user_owner?.full_name || ""; 
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
+const exportToPDF = useCallback(() => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Title
+  doc.text("Exported Solution", 14, 10);
+
+  // Table Head
+  const tableHead = [
+    columns.map(col => col.title !== "Actions" ? col.title : "")
+  ];
+
+  // Table Body
+  const tableBody = filteredData.map(row =>
+    columns.map(col => {
+      switch (col.dataIndex) {
+        case "solution_product":
+          return row.solution_product?.name || "";
+        case "solution_user_owner":
+          return row.solution_user_owner?.full_name || "";
+        case "createdate":
+          return row.createdate ? moment(row.createdate).format("DD-MM-YYYY") : "";
+        default:
           return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
-    doc.save("Solutions.pdf");
-  }, [filteredData, columns]);
+      }
+    })
+  );
+
+  // Render Table
+  doc.autoTable({
+    head: tableHead,
+    body: tableBody,
+    startY: 20,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak'
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185], // blue header
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center'
+    },
+
+    bodyStyles: {
+      halign: 'center',
+      valign: 'middle'
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+    halign: 'center',
+
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+      if (tableWidth > pageWidth) {
+        const scale = pageWidth / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  // Save PDF
+  doc.save("Solutions.pdf");
+}, [filteredData, columns]);
+
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

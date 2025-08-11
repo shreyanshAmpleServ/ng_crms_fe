@@ -280,6 +280,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Product Name "
                   className="form-control"
                   {...register("name", {
                     required: "Name is required !",
@@ -301,6 +302,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 </div>
                 <input
                   type="text"
+                  placeholder="Enter Code"
                   className="form-control"
                   {...register("code", { required: "code is required !" })}
                 />
@@ -317,6 +319,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 </label>
                 <Controller
                   name="category"
+            
                   rules={{ required: "Category is required !" }} // Make the field required
                   control={control}
                   render={({ field }) => (
@@ -454,6 +457,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Unit Price "
                   className="form-control"
                   {...register("unit_price", {
                     required: "unit_price is required !",
@@ -574,6 +578,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 <label className="col-form-label">On Hand</label>
                 <input
                   type="number"
+                  placeholder=" Enter ON Hand"
                   className="form-control"
                   {...register("onhand")}
                 />
@@ -586,6 +591,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 <label className="col-form-label">Ordered</label>
                 <input
                   type="number"
+                  placeholder=" Enter Ordered "
                   className="form-control"
                   {...register("ordered")}
                 />
@@ -597,6 +603,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 <label className="col-form-label">Committed</label>
                 <input
                   type="number"
+                  placeholder="Enter  Committed"
                   className="form-control"
                   {...register("commited")}
                 />
@@ -609,6 +616,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 <label className="col-form-label">Reorder Level</label>
                 <input
                   type="number"
+                  placeholder="Enter Reorder Level "
                   className="form-control"
                   {...register("reorder_level")}
                 />

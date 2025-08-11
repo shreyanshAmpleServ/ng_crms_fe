@@ -1,4 +1,6 @@
 import { all_routes } from "../../../../routes/all_routes";
+import { FiSettings } from 'react-icons/fi';
+import { FaAddressBook } from 'react-icons/fa';
 const route = all_routes;
 
 // const isRedirectional = localStorage.getItem("redirectLogin");
@@ -7,6 +9,8 @@ export const SidebarData = [
     label: "CRM",
     submenuOpen: true,
     showSubRoute: false,
+        icon: FaAddressBook,
+
     submenuHdr: "crm",
     submenuItems: [
       {
@@ -225,6 +229,8 @@ export const SidebarData = [
   {
     label: "SETTINGS",
     submenuOpen: true,
+        icon: FiSettings,
+
     submenuHdr: "Sales",
     submenu: false,
     showSubRoute: false,

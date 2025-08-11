@@ -732,6 +732,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                         <label className="col-form-label">Tags </label>
                         <input
                           type="text"
+                          placeholder="Enter Tage"
                           className="form-control"
                           {...register("tags")}
                         />
@@ -897,7 +898,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          Language <span className="text-danger">*</span>
+                          Language 
                         </label>
                         <Controller
                           name="language"

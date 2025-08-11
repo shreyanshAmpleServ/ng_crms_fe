@@ -48,6 +48,11 @@ const Product = () => {
 
   const columns = [
     {
+      title: "Sr.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+  },
+    {
       title: "Code",
       dataIndex: "code",
       sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
@@ -214,32 +219,79 @@ const Product = () => {
     XLSX.writeFile(workbook, "products.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported products", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-              columns.map((col) => {
-                if (col.dataIndex === "manufacturer") {
-                  return row.manufacturer?.name || ""; 
-                }
-                if (col.dataIndex === "vendor") {
-                  return row.vendor?.name || ""; 
-                }
-                if (col.dataIndex === "Currency") {
-                  return row.Currency?.code || ""; 
-                }
-                if (col.dataIndex === "createdate") {
-                  return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-                }
-                return row[col.dataIndex] || "";
-              })
-            ),
-      startY: 20,
-    });
-    doc.save("Products.pdf");
-  }, [filteredData, columns]);
+const exportToPDF = useCallback(() => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth(); // page width for scaling
+
+  // Title
+  doc.text("Exported Products", 14, 10);
+
+  // Table Head
+  const tableHead = [
+    columns.map(col => col.title !== "Actions" ? col.title : "")
+  ];
+
+  // Table Body
+  const tableBody = filteredData.map(row =>
+    columns.map(col => {
+      switch (col.dataIndex) {
+        case "manufacturer":
+          return row.manufacturer?.name || "";
+        case "vendor":
+          return row.vendor?.name || "";
+        case "Currency":
+          return row.Currency?.code || "";
+        case "createdate":
+          return row.createdate ? moment(row.createdate).format("DD-MM-YYYY") : "";
+        default:
+          return row[col.dataIndex] || "";
+      }
+    })
+  );
+
+  // Render Table
+  doc.autoTable({
+    head: tableHead,
+    body: tableBody,
+    startY: 25,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak'
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185], // blue header
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center'
+    },
+
+    bodyStyles: {
+      halign: 'center',
+      valign: 'middle'
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+    halign: 'center',
+
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+      if (tableWidth > pageWidth) {
+        const scale = pageWidth / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  // Save PDF
+  doc.save("Products.pdf");
+}, [filteredData, columns]);
+
+
 
   const [selectedproduct, setSelectedproduct] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

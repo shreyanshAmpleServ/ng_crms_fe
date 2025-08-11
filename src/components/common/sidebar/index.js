@@ -14,7 +14,7 @@ const Sidebar = () => {
   const Location = useLocation();
   const expandMenu = useSelector((state) => state.common?.expandMenu);
   const dispatch = useDispatch();
-  const user1 = localStorage.getItem("user")
+  const user1 = localStorage.getItem("user");
   const decodedUser = user1 ? atob(user1) : null;
   const isAdmin = decodedUser?.includes("admin");
   const Permissions = localStorage.getItem("crmspermissions")
@@ -26,10 +26,11 @@ const Sidebar = () => {
   // const isRedirectional = localStorage.getItem("redirectLogin");
 
   //   const { user, isAuthenticated } = useSelector((state) =>
-  //  state.ngAuth 
+  //  state.ngAuth
   //   );
-  const user =localStorage.getItem("userDetails")
-  ?  JSON.parse(atob(localStorage.getItem("userDetails"))) :{}
+  const user = localStorage.getItem("userDetails")
+    ? JSON.parse(atob(localStorage.getItem("userDetails")))
+    : {};
   // console.log("User",user)
   // useEffect(()=>{
   //   loadUser()
@@ -146,7 +147,7 @@ const Sidebar = () => {
                   </Link>
                 </li>
               </ul> */}
-  
+
               <ul>
                 {SidebarData?.map((mainLabel, index) => (
                   <li className="clinicdropdown" key={index}>
@@ -159,11 +160,20 @@ const Sidebar = () => {
                         );
                       }}
                     >
-                     <h6 className="submenu-hdr-label fw-bold d-flex align-items-center gap-2">
-  {mainLabel?.label === "CRM" && <FaAddressBook size={10} />}
-  {mainLabel?.label === "SETTINGS" && <FiSettings size={10} />}
-  {mainLabel?.label}
-</h6>
+                      <h6 className="submenu-hdr-label fw-bold d-flex align-items-center gap-2">
+                        {mainLabel?.label === "CRM" && (
+                          <FaAddressBook size={10} />
+                        )}
+                        {mainLabel?.label === "SETTINGS" && (
+                          <FiSettings size={10} />
+                        )}
+                        {mainLabel?.label}
+                      </h6>
+                      
+                      {/* <h6 className="submenu-hdr-label fw-bold d-flex align-items-center gap-2">
+  {mainLabel?.icon && <mainLabel.icon size={10} />}
+</h6> */}
+
                       {openMain === mainLabel.label ? (
                         <IoIosArrowDown />
                       ) : (
@@ -195,15 +205,15 @@ const Sidebar = () => {
                         const hasPermission = isAdmin
                           ? true
                           : Permissions.some(
-                            (permission) =>
-                              permission.module_name
-                                ?.trim()
-                                ?.toLowerCase() ===
-                              title.label?.trim()?.toLowerCase() &&
-                              Object.values(permission.permissions).some(
-                                (perm) => perm === true
-                              )
-                          );
+                              (permission) =>
+                                permission.module_name
+                                  ?.trim()
+                                  ?.toLowerCase() ===
+                                  title.label?.trim()?.toLowerCase() &&
+                                Object.values(permission.permissions).some(
+                                  (perm) => perm === true
+                                )
+                            );
 
                         if (!hasPermission) return null;
 
@@ -212,36 +222,39 @@ const Sidebar = () => {
                             <Link
                               to={title?.submenu ? "#" : title?.link}
                               onClick={() => toggleSidebar(title)}
-                              className={`${subOpen === title?.label ? "subdrop" : ""
-                                } ${subOpen === title?.label ? "active" : ""} ${title?.links?.includes(Location.pathname)
+                              className={`${
+                                subOpen === title?.label ? "subdrop" : ""
+                              } ${subOpen === title?.label ? "active" : ""} ${
+                                title?.links?.includes(Location.pathname)
                                   ? "active"
                                   : ""
-                                } ${title?.submenuItems
+                              } ${
+                                title?.submenuItems
                                   ?.map((link) => link?.link)
                                   .includes(Location.pathname) ||
-                                  title?.link === Location.pathname
+                                title?.link === Location.pathname
                                   ? "active"
                                   : "" ||
-                                    isMatch(
-                                      title?.subLink1,
-                                      Location.pathname
-                                    )
-                                    ? "active"
-                                    : "" ||
                                       isMatch(
-                                        title?.subLink2,
+                                        title?.subLink1,
                                         Location.pathname
                                       )
+                                    ? "active"
+                                    : "" ||
+                                        isMatch(
+                                          title?.subLink2,
+                                          Location.pathname
+                                        )
                                       ? "active"
                                       : "" ||
-                                        title?.subLink3 === Location.pathname
+                                          title?.subLink3 === Location.pathname
                                         ? "active"
                                         : "" ||
-                                          title?.subLink4 ===
-                                          Location.pathname
+                                            title?.subLink4 ===
+                                              Location.pathname
                                           ? "active"
                                           : ""
-                                }`}
+                              }`}
                             >
                               <i className={title.icon}></i>
                               <span>{title?.label}</span>
@@ -262,13 +275,14 @@ const Sidebar = () => {
                                 >
                                   <Link
                                     to={item?.link}
-                                    className={`${item?.submenuItems
+                                    className={`${
+                                      item?.submenuItems
                                         ?.map((link) => link?.link)
                                         .includes(Location.pathname) ||
-                                        item?.link === Location.pathname
+                                      item?.link === Location.pathname
                                         ? "active subdrop"
                                         : ""
-                                      } `}
+                                    } `}
                                     onClick={() => {
                                       toggleSubsidebar(item?.label);
                                     }}
@@ -292,16 +306,18 @@ const Sidebar = () => {
                                       <li key={items.label}>
                                         <Link
                                           to={items?.link}
-                                          className={`${subsidebar === items?.label
+                                          className={`${
+                                            subsidebar === items?.label
                                               ? "submenu-two subdrop"
                                               : "submenu-two"
-                                            } ${items?.submenuItems
+                                          } ${
+                                            items?.submenuItems
                                               ?.map((link) => link.link)
                                               .includes(Location.pathname) ||
-                                              items?.link === Location.pathname
+                                            items?.link === Location.pathname
                                               ? "active"
                                               : ""
-                                            }`}
+                                          }`}
                                         >
                                           {items?.label}
                                         </Link>

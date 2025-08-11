@@ -48,6 +48,11 @@ const Vendor = () => {
 
   const columns = [
     {
+      title: "Sr.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+  },
+    {
       title: "Vendor Name",
       dataIndex: "name",
       render: (text, record) => (
@@ -192,33 +197,74 @@ const Vendor = () => {
     return data;
   }, [searchText, selectedDateRange, vendor, columns, sortOrder]);
 
-  const exportToExcel = useCallback(() => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "vendor");
-    XLSX.writeFile(workbook, "vendor.xlsx");
-  }, [filteredData]);
+const exportToExcel = useCallback(() => {
+  const worksheet = XLSX.utils.json_to_sheet(filteredData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "vendor");
+  XLSX.writeFile(workbook, "vendor.xlsx");
+}, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported vendor", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData?.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "crms_m_user") {
-            return row.crms_m_user?.full_name || ""; 
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
-          return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
-    doc.save("vendor.pdf");
-  }, [filteredData, columns]);
+const exportToPDF = useCallback(() => {
+  const doc = new jsPDF();
+
+  doc.text("Exported vendor", 14, 10);
+
+  const tableHead = [
+    columns.map((col) => (col.title !== "Actions" ? col.title : ""))
+  ];
+
+  const tableBody = filteredData?.map((row) =>
+    columns.map((col) => {
+      const key = col.dataIndex;
+
+      if (key === "crms_m_user") {
+        return row.crms_m_user?.full_name || "";
+      }
+
+      if (key === "createdate") {
+        return moment(row.createdate).format("DD-MM-YYYY") || "";
+      }
+
+      return row[col.dataIndex] || "";
+    })
+  );
+
+ doc.autoTable({
+     head: tableHead,
+    body: tableBody,
+    startY: 25,
+    
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak',
+      
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center',
+      
+    },
+
+    bodyStyles: {
+      halign: 'left',
+      valign: 'middle',
+            halign: 'center',
+
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+  });
+
+  doc.save("vendor.pdf");
+}, [filteredData, columns]);
+
 
   const handleDeleteUser = (user) => {
     setSelectedVendor(user);

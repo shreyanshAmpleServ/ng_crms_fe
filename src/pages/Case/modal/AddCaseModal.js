@@ -202,6 +202,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Name"
                   className="form-control"
                   {...register("name", {
                     required: "Name is required !",
@@ -220,14 +221,16 @@ const AddCaseModal = ({ cases, setCases }) => {
                   Case Number <span className="text-danger">*</span>
                 </label>
                 <input
-                  type="text"
-                  disabled
-                  value={watch("case_number") || ""}
-                  className="form-control"
-                  {...register("case_number", {
-                    required: "Case number is required !",
-                  })}
-                />
+  type="text"
+  placeholder="Enter Case Number"
+  readOnly
+  value={watch("case_number") || ""}
+  className="form-control"
+  {...register("case_number", {
+    required: "Case number is required!",
+  })}
+/>
+
               </div>
               {errors.case_number && (
                 <small className="text-danger">
@@ -334,6 +337,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter  Case Status"
                   className="form-control"
                   {...register("case_status", {
                     required: "Case status is required !",
@@ -354,6 +358,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter  Case Type"
                   className="form-control"
                   {...register("case_type", {
                     required: "Case type is required !",
@@ -374,6 +379,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Case Priority"
                   className="form-control"
                   {...register("case_priority", {
                     required: "Case priority is required !",
@@ -394,6 +400,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter  Case Origin"
                   className="form-control"
                   {...register("case_origin", {
                     required: "Case origin is required !",
@@ -581,6 +588,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 </div>
                 <input
                   type="text"
+                  placeholder="Enter Email"
                   className="form-control"
                   {...register(
                     "email"
@@ -599,6 +607,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 <label className="col-form-label">Subject</label>
                 <input
                   type="text"
+                  placeholder="Enter Subject"
                   className="form-control"
                   {...register("subject")}
                 />
@@ -610,6 +619,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 <label className="col-form-label">Reported by</label>
                 <input
                   type="text"
+                  placeholder="Enter Reported by"
                   className="form-control"
                   {...register("reported_by")}
                 />
@@ -643,6 +653,7 @@ const AddCaseModal = ({ cases, setCases }) => {
                 </label>
                 <textarea
                   className="form-control"
+                  placeholder="Enter Description"
                   rows={5}
                   {...register(
                     "description"

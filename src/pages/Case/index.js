@@ -17,7 +17,7 @@ import SearchBar from "../../components/datatable/SearchBar.js";
 import SortDropdown from "../../components/datatable/SortDropDown.js";
 import {
   clearMessages
-} from "../../redux/manage-user/index.js";
+} from "../../redux/cases/index.js";
 import { deleteSalesInvoice, fetchSalesInvoice } from "../../redux/salesInvoice/index.js";
 import DeleteAlert from "./alert/DeleteAlert.js";
 import AddCaseModal from "./modal/AddCaseModal.js";
@@ -49,14 +49,19 @@ const Cases = () => {
 
   const columns = [
     {
+      title: "Sr.No.",      
+      width: 50,
+      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
+  },
+    {
       title: " Name",
       dataIndex: "name",
-      sorter: (a, b) => (a.code || "").localeCompare(b.code || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""), // Fixed sorter logic
     },
     {
       title: "Case Number",
       dataIndex: "case_number",
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.case_number || "").localeCompare(b.case_number || ""), // Fixed sorter logic
     },
     {
       title: "Owner",
@@ -64,7 +69,7 @@ const Cases = () => {
       render: (text) => (
         <span>{text}</span> // Format the date as needed
       ),
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.case_owner_name || "").localeCompare(b.case_owner_name || ""), // Fixed sorter logic
     },
     {
       title: "Product",
@@ -77,36 +82,36 @@ const Cases = () => {
     {
       title: "Type",
       dataIndex: "case_type",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.case_type || "").localeCompare(b.case_type || ""), // Fixed sorter logic
     },
     {
       title: "Priority",
       dataIndex: "case_priority",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.case_priority || "").localeCompare(b.case_priority || ""), // Fixed sorter logic
     },
     {
       title: "Status",
       dataIndex: "case_status",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.case_status || "").localeCompare(b.case_status || ""), // Fixed sorter logic
     },
     {
       title: "Origin",
       dataIndex: "case_origin",
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.case_origin || "").localeCompare(b.case_origin || ""), // Fixed sorter logic
     },
   
     {
       title: "Reason",
       dataIndex: "case_reasons",
       render: (text) => (  <span>{text?.name  || " - "}</span> ),
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""), // Fixed sorter logic
     },
    
     {
       title: "Reported by",
       dataIndex: "reported_by",
       render: (text) => (  <span>{text  || " - "}</span> ),
-      sorter: (a, b) => (a || "").localeCompare(b || ""),// Sort by date
+      sorter: (a, b) => (a.reported_by || "").localeCompare(b.reported_by || ""),// Sort by date
     },
     {
       title: "Created Date",
@@ -232,32 +237,77 @@ const Cases = () => {
     XLSX.writeFile(workbook, "Case.xlsx");
   }, [filteredData]);
 
-  const exportToPDF = useCallback(() => {
-    const doc = new jsPDF();
-    doc.text("Exported Case", 14, 10);
-    doc.autoTable({
-      head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData.map((row) =>
-        columns.map((col) => {
-          if (col.dataIndex === "case_product") {
-            return row.case_product?.name || ""; 
-          }
-          if (col.dataIndex === "cases_user_owner") {
-            return row.cases_user_owner?.full_name || ""; 
-          }
-          if (col.dataIndex === "case_reasons") {
-            return row.case_reasons?.name || ""; 
-          }
-          if (col.dataIndex === "createdate") {
-            return moment(row.createdate).format("DD-MM-YYYY") || ""; 
-          }
+ const exportToPDF = useCallback(() => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Title
+  doc.text("Exported Case", 14, 10);
+
+  // Table Head
+  const tableHead = [
+    columns.map(col => col.title !== "Actions" ? col.title : "")
+  ];
+
+  // Table Body
+  const tableBody = filteredData.map(row =>
+    columns.map(col => {
+      switch (col.dataIndex) {
+        case "case_product":
+          return row.case_product?.name || "";
+        case "cases_user_owner":
+          return row.cases_user_owner?.full_name || "";
+        case "case_reasons":
+          return row.case_reasons?.name || "";
+        case "createdate":
+          return row.createdate ? moment(row.createdate).format("DD-MM-YYYY") : "";
+        default:
           return row[col.dataIndex] || "";
-        })
-      ),
-      startY: 20,
-    });
-    doc.save("Cases.pdf");
-  }, [filteredData, columns]);
+      }
+    })
+  );
+
+  // Render Table
+  doc.autoTable({
+    head: tableHead,
+    body: tableBody,
+    startY: 20,
+
+    styles: {
+      fontSize: 7,
+      cellPadding: 1,
+      overflow: 'linebreak'
+    },
+
+    headStyles: {
+      fillColor: [41, 128, 185], // blue header
+      textColor: 255,
+      fontSize: 8,
+      halign: 'center'
+    },
+
+    bodyStyles: {
+      halign: 'center',
+      valign: 'middle'
+    },
+
+    theme: 'grid',
+    tableWidth: 'auto',
+    pageBreak: 'auto',
+    halign: 'center',
+
+    didDrawPage: (data) => {
+      const tableWidth = data.table.width;
+      if (tableWidth > pageWidth) {
+        const scale = pageWidth / tableWidth;
+        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
+      }
+    },
+  });
+
+  // Save PDF
+  doc.save("Cases.pdf");
+}, [filteredData, columns]);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
