@@ -17,7 +17,7 @@ import { fetchCurrencies } from "../../../redux/currency";
 import { fetchPipelineById, fetchPipelines } from "../../../redux/pipelines";
 import { fetchSources } from "../../../redux/source";
 import AddPipelineModal from "../../pipelines/modal/AddPipelineModal";
-
+import "./module.css";
 const AddDealModel = () => {
   const dispatch = useDispatch();
   // Fetch contacts on component mount
@@ -144,6 +144,8 @@ const AddDealModel = () => {
       reset();
     }
   };
+  
+ 
   React.useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add_deal");
     if (offcanvasElement) {
@@ -369,34 +371,48 @@ const AddDealModel = () => {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Contact <span className="text-danger">*</span>
-                </label>
-                <Controller
-                  name="contactIds"
-                  control={control}
-                  rules={{ required: "Contact is required !" }}
-                  defaultValue={[]} // Initial empty array
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={contactlist}
-                      isMulti
-                      className="select2"
-                      classNamePrefix="react-select"
-                      placeholder="Select..."
-                    />
-                  )}
-                />
-                {errors.contactIds && (
-                  <small className="text-danger">
-                    {errors.contactIds.message}
-                  </small>
-                )}
-              </div>
-            </div>
+           <div className="col-md-6">
+        <div className="mb-3">
+          <label className="col-form-label">
+            Contact <span className="text-danger">*</span>
+          </label>
+  <Controller
+  name="contactIds"
+  control={control}
+  rules={{ required: "Contact is required !" }}
+  defaultValue={[]}
+  render={({ field }) => (   // <-- yaha se field milta hai
+    <Select
+      {...field}
+      options={contactlist || []}
+      isMulti
+      className="select2"
+      classNamePrefix="react-select"
+      placeholder="Choose contacts"
+      value={(contactlist || []).filter(option =>
+        (field.value || []).includes(option.value)
+      )}
+      onChange={(selected) => {
+        field.onChange(selected.map(option => option.value));
+      }}
+      styles={{
+        valueContainer: (provided) => ({
+          ...provided,
+          height: '40px',
+          overflowY: 'auto'
+        })
+      }}
+    />
+  )}
+/>
+
+
+
+          {errors.contactIds && (
+            <small className="text-danger">{errors.contactIds.message}</small>
+          )}
+        </div>
+      </div>
 
             {/* Dates */}
             <div className="col-md-6">

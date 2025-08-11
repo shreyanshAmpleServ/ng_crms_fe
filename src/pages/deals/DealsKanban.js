@@ -146,7 +146,7 @@ const DealsKanban = ({ data }) => {
                       className="form-select"
                       value={selectedPipeline}
                     >
-                      <option value=""> Select a Pipeline </option>
+                      <option value=""> Select Pipeline </option>
                       {pipelines?.data?.map((pipeline) => (
                         <option key={pipeline?.id} value={pipeline?.id}>
                           {pipeline?.name}

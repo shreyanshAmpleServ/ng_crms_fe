@@ -234,7 +234,7 @@ const AddProductModal = ({ product, setProduct }) => {
           <input type="hidden" {...register("username", { value: watch('email') })} /> */}
           <div className="row">
             {/* Profile Image Upload */}
-            <div className="col-md-12">
+            {/* <div className="col-md-12">
               <div className="profile-pic-upload ">
                 <div className="profile-pic">
                   {selectedAvatar ? (
@@ -270,7 +270,54 @@ const AddProductModal = ({ product, setProduct }) => {
                   <p>JPG, GIF, or PNG. Max size of 800K</p>
                 </div>
               </div>
-            </div>
+            </div> */}
+
+            <div className="col-md-12">
+                      <div className="mb-3">
+                        <div className="profile-upload">
+                          <div className="profile-upload-img">
+                            {selectedAvatar ? (
+                              <img
+                                src={URL.createObjectURL(selectedAvatar)}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                                // style={{image}}
+                              />
+                            ) : vendor ? (
+                              <img
+                                src={vendor.image}
+                                alt="Company Logo"
+                                className="preview w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <span>
+                                <i className="ti ti-photo" />
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              className="profile-remove"
+                              onClick={() => handleAvatarChange(null)}
+                            >
+                              <i className="ti ti-x" />
+                            </button>
+                          
+                          </div>
+                          <div className="profile-upload-content">
+                            <label className="profile-upload-btn">
+                              <i className="ti ti-file-broken" /> Upload File
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="input-img"
+                                onChange={handleAvatarChange}
+                              />
+                            </label>
+                            <p>JPG, GIF or PNG. Max size of 800 Kb</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
             {/* Full Name */}
             <div className="col-md-6">

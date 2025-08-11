@@ -410,34 +410,35 @@ const EditDealModal = ({ deal }) => {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Contact <span className="text-danger">*</span>
-                </label>
-                <Controller
-                  name="contactIds"
-                  control={control}
-                  rules={{ required: "Contact is required !" }}
-                  defaultValue={[]} // Initial empty array
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={contactlist}
-                      isMulti
-                      className="select2"
-                      classNamePrefix="react-select"
-                      placeholder="Choose contacts"
-                    />
-                  )}
-                />
-                {errors.contactIds && (
-                  <small className="text-danger">
-                    {errors.contactIds.message}
-                  </small>
-                )}
-              </div>
-            </div>
+           <div className="col-md-6">
+  <div className="mb-3">
+    <label className="col-form-label">
+      Contact <span className="text-danger">*</span>
+    </label>
+
+    <Controller
+      name="contactIds"
+      control={control}
+      rules={{ required: "Contact is required !" }}
+      defaultValue={[]} // Initial empty array
+      render={({ field }) => (
+        <Select
+  {...field}
+  options={contactlist}
+  isMulti
+  className="select2"
+  classNamePrefix="react-select"
+  placeholder="Choose contacts"
+/>
+      )}
+    />
+
+    {errors.contactIds && (
+      <small className="text-danger">{errors.contactIds.message}</small>
+    )}
+  </div>
+</div>
+
 
             {/* Dates */}
             <div className="col-md-6">

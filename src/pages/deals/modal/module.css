@@ -1,0 +1,12 @@
+/* Fixed height multi-select */
+.select2 .react-select__value-container {
+  height: 40px !important;        /* Fixed height */
+  overflow-y: auto !important;    /* Scroll inside */
+  flex-wrap: nowrap !important;   /* Prevent wrapping */
+}
+
+/* Chips ka size thoda chhota */
+.select2 .react-select__multi-value {
+  font-size: 12px;
+  margin: 2px 2px;
+}
