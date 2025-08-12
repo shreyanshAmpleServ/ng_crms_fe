@@ -39,7 +39,7 @@ const RedirectCRMS = () => {
         // console.log("Login : ", loginWithToken.fulfilled.match(result));
       } else {
         console.error("Login failed:", result.payload || result.error);
-      // window.location.href = "https://mowara.dcclogsuite.com/";
+      window.location.href = "https://mowara.dcclogsuite.com/";
       }
     };
 

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
+import toast from "react-hot-toast";
 
 // Industry Slice
 
@@ -38,8 +39,16 @@ export const sendMail = createAsyncThunk(
   "gmailMessage/sendMail",
   async (data, thunkAPI) => {
     try {
-      const response = await apiClient.post("/v1/gmail/send", data);
-      return response.data;
+      // const response = await apiClient.post("/v1/gmail/send", data);
+      const response = await toast.promise(
+        apiClient.post("/v1/gmail/send", data),
+        {
+          loading: " Email sending...",
+          success: (res) => "Email sent successfully!",
+          error: "Failed to send email",
+        }
+      );
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to add industry"
@@ -137,7 +146,7 @@ const gmailMessageSlice = createSlice({
       .addCase(sendMail.fulfilled, (state, action) => {
         state.loading = false;
         state.sendMails = action.payload.data;
-        state.success = action.payload.message;
+        // state.success = action.payload.message;
       })
       .addCase(sendMail.rejected, (state, action) => {
         state.loading = false;

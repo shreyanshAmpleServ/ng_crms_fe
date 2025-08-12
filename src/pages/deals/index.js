@@ -52,11 +52,6 @@ const DealList = () => {
   const isDelete = isAdmin || allPermissions?.delete
   
   const columns = [
-     {
-      title: "Sr.No.",      
-      width: 50,
-      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
-  },
     {
       title: "S.No.",      
       width: 50,

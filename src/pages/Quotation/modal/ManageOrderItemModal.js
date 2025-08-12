@@ -9,7 +9,8 @@ import { fetchTaxSetup } from "../../../redux/taxSetUp";
 import DefaultEditor from "react-simple-wysiwyg";
 import ReactQuill from "react-quill";
 
-const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsItems,setTermsItems , optionalItem, setOptionalItem}) => {
+
+const ManageOrderItemModal = ({updatedItems ,setUpdatedItems, itemNumber, setItemNumber , productList,termsItems,setTermsItems , optionalItem, setOptionalItem}) => {
     const [activeTab, setActiveTab] = useState("product");
   const dispatch = useDispatch();
   const formatNumber = (num) => {
@@ -164,7 +165,15 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
       (opt) => !selectedIds?.has(opt.value) || opt.value === currentItemId
     );
   
-  
+    const handleUpdateItems = (i) => {
+      // console.log("Id : ",i)
+      setUpdatedItems(() => {
+        if (updatedItems.includes(i)) {
+          return updatedItems; // Already exists, do nothing
+        }
+        return [...updatedItems, i]; // Add new ID
+      });
+    };
   const tabMap = {
     "Line Products": "product",
     // "Optional Products": "optional",
@@ -258,6 +267,9 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                               updateItem(index, "total_amount",total_bef_disc + line_tax);
                               updateItem(index, "disc_amount",disc_amount );
                               field.onChange(selectedOption?.value || null);
+                              if(selectedOption?.value !== i?.item_id && i?.id){
+                                handleUpdateItems(i.id)
+                              }
                             }}
                             value={   productList?.find( (option) => option.value === i?.item_id ) || "" }
                             // value={i?.item_id}
@@ -296,6 +308,10 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                           updateItem(index, "rate",rate );
                           updateItem( index, "line_tax",  line_tax  );
                           updateItem( index, "total_bef_disc",  total_bef_disc || 0  );
+                          console.log("Idddddd : ",i)
+                          if(value !== i.quantity && i?.id){
+                            handleUpdateItems(i.id)
+                          }
                         }}
                       />
                     </div>
@@ -334,7 +350,9 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                         updateItem( index,"disc_prcnt",e.target.value || 0);
                         updateItem( index,"total_bef_disc",total_bef_disc);
                         updateItem( index,"line_tax",line_tax);
-
+                        if(e.target.value !== i?.disc_prcnt && i?.id){
+                          handleUpdateItems(i.id)
+                        }
                     }} />
                     </div>
                   </td>
@@ -363,6 +381,9 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber , productList,termsIte
                               updateItem(index,"line_tax",line_tax);
                               updateItem( index,"tax_per",selectedOption?.tax || 0);
                               field.onChange(selectedOption?.value || null);
+                              if(selectedOption?.value !== i?.tax_id && i?.id){
+                                handleUpdateItems(i.id)
+                              }
                             }}
                             value={ TaxList?.find(  (option) => option.value === i?.tax_id ) || "" }
                             styles={{

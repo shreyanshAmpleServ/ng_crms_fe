@@ -326,7 +326,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                                 <td
                                   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}
                                 >
-                                  <div className="input-table input-table-descripition">
+                                  <div className="input-table text-capitalize input-table-descripition">
                                     {i?.item_name}
                                     {i?.is_optional === "Y" && (
                                       <div className="badge ms-2 badge-soft-success">
