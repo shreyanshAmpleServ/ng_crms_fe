@@ -34,6 +34,7 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
           parent_id: item?.parent_id || null,
           item_id: item?.item_id || null,
           item_name: item?.item_name || "",
+          is_optional: item?.is_optional || "N",
           quantity: Number(item?.quantity) || 1,
           delivered_qty: Number(item?.delivered_qty) || 0,
           unit_price: Number(item?.unit_price) || 0,
@@ -82,7 +83,7 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
   return (
     <div
       // style={{ height: "200vh" }}
-      className="offcanvas offcanvas-end offcanvas-large "
+      className="offcanvas offcanvas-end offcanvas-larger "
       tabIndex={-1}
       id="offcanvas_preview_order"
     >
@@ -240,41 +241,45 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
                       {itemNumber.length &&
                         itemNumber?.map((i, index) => (
                           <tr>
-                            <td>
-                              <div className="input-table input-table-descripition">
-                                {i?.item_name}
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}>
+                              <div className="input-table text-capitalize input-table-descripition">
+                                {i?.item_name}  {i?.is_optional === "Y" && (
+                                      <div className="badge ms-2 badge-soft-success">
+                                        Optional
+                                      </div>
+                                    )}
                               </div>
                             </td>
 
-                            <td>
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}>
                               <div className="input-table">{i?.quantity}</div>
                             </td>
 
-                            <td>
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}>
                               <div className="input-table">{i?.unit_price}</div>
                             </td>
 
-                            <td>
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}>
                               <div className="input-table">
                                 {formatNumber(i?.rate)}
                               </div>
                             </td>
-                            <td>
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}>
                               <div className="input-table">
                                 {i?.disc_prcnt}%
                               </div>
                             </td>
-                            <td>
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}>
                               <div className="input-table">
                                 {formatNumber(i?.total_bef_disc)}
                               </div>
                             </td>
-                            <td style={{ width: "auto" }}>
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`} style={{ width: "auto" }}>
                               <div className="input-table">
                                 {formatNumber(i?.line_tax)} ({i?.tax_per}%)
                               </div>
                             </td>
-                            <td>
+                            <td   className={`${i?.is_optional === "N" ? "" : "bg-optional"}`}>
                               <div className="input-table fw-bold">
                                 {formatNumber(i?.total_amount)}
                               </div>
@@ -328,12 +333,12 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
                 </ul>
               </div>
               {/* Optional Items  */}
-              <div className="col-md-12 mt-2 ">
+              {/* <div className="col-md-12 mt-2 ">
                   <div className="mb-1 d-flex justify-content-between">
                     <label className="h4 fw-bold">Optional Items</label>
                   </div>
-                </div>
-              <div className="table-responsive">
+                </div> */}
+              {/* <div className="table-responsive">
         <table className="table table-view">
           <thead>
             <tr>
@@ -341,10 +346,6 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
               <th>Qty</th>
               <th>Price</th>
               <th>Rate</th>
-              {/* <th>Disc</th>
-              <th>Aft disc</th>
-              <th>Tax</th>
-              <th>Total Amt</th> */}
             </tr>
           </thead>
           <tbody>
@@ -374,31 +375,11 @@ const PreviewOrder = ({ order, setOrder, formatNumber }) => {
                   {formatNumber(i?.rate)}
                     </div>
                   </td>
-                  {/* <td>
-                    <div className="input-table">
-                    {i?.disc_prcnt}%
-                    </div>
-                  </td>
-                  <td>
-                    <div className="input-table">
-                    {formatNumber(i?.total_bef_disc)}
-                    </div>
-                  </td>
-                  <td style={{width:"auto"}}>
-                    <div className="input-table">
-                    {formatNumber(i?.line_tax)} ({i?.tax_per}%)
-                    </div>
-                  </td>
-                  <td>
-                    <div className="input-table fw-bold">
-                     {formatNumber(i?.total_amount)}
-                    </div>
-                  </td> */}
                 </tr>
               ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
       <div>
         <div className="bg-gray-100 p-2 mb-2 fw-bold">Terms & Conditions</div>
       <div dangerouslySetInnerHTML={{ __html: order?.terms && JSON.parse(order?.terms) }} />

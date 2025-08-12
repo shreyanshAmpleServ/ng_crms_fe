@@ -126,6 +126,18 @@ const Quotation = () => {
       ),
       sorter: (a, b) => new Date(a.due_date) - new Date(b.due_date), // Sort by date
     },
+    { value: "O", label: "Open" },
+    { value: "L", label: "Closed" },
+    { value: "C", label: "Canceled" },
+    { value: "P", label: "Pending" },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (text) => (
+        <span>{text == "O" ? "Open" : text === "L" ? "Closed" : text === "C"  ? "Canceled" :  text === "P" ? "Pending" : ""}</span> // Format the date as needed
+      ),
+      sorter: (a, b) => new Date(a.due_date) - new Date(b.due_date), // Sort by date
+    },
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -164,6 +176,16 @@ const Quotation = () => {
             >
               <i className="ti ti-trash text-danger"></i> Delete
             </Link>}
+             {/* <Link
+              className="dropdown-item edit-popup"
+              to="#"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvas_preview_order"
+              // onClick={() => navigate(`/crms/quotation-pdf/${btoa(record?.id?.toString())}`)}
+              onClick={() => setSelectedOrder(record)}
+            >
+              <i className="ti ti-eye text-secondary"></i> Preview
+            </Link> */}
              <Link
               className="dropdown-item edit-popup"
               to="#"
@@ -172,7 +194,7 @@ const Quotation = () => {
               onClick={() => navigate(`/crms/quotation-pdf/${btoa(record?.id?.toString())}`)}
               // onClick={() => setSelectedOrder(record)}
             >
-              <i className="ti ti-eye text-secondary"></i> Preview
+              <i className="ti ti-eye text-secondary"></i> Quotation
             </Link>
              <Link
               className="dropdown-item edit-popup"

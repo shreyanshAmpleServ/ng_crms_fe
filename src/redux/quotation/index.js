@@ -3,6 +3,28 @@ import apiClient from "../../utils/axiosConfig";
 import toast from "react-hot-toast";
 import axios from "axios";
 
+// Fetch Audit log
+export const fetchAuditLog = createAsyncThunk(
+  "quotations/fetchAuditLog",
+  async (datas, thunkAPI) => {
+    try {
+      const params = {
+        search: datas?.search || "",
+        page: datas?.page || "",
+        size: datas?.size || "",
+      };
+      if(datas.search) params.search = datas.search
+      if(datas.page) params.page = datas.page
+      if(datas.size) params.size = datas.size
+      const response = await apiClient.get(`/v1/quotation-log/${datas.id}`,{params});
+      return response.data; // Returns a list of order
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch quotation audit log",
+      );
+    }
+  },
+);
 // Fetch All quotations
 export const fetchquotations = createAsyncThunk(
   "quotations/fetchquotations",
@@ -203,6 +225,7 @@ const quotationSlice = createSlice({
     quotations: {},
     quotationDetail: null,
     salesTypes:[],
+    auditLog:[],
     quotationCode:null,
     loading: false,
     error: false,
@@ -335,6 +358,18 @@ const quotationSlice = createSlice({
         state.quotationCode = action.payload.data;
       })
       .addCase(fetchQuotationCode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchAuditLog.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAuditLog.fulfilled, (state, action) => {
+        state.loading = false;
+        state.auditLog = action.payload.data;
+      })
+      .addCase(fetchAuditLog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       });
