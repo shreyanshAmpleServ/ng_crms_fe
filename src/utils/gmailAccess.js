@@ -6,8 +6,11 @@ import {
   getAllMessage,
 } from "../redux/gmailAccess";
 import DOMPurify from "dompurify";
+import { GrDocumentPdf } from "react-icons/gr";
 
 import { FaReply } from "react-icons/fa6";
+import { MdOutlineFileDownload } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export default function GmailSection({
   id,
@@ -16,7 +19,8 @@ export default function GmailSection({
   setThreadId,
   threadId,
   setIsRefresh,
-  isRefresh
+  isRefresh,
+  setIsNewMail,
 }) {
   const dispatch = useDispatch();
   const popupRef = useRef(null);
@@ -37,8 +41,8 @@ export default function GmailSection({
     } else if (gmailCheck?.connected == true) {
       dispatch(getAllMessage(id));
     }
-    setIsRefresh(false)
-  }, [gmailCheck, gmailUrl,isRefresh]);
+    setIsRefresh(false);
+  }, [gmailCheck, gmailUrl, isRefresh]);
 
   // Gmail Auth Popup Logic
   const openGmailAuthPopup = () => {
@@ -82,7 +86,7 @@ export default function GmailSection({
     return <p onClick={openGmailAuthPopup}>🔄 Checking Gmail status...</p>;
   if (error) return <p>❌ Error: {error}</p>;
 
-  console.log("msg Id",threadId)
+  console.log("msg Id", threadId);
   return (
     <div>
       {/* <h3>Email Activity</h3> */}
@@ -129,17 +133,14 @@ export default function GmailSection({
                     <div
                       onClick={() => {
                         setThreadId(item.threadId);
-                     setMsgId(mail?.subject);
-                        }
-                      }
-                      
+                        setMsgId(mail?.subject);
+                        setIsNewMail(false)
+                      }}
                       style={{ right: 0 }}
                       className={`position-absolute
                         ${
-                         msgId === mail.subject
-                          ? "bg-green-300"
-                          : "bg-success" 
-                      }
+                          msgId === mail.subject ? "bg-green-300" : "bg-success"
+                        }
                        p-1 py-0.5 rounded-circle m-1`}
                     >
                       <FaReply />
@@ -149,8 +150,9 @@ export default function GmailSection({
                         {mail.subject || "No Subject"}
                       </h5>
                       <h6 className="card-subtitle mb-2 text-muted">
-                        From: <strong className="fw-medium">{mail.from}</strong> <br />
-                        To: <strong  className="fw-medium">{mail.to}</strong>
+                        From: <strong className="fw-medium">{mail.from}</strong>{" "}
+                        <br />
+                        To: <strong className="fw-medium">{mail.to}</strong>
                         {mail.cc && (
                           <>
                             <br />
@@ -161,38 +163,113 @@ export default function GmailSection({
                         <small>{new Date(mail.date).toLocaleString()}</small>
                       </h6>
                       <div
-  className="card-text mt-3"
-  dangerouslySetInnerHTML={{
-    __html: DOMPurify.sanitize(mail.body || `<p>${mail.snippet}</p>`),
-  }}
-/>
+                        className="card-text mt-3"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(
+                            mail.body || `<p>${mail.snippet}</p>`,
+                            {
+                              ADD_TAGS: ["iframe"],
+                              ADD_ATTR: [
+                                "allow",
+                                "allowfullscreen",
+                                "frameborder",
+                                "scrolling",
+                                "src",
+                              ],
+                              ALLOWED_URI_REGEXP:
+                                /^https:\/\/www\.youtube\.com\/embed\//, // optional: restrict to YouTube
+                            }
+                          ),
+                        }}
+                      />
                       {mail.attachments?.length > 0 && (
                         <div className="mt-3">
-                          <h6>📎 Attachments:</h6>
-                          {mail.attachments.map((attachment, i) => (
-                            <div key={i} className="mb-2">
-                              {attachment.mimeType.startsWith("image/") ? (
-                                <img
-                                  src={`${toBase64(attachment.data)}`}
-                                  alt={attachment.filename}
-                                  style={{
-                                    maxWidth: "300px",
-                                    borderRadius: "10px",
-                                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                                  }}
-                                />
-                              ) : (
-                                <a
-                                  href={`${toBase64(attachment.data)}`}
-                                  download={attachment.filename}
-                                  className="btn btn-sm btn-outline-primary"
-                                >
-                                  Download {attachment.filename}
-                                </a>
-                              )}
-                              {/* <p>{attachment.filename}</p> */}
-                            </div>
-                          ))}
+                          <h6>📎{mail.attachments?.length} Attachments:</h6>
+                          <div className="row mt-3">
+                            {mail.attachments.map((attachment, i) => (
+                              <div
+                                key={i}
+                                style={{ height: "150px" }}
+                                className="mb-2 position-relative col-6"
+                              >
+                                {attachment.mimeType.startsWith("image/") ? (
+                                  <div
+                                    className=" w-100 border border-primary"
+                                    style={{
+                                      zIndex:0,
+
+                                      position: "relative",
+                                      height: "150px",
+                                      borderRadius:"10px"
+                                    }}
+                                    to={attachment.data}
+                                    download={attachment.filename}
+                                  >
+                                    <img
+                                      src={`${toBase64(attachment.data)}`}
+                                      alt={attachment.filename}
+                                      style={{
+                                        zIndex:0,
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                        borderRadius: "10px",
+                                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                      }}
+                                    />
+                                    {/* Hover overlay */}
+                                    <div
+                                      className="position-absolute top-0 start-0 w-100  d-flex justify-content-center align-items-center  bg-opacity-50 opacity-0 hover-opacity-100  bg-parimary transition"
+                                      style={{
+                                      zIndex:2,
+                                        borderRadius: "10px",
+                                        zIndex: 100,
+                                        height: "150px",
+                                        backgroundColor: "#0000004a",
+                                        transition: "opacity 0.3s ease-in-out",
+                                      }}
+                                    >
+                                      <button
+                                        className="btn btn-light"
+                                        onClick={(e) => {
+                                          e.preventDefault(); // prevent <a> click
+                                          const link =
+                                            document.createElement("a");
+                                          link.href = attachment.data;
+                                          link.download = attachment.filename;
+                                          link.click();
+                                        }}
+                                      >
+                                        <MdOutlineFileDownload />
+                                      </button>
+                                    </div>
+                                    {/* <div style={{position:"absolute" ,justifyContent:"center",alignItems:"center",zIndex:1000}} className="bg-primary d-flex position-absolute w-100 h-100">
+                                  <button className="btn"><MdOutlineFileDownload /></button>
+                                </div> */}
+                                  </div>
+                                ) : (
+                                  <div
+                                    key={i}
+                                    style={{ height: "150px",borderRadius:'10px',backgroundColor:"#bababa70" }}
+                                    className="mb-2 w-100 border border-primary  d-flex aligh-items-end justify-content-center"
+                                  >
+                                    <a
+                                      href={`${toBase64(attachment.data)}`}
+                                      download={attachment.filename}
+                                      className="btn btn-md my-auto"
+                                    > 
+                                   <div> <GrDocumentPdf style={{color:"red",fontSize:"30px"}} /></div>
+                                      <span className="d-flex align-items-center"> <MdOutlineFileDownload />
+                                      <span className="d-inline-block text-truncate" style={{ maxWidth: "8rem" }}>
+  {attachment.filename}
+</span></span>
+                                    </a>
+                                  </div>
+                                )}
+                                {/* <p>{attachment.filename}</p> */}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>

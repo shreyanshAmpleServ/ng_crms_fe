@@ -198,6 +198,7 @@ $success-600: #9DD49D;
 $success-700: #8DCD8D;
 $success-800: #7DC67D;
 $success-900: #6CBF6C;
+$success-950: #016501;
 
 // Danger
 $danger-100: #FFEEEC;
@@ -309,8 +310,10 @@ $appstore: #000;
 $primary-gradient: linear-gradient(to right, $primary 0%, #8e77fa 100%);
 $secondary-gradient: linear-gradient(to right, $secondary 0%, #28b7f9 100%);
 $success-gradient: linear-gradient(to right,$success 0%, #5cf9e2 100%);
+$success-light-gradient: linear-gradient(to right,#09e33c5a 0%, #91fbe290 100%);
 $warning-gradient: linear-gradient(to right, $warning 0%, #fbc434 100%);
 $danger-gradient: linear-gradient(to right,$danger 0%, #fd4a68  100%);
+$danger-light-gradient: linear-gradient(to right,$danger-700 0%, #fa9eaeb5  100%);
 $info-gradient: linear-gradient(to right, $info 0%, #00f2fe  100%);
 $pink-gradient: linear-gradient(to right, $pink 0%, #FFA795 100%);
 $teal-gradient: linear-gradient(to right, $teal 0%, #0695DD 100%);

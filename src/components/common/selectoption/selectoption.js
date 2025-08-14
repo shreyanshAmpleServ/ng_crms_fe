@@ -443,7 +443,7 @@ export const CampaignTypeOptions = [
 ];
 export const OrderStatusOptions = [
   { value: "", label: "Select" },
-  { value: "O", color: "", label: "Open" },
+  { value: "O", label: "Open" },
   { value: "L", label: "Closed" },
   { value: "C", label: "Canceled" },
   { value: "P", label: "Pending" },

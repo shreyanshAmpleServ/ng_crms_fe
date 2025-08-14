@@ -94,7 +94,6 @@ const AddVendorModal = ({ vendor, setVendor }) => {
   }, [vendor]);
  
   const country_id = watch("billing_country");
-  console.log("Country _id :",country_id)
   useEffect(() => {
     dispatch(fetchVendors());
     dispatch(fetchUsers());

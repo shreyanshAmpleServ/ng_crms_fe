@@ -142,35 +142,36 @@ const AddCaseModal = ({ cases, setCases }) => {
     })) || [];
 
  const onSubmit = async (data) => {
-  const closeButton = document.getElementById("close_add_user");
+    const closeButton = document.getElementById("close_add_user");
 
-  // Directly use the plain JS object 'data'
-  const FinalData = { ...data };
+    const FinalData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      FinalData.append(key, value ?? "");
+    });
 
-  // Ensure ID is set in edit mode
-  if (cases?.id && !FinalData.id) {
-    FinalData.id = cases.id;
-  }
-
-  // Debug log
-  console.log("Submitting case payload:", FinalData);
-
-  try {
-    if (cases) {
-      await dispatch(updateCases(FinalData)).unwrap();
-    } else {
-      await dispatch(addCases(FinalData)).unwrap();
+    // Ensure ID is set in edit mode
+    if (cases?.id && !FinalData.get("id")) {
+      FinalData.append("id", cases.id);
     }
-    if (closeButton) closeButton.click();
-    reset();
-    dispatch(fetchCasesCode());
-  } catch (error) {
-    console.error("Error saving case:", error);
-    if (closeButton) closeButton.click();
-    dispatch(fetchCasesCode());
-  }
-};
 
+    // Debug log
+    console.log("Submitting case payload:", Object.fromEntries(FinalData));
+
+    try {
+      if (cases) {
+        await dispatch(updateCases(FinalData)).unwrap();
+      } else {
+        await dispatch(addCases(FinalData)).unwrap();
+      }
+      if (closeButton) closeButton.click();
+      reset();
+      dispatch(fetchCasesCode());
+    } catch (error) {
+      console.error("Error saving case:", error);
+      if (closeButton) closeButton.click();
+      dispatch(fetchCasesCode());
+    }
+  };
 
   React.useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add_edit_case");

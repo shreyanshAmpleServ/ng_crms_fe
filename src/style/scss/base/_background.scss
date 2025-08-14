@@ -67,6 +67,9 @@
 .bg-green-300 {
     background-color: $success-700 !important;
 }
+.bg-green-950 {
+    background-color: $success-950 !important;
+}
 .bg-gray {
     background: $background-3;
 }
@@ -278,6 +281,10 @@ $value in $theme-colors {
   background: $success-gradient !important;
   color: $white;
 }
+.bg-success-light-gradient {
+  background: $success-light-gradient !important;
+  color: $white;
+}
 .bg-danger-gradient {
   background: $danger-gradient !important;
   color: $white;
@@ -288,6 +295,10 @@ $value in $theme-colors {
 }
 .bg-purple-gradient {
   background: $purple-gradient !important;
+  color: $white;
+}
+.bg-danger-light-gradient {
+  background: $danger-light-gradient !important;
   color: $white;
 }
 .bg-teal-gradient {
@@ -528,4 +539,7 @@ $value in $theme-colors {
 }
 .text-blue-light {
     color: $indigo !important;
+}
+.bg-purple-300{
+    background-color: $purple-100;
 }

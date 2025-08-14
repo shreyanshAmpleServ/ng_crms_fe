@@ -11,6 +11,10 @@ a {
   text-decoration: none;
   color: #262a2a;
 }
+.hover-opacity-100:hover {
+  opacity: 1 !important;
+}
+
 /* Apply globally or scoped with class */
 .ant-table-cell {
   padding: 5.5px 8px !important; /* adjust as needed */
@@ -646,6 +650,9 @@ div.sidebar-themesettings
 }
 .modal-open .offcanvas.offcanvas-end {
   width: 700px !important;
+}
+.modal-open .offcanvas.offcanvas-larger {
+  width: 1000px !important;
 }
 .ant-table {
   font-family: "Noto Sans", sans-serif !important;
