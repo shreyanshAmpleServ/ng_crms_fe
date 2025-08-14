@@ -288,7 +288,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                     </label>
                     <input
                       type="text"
-                      placeholder="Title"
+                      placeholder="Enter Title"
                       className="form-control"
                       {...register("title", {
                         required: "Title is required !",

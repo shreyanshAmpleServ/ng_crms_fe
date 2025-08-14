@@ -192,7 +192,7 @@ const AddDealModel = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter name"
+                  placeholder="Enter Name"
                   className="form-control"
                   {...register("dealName", {
                     required: "Deal name is required !",
@@ -388,7 +388,7 @@ const AddDealModel = () => {
       isMulti
       className="select2"
       classNamePrefix="react-select"
-      placeholder="Choose contacts"
+      placeholder="Select Contacts..."
       value={(contactlist || []).filter(option =>
         (field.value || []).includes(option.value)
       )}

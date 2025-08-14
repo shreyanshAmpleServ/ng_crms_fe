@@ -437,7 +437,7 @@ const AddProductModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
-                    placeholder="Contact Person"
+                    placeholder="Enter Contact Person"
                     className="form-control"
                     {...register("cont_person", {
                       required: "Contact person to is required !",
@@ -458,7 +458,7 @@ const AddProductModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
-                    placeholder=" Bill To"
+                    placeholder="Enter Bill To"
                     className="form-control"
                     {...register("billto", {
                       required: "Bill to is required !",
@@ -479,7 +479,7 @@ const AddProductModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
-                    placeholder="Ship To"
+                    placeholder="Enter Ship To"
                     className="form-control"
                     {...register("shipto", {
                       required: "Ship to is required !",
@@ -761,7 +761,7 @@ const AddProductModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
-                    placeholder="Address"
+                    placeholder="Enter Address"
                     className="form-control"
                     {...register("address", {
                       required: "Address is required !",
@@ -780,7 +780,7 @@ const AddProductModal = ({ order, setOrder }) => {
                   <label className="col-form-label">Remarks</label>
                   <textarea
                     className="form-control"
-                    placeholder="Remarks"
+                    placeholder="Enter Remarks"
                     rows={4}
                     {...register("remarks")}
                   />

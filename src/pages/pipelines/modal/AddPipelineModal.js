@@ -117,7 +117,7 @@ const AddPipelineModal = () => {
             </label>
             <input
               type="text"
-              placeholder="Pipeline Name"
+              placeholder="Enter Pipeline Name"
               className="form-control"
               {...register("name", {
                 required: "Pipeline name is required !",

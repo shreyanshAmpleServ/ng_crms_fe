@@ -485,6 +485,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Contact Person"
                     className="form-control"
                     {...register("cont_person", {
                       required: "Contact Person to is required !",
@@ -647,6 +648,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Bill To"
                     className="form-control"
                     {...register("billto", {
                       required: "Bill to is required !",
@@ -667,6 +669,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter Ship TO"
                     className="form-control"
                     {...register("shipto", {
                       required: "Ship to is required !",

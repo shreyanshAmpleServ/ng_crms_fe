@@ -28,7 +28,8 @@ const AddCaseModal = ({ cases, setCases }) => {
     watch,
     formState: { errors },
   } = useForm({
-    defaultValues: {
+     defaultValues: {
+      id: "",
       name: "",
       case_number: "",
       case_owner_id: null,
@@ -52,7 +53,8 @@ const AddCaseModal = ({ cases, setCases }) => {
   });
   React.useEffect(() => {
     if (cases) {
-      reset({
+        reset({
+        id: cases?.id || "",
         name: cases?.name || "",
         case_number: cases?.case_number || "",
         case_owner_id: cases?.case_owner_id || null,
@@ -75,8 +77,8 @@ const AddCaseModal = ({ cases, setCases }) => {
       });
     } else {
       reset({
+        id: "",
         name: "",
-        is_active: "Y",
         case_number: "",
         case_owner_id: null,
         case_owner_name: "",
@@ -94,6 +96,7 @@ const AddCaseModal = ({ cases, setCases }) => {
         email: "",
         phone: "",
         description: "",
+        is_active: "Y",
       });
     }
   }, [cases]);
@@ -138,22 +141,37 @@ const AddCaseModal = ({ cases, setCases }) => {
       label: emnt.name,
     })) || [];
 
-  const onSubmit = async (data) => {
-    const closeButton = document.getElementById("close_add_user");
-    const FinalData = { ...data };
-    if (cases) FinalData.id = cases.id;
-    try {
-      cases
-        ? await dispatch(updateCases(FinalData))
-        : await dispatch(addCases(FinalData)).unwrap();
-      closeButton.click();
-      reset();
-      dispatch(fetchCasesCode());
-    } catch (error) {
-      closeButton.click();
-      dispatch(fetchCasesCode());
+ const onSubmit = async (data) => {
+  const closeButton = document.getElementById("close_add_user");
+
+  // Directly use the plain JS object 'data'
+  const FinalData = { ...data };
+
+  // Ensure ID is set in edit mode
+  if (cases?.id && !FinalData.id) {
+    FinalData.id = cases.id;
+  }
+
+  // Debug log
+  console.log("Submitting case payload:", FinalData);
+
+  try {
+    if (cases) {
+      await dispatch(updateCases(FinalData)).unwrap();
+    } else {
+      await dispatch(addCases(FinalData)).unwrap();
     }
-  };
+    if (closeButton) closeButton.click();
+    reset();
+    dispatch(fetchCasesCode());
+  } catch (error) {
+    console.error("Error saving case:", error);
+    if (closeButton) closeButton.click();
+    dispatch(fetchCasesCode());
+  }
+};
+
+
   React.useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add_edit_case");
     if (offcanvasElement) {
@@ -221,15 +239,15 @@ const AddCaseModal = ({ cases, setCases }) => {
                   Case Number <span className="text-danger">*</span>
                 </label>
                 <input
-  type="text"
-  placeholder="Enter Case Number"
-  readOnly
-  value={watch("case_number") || ""}
-  className="form-control"
-  {...register("case_number", {
-    required: "Case number is required!",
-  })}
-/>
+                type="text"
+                placeholder="Enter Case Number"
+                readOnly
+                value={watch("case_number") || ""}
+                className="form-control"
+                {...register("case_number", {
+                  required: "Case number is required!",
+                })}
+              />
 
               </div>
               {errors.case_number && (

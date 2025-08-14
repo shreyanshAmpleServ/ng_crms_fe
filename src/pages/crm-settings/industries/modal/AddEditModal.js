@@ -85,6 +85,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Industry Name "
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "Industry name is required !",

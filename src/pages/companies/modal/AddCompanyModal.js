@@ -256,7 +256,7 @@ const AddCompanyModal = ({ company }) => {
                           Phone <span className="text-danger">*</span>
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           placeholder="Enter Phone"
                           className="form-control"
                           {...register("phone", {

@@ -305,6 +305,7 @@ const exportToPDF = useCallback(() => {
     if (selectedproduct) {
       dispatch(deleteProduct(selectedproduct.id));
       setShowDeleteModal(false);
+      setSelectedproduct(null);
     }
   };
 
@@ -416,6 +417,7 @@ const exportToPDF = useCallback(() => {
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}
+        setProduct={setSelectedproduct}
       />
     </div>
   );

@@ -142,6 +142,7 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Title"
                   className="form-control"
                   {...register("title", {
                     required: "Title is required !",
@@ -293,6 +294,7 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Question"
                   className="form-control"
                   {...register("question", {
                     required: "Case type is required !",
@@ -313,6 +315,7 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Answer"
                   className="form-control"
                   {...register("answer", {
                     required: "Case priority is required !",

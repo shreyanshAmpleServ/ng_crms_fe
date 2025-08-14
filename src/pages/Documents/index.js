@@ -379,6 +379,8 @@ const DocumentLists = () => {
       dispatch(deleteAttachment(selectedProject.id)); // Dispatch the delete action
       // navigate(`/documents`); // Navigate to the specified route
       setShowDeleteModal(false); // Close the modal
+       setSelectedProject(null); // 🟢 Clear after delete
+
     }
   };
   
@@ -391,15 +393,15 @@ const DocumentLists = () => {
       <div className="content">
         {error && (
           <FlashMessage
-            type="error"
-            message={error}
+            // type="error"
+            // message={error}
             onClose={() => dispatch(clearMessages())}
           />
         )}
         {success && (
           <FlashMessage
-            type="success"
-            message={success}
+              // type="success"
+              // message={success}
             onClose={() => dispatch(clearMessages())}
           />
         )}
@@ -509,9 +511,10 @@ const DocumentLists = () => {
       <AddAttachmentModal data={selectedProject} setData={setSelectedProject} />
       {/* <EditProjectModal project={selectedProject} /> */}
       <DeleteAlert
-        label="Documents"
+        label="Document"
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
+        setData={setSelectedProject}
         onDelete={deleteData}
       />
     </div>

@@ -7,7 +7,7 @@ import {
 } from "../../../../redux/contact-stages"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
   const { loading } = useSelector((state) => state.contactStages);
 
   const {
@@ -34,30 +34,55 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     }
   }, [mode, initialData, reset]);
 
-  const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_contact_stage_modal"
-    );
+   const clearForm = () => {
+    reset({
+      name: "",
+      is_active: "Y",
+    });
+    if (onClose) onClose(); // parent ko inform kar do
+  };
+
+  
+const onSubmit = (data) => {
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addContactStage({
-          name: data.name,
+          name: data.name.trim(),
           is_active: data.is_active,
         })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateContactStage({
           id: initialData.id,
-          contactStageData: { name: data.name, is_active: data.is_active },
+          contactStageData : { name: data.name.trim(), is_active: data.is_active },
         })
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
+
+    clearForm();
+
+    // Close the modal
+    const closeButton = document.getElementById(
+      "close_btn_add_edit_contact_stage_modal"
+    );
+    if (closeButton) closeButton.click();
   };
+
+  // Clear form when modal closes
+  useEffect(() => {
+    const modalEl = document.getElementById("add_edit_contact_stage_modal");
+    if (modalEl) {
+      modalEl.addEventListener("hidden.bs.modal", clearForm);
+      return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+    }
+  }, []);
+
+  
+
+
+
+  
 
   return (
     <div className="modal fade" id="add_edit_contact_stage_modal" role="dialog">
@@ -88,6 +113,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Contact Stage Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "Contact stage name is required !",

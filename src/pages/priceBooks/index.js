@@ -284,6 +284,7 @@ const PriceBook = () => {
     if (selectedOrder) {
       dispatch(deletePriceBook(selectedOrder.id));
       setShowDeleteModal(false);
+      setSelectedOrder(null);
     }
   };
 
@@ -399,6 +400,7 @@ const PriceBook = () => {
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}
+        setOrder={setSelectedOrder}
       />
     </div>
   );

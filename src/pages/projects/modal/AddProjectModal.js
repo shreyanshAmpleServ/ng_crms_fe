@@ -95,7 +95,7 @@ useEffect(() => {
               </label>
               <input
                 type="text"
-                placeholder=" Project Name "
+                placeholder="Enter Project Name "
                 className="form-control"
                 {...register("name", { required: "Project name is required!" })}
               />
@@ -134,7 +134,7 @@ useEffect(() => {
               </label>
               <input
                 type="number"
-                placeholder="budget"
+                placeholder="Enter Budget"
                 step="0.01"
                 className="form-control"
                 {...register("amount", { required: "Budget is required!" })}
@@ -225,7 +225,7 @@ useEffect(() => {
               <label>Description</label>
               <textarea
                 className="form-control"
-                 placeholder="Description"
+                 placeholder="Enter Description"
                 rows={3}
                 {...register("description")}
               />

@@ -296,6 +296,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Full Name"
                   className="form-control"
                   {...register("name", {
                     required: "Name is required !",
@@ -318,6 +319,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                     <span className="me-2 label-text">Email Opt Out</span>
                     <Controller
                       name="email_opt_out"
+
                       control={control}
                       render={({ field }) => (
                         <input
@@ -334,6 +336,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 </div>
                 <input
                   type="email"
+                  placeholder="Enter Email"
                   className="form-control"
                   {...register("email", { required: "Email is required !", pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -354,13 +357,14 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 </label>
                 <Controller
                   name="account_owner"
+
                   rules={{ required: "Account Owner is required !" }} // Make the field required
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
                       options={usersList}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>{
@@ -398,6 +402,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 </label>
                 <input
                   type="number"
+                  placeholder="Enter Phone"
                   className="form-control"
                   {...register("phone", {
                     required: "Phone number is required !",
@@ -427,6 +432,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 <label className="col-form-label">Website</label>
                 <input
                   type="text"
+                  placeholder="Enter Website"
                   className="form-control"
                   {...register("website")}
                 />
@@ -443,6 +449,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 <label className="col-form-label">GL Account</label>
                 <input
                   type="text"
+                  placeholder="Enter GL Account "
                   className="form-control"
                   {...register("glaccount")}
                 />
@@ -459,6 +466,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 <label className="col-form-label">Category</label>
                 <input
                   type="text"
+                  placeholder="Enter Category "
                   className="form-control"
                   {...register("category")}
                 />
@@ -476,6 +484,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 <label className="col-form-label">Billing Street</label>
                 <input
                   type="text"
+                  placeholder="Enter Billing Street "
                   className="form-control"
                   {...register("billing_street")}
                 />
@@ -493,7 +502,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                     <Select
                       {...field}
                       options={countryList}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) => {
@@ -532,7 +541,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                     <Select
                       {...field}
                       options={stateList}
-                      placeholder="Choose"
+                      placeholder="Select..."
                       className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) =>
@@ -562,6 +571,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 <label className="col-form-label">Billing City</label>
                 <input
                   type="text"
+                  placeholder="Enter Billing City"
                   className="form-control"
                   {...register("billing_city")}
                 />
@@ -574,6 +584,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 <label className="col-form-label">Billing Zipcode</label>
                 <input
                   type="number"
+                  placeholder="Enter Billing Zipcode"
                   className="form-control"
                   {...register("billing_zipcode")}
                 />
@@ -586,6 +597,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                 <label className="col-form-label">Description</label>
                 <textarea
                   className="form-control"
+                  placeholder="Enter Description"
                   rows={5}
                   {...register("description")}
                 />

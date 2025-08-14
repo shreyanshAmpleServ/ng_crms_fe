@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCallStatus, updateCallStatus } from "../../../../redux/callStatus"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
   const { loading } = useSelector((state) => state.callStatuses);
 
   const {
@@ -17,39 +17,45 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   const dispatch = useDispatch();
 
   // Prefill form in edit mode
+
   useEffect(() => {
-    if (mode === "edit" && initialData) {
-      reset({
+      if (mode === "edit" && initialData) {
+        reset({
         name: initialData.name || "",
         description: initialData.description || "",
         is_active: initialData.is_active,
       });
-    } else {
+      } else {
+        reset({
+           name: "",
+        description: "",
+        is_active: "Y",
+        });
+      }
+    }, [mode, initialData, reset]);
+  
+     const clearForm = () => {
       reset({
         name: "",
         description: "",
         is_active: "Y",
       });
-    }
-  }, [mode, initialData, reset]);
-
+      if (onClose) onClose(); // parent ko inform kar do
+    };
+  
+    
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_call_status_modal"
-    );
-    if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addCallStatus({
+      if (mode === "add") {
+        dispatch(
+          addCallStatus({
           name: data.name,
           description: data.description,
           is_active: data.is_active,
         })
-      );
-    } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
-      dispatch(
-        updateCallStatus({
+        );
+      } else if (mode === "edit" && initialData) {
+        dispatch(
+           updateCallStatus({
           id: initialData.id,
           callStatusData: {
             name: data.name,
@@ -57,11 +63,26 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
             is_active: data.is_active,
           },
         })
+        );
+      }
+  
+      clearForm();
+  
+      // Close the modal
+      const closeButton = document.getElementById(
+        "close_btn_add_edit_call_status_modal"
       );
-    }
-    reset(); // Clear the form
-    closeButton.click();
-  };
+      if (closeButton) closeButton.click();
+    };
+  
+    // Clear form when modal closes
+    useEffect(() => {
+      const modalEl = document.getElementById("add_edit_call_status_modal");
+      if (modalEl) {
+        modalEl.addEventListener("hidden.bs.modal", clearForm);
+        return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+      }
+    }, [])
 
   return (
     <div className="modal fade" id="add_edit_call_status_modal" role="dialog">
@@ -92,6 +113,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "Name is required !",
@@ -113,6 +135,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <textarea
                   type="text"
+                  placeholder="Enter Description"
                   rows="4"
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
                   {...register("description", {

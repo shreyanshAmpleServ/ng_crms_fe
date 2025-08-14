@@ -257,6 +257,7 @@ const loading = false
                   </label>
                   <input
                     type="text"
+                    placeholder="Enter  Template Name"
                     className="form-control"
                     {...register("template_name", {
                       required: "Template Name to is required !",

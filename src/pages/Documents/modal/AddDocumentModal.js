@@ -227,24 +227,23 @@ const AddFiles = ({ data, setData }) => {
       className="offcanvas offcanvas-end offcanvas-large "
       tabIndex={-1}
       id="offcanvas_add_documents"
-      
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">Add Document</h5>
+        <h5 className="fw-semibold">{data ? "Update " : "Add New"}Document</h5>
+
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
-          id="close_offcanvas_edit_documents"
           aria-label="Close"
+          id="close_offcanvas_edit_documents"
         >
           <i className="ti ti-x" />
         </button>
       </div>
-      <div className="offcanvas-body  ">
+      <div className="offcanvas-body">
         <div className="modal-body ">
           <div className="add-info-fieldset">
-            
             <fieldset id="first-field-file">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="contact-input-set">
@@ -374,13 +373,12 @@ const AddFiles = ({ data, setData }) => {
                       </div>
                     </div>
                     <div className="col-md-12">
-                      <div className="mb-3"
-                      >
+                      <div className="mb-3">
                         <label className="col-form-label">
                           Upload Attachment{" "}
                           {!data && <span className="text-danger">*</span>}
                         </label>
-                        
+
                         <input
                           type="file"
                           className="form-control"
@@ -424,24 +422,22 @@ const AddFiles = ({ data, setData }) => {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-12 text-end form-wizard-button modal-btn">
+                    <div className="d-flex mt-3 align-items-center justify-content-end">
                       <button
                         type="button"
+                        className="btn btn-light me-2"
                         data-bs-dismiss="offcanvas"
-                        className="btn btn-light"
                       >
                         Cancel
                       </button>
                       <button
-                        className="btn btn-primary wizard-next-btn"
-                        type={loading ? "button" : "submit"}
-                        disabled={
-                          selectedFile && selectedFile.size > 5 * 1024 * 1024
-                        }
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={loading}
                       >
                         {data
                           ? loading
-                            ? "Updating..."
+                            ? "Updating ...."
                             : "Update"
                           : loading
                             ? "Creating..."
@@ -452,7 +448,7 @@ const AddFiles = ({ data, setData }) => {
                               height: "15px",
                               width: "15px",
                             }}
-                            className="spinner-border ml-3 text-light"
+                            className="spinner-border ml-2 text-light"
                             role="status"
                           >
                             <span className="visually-hidden">Loading...</span>

@@ -19,12 +19,12 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
+  // Reset form with appropriate data based on mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
         name: initialData.name || "",
-        is_active: initialData.is_active,
+        is_active: initialData.is_active ?? "Y",
       });
     } else {
       reset({
@@ -34,30 +34,37 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     }
   }, [mode, initialData, reset]);
 
+  // Clear form handler
+  const clearForm = () => {
+    reset({
+      name: "",
+      is_active: "Y",
+    });
+  };
+
+  // Handle form submit
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_manufacturer_modal"
-    );
     if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addManufacturer({
-          name: data.name,
-          is_active: data.is_active,
-        })
-      );
+      dispatch(addManufacturer(data));
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateManufacturer({
           id: initialData.id,
-          manufacturerData : { name: data.name, is_active: data.is_active },
-        }),
+          manufacturerData: data,
+        })
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
   };
+
+  // Attach modal close listener to clear form
+  useEffect(() => {
+    const modalEl = document.getElementById("add_edit_manufacturer_modal");
+    if (modalEl) {
+      modalEl.addEventListener("hidden.bs.modal", clearForm);
+      return () =>
+        modalEl.removeEventListener("hidden.bs.modal", clearForm);
+    }
+  }, []);
 
   return (
     <div className="modal fade" id="add_edit_manufacturer_modal" role="dialog">
@@ -71,23 +78,20 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
-              id="close_btn_add_edit_manufacturer_modal"
-              onClick={() => {
-                reset();
-              }}
             >
               <i className="ti ti-x" />
             </button>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Industry Name */}
+              {/* Manufacturer Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Manufacturer Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter  Manufacturer Name "
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "Manufacturer name is required !",
@@ -145,9 +149,6 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
-                  onClick={() => {
-                    reset();
-                  }}
                 >
                   Cancel
                 </Link>
@@ -161,8 +162,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       ? "Creating..."
                       : "Updating..."
                     : mode === "add"
-                      ? "Create"
-                      : "Update"}
+                    ? "Create"
+                    : "Update"}
                 </button>
               </div>
             </div>

@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { addIndustry, updateIndustry } from "../../../../redux/industry"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 import {
   addProductCategory,
   updateProductCategory,
 } from "../../../../redux/productCategory";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
   const { loading } = useSelector((state) => state.productCategories);
 
   const {
@@ -20,7 +19,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   const dispatch = useDispatch();
 
-  // Prefill form in edit mode
+  // Prefill form when editing
   useEffect(() => {
     if (mode === "edit" && initialData) {
       reset({
@@ -35,30 +34,45 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     }
   }, [mode, initialData, reset]);
 
+  // Clear form helper
+  const clearForm = () => {
+    reset({
+      name: "",
+      is_active: "Y",
+    });
+    if (onClose) onClose();
+  };
+
+  // Submit handler
   const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_product_category_modal"
-    );
     if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addProductCategory({
-          name: data.name,
-          is_active: data.is_active,
-        })
-      );
+      dispatch(addProductCategory(data));
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateProductCategory({
           id: initialData.id,
-          categoryData: { name: data.name, is_active: data.is_active },
-        }),
+          categoryData: data,
+        })
       );
     }
-    reset(); // Clear the form
-    closeButton.click();
+
+    clearForm();
+
+    // Close modal
+    const closeButton = document.getElementById(
+      "close_btn_add_edit_product_category_modal"
+    );
+    if (closeButton) closeButton.click();
   };
+
+  // Auto clear when modal closes
+  useEffect(() => {
+    const modalEl = document.getElementById("add_edit_product_category_modal");
+    if (modalEl) {
+      modalEl.addEventListener("hidden.bs.modal", clearForm);
+      return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+    }
+  }, []);
 
   return (
     <div
@@ -68,10 +82,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
+          {/* Header */}
           <div className="modal-header">
             <h5 className="modal-title">
               {mode === "add"
-                ? "Add New Product Category"
+                ? "Add Product Category"
                 : "Edit Product Category"}
             </h5>
             <button
@@ -79,33 +94,39 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               data-bs-dismiss="modal"
               aria-label="Close"
               id="close_btn_add_edit_product_category_modal"
-              onClick={() => {
-                reset();
-              }}
+              onClick={clearForm}
             >
               <i className="ti ti-x" />
             </button>
           </div>
+
+          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="modal-body">
-              {/* Product Category Name */}
+              {/* Category Name */}
               <div className="mb-3">
                 <label className="col-form-label">
                   Category Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                  placeholder="Enter category name"
+                  className={`form-control ${
+                    errors.name ? "is-invalid" : ""
+                  }`}
                   {...register("name", {
-                    required: "Category name is required !",
+                    required: "Category name is required!",
                     minLength: {
                       value: 3,
-                      message: "Category name must be at least 3 characters !",
+                      message:
+                        "Category name must be at least 3 characters!",
                     },
                   })}
                 />
                 {errors.name && (
-                  <small className="text-danger">{errors.name.message}</small>
+                  <small className="text-danger">
+                    {errors.name.message}
+                  </small>
                 )}
               </div>
 
@@ -120,7 +141,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                       id="active"
                       value="Y"
                       {...register("is_active", {
-                        required: "Status is required !",
+                        required: "Status is required!",
                       })}
                     />
                     <label htmlFor="active">Active</label>
@@ -151,9 +172,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   to="#"
                   className="btn btn-light me-2"
                   data-bs-dismiss="modal"
-                  onClick={() => {
-                    reset();
-                  }}
+                  onClick={clearForm}
                 >
                   Cancel
                 </Link>

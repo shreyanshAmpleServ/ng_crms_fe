@@ -62,23 +62,48 @@ const Solutions = () => {
       render: (text) => (
         <span>{text}</span> // Format the date as needed
       ),
-      sorter: (a, b) => (a || "").localeCompare(b || ""), // Fixed sorter logic
+      sorter: (a, b) => (a.solution_owner_name || "").localeCompare(b.solution_owner_name || ""), // Fixed sorter logic
     },
-    {
-      title: "Product",
-      dataIndex: "solution_product",
-      render: (text) => (
-        <span>{text?.name}</span> // Format the date as needed
-      ),
-      sorter: (a, b) => (a.name || "").localeCompare(b.name || ""), // Fixed sorter logic
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text) => (   <span className={`badge badge-pill badge-status ${text === "O" ? "bg-secondary" : text=== "L" ? "bg-success" : text === "C" ? "bg-danger" : text==="P" ? "bg-purple" : "  "}`}>
-        {text === "O" ? "Open"  :text=== "L" ? "Closed" : text === "C" ? "Canceled" : text==="P" ? "Pending" : " -- "  || " - "}</span> ),
-      sorter: (a, b) => (a || "").localeCompare(b || ""),// Sort by date
-    },
+   {
+  title: "Product",
+  dataIndex: "solution_product",
+  render: (text) => <span>{text?.name}</span>,
+  sorter: (a, b) =>
+    (a.solution_product?.name || "").localeCompare(
+      b.solution_product?.name || ""
+    ),
+},
+{
+  title: "Status",
+  dataIndex: "status",
+  render: (text) => (
+    <span
+      className={`badge badge-pill badge-status ${
+        text === "O"
+          ? "bg-secondary"
+          : text === "L"
+          ? "bg-success"
+          : text === "C"
+          ? "bg-danger"
+          : text === "P"
+          ? "bg-purple"
+          : ""
+      }`}
+    >
+      {text === "O"
+        ? "Open"
+        : text === "L"
+        ? "Closed"
+        : text === "C"
+        ? "Canceled"
+        : text === "P"
+        ? "Pending"
+        : "--"}
+    </span>
+  ),
+  sorter: (a, b) => (a.status || "").localeCompare(b.status || ""),
+},
+
     {
       title: "Created Date",
       dataIndex: "createdate",
@@ -286,6 +311,7 @@ const exportToPDF = useCallback(() => {
     if (selectedOrder) {
       dispatch(deleteSolutions(selectedOrder.id));
       setShowDeleteModal(false);
+      setSelectedOrder(null);
     }
   };
 
@@ -401,6 +427,7 @@ const exportToPDF = useCallback(() => {
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}
+        setSolution={setSelectedOrder}
       />
     </div>
   );

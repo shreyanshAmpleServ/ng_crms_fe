@@ -813,7 +813,6 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                       </div>
                     </div>
                     {/* <div className="col-md-6">
-                    
                       <div className="mb-3">
                         <label className="col-form-label">
                           Industry <span className="text-danger">*</span>

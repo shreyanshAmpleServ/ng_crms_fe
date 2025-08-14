@@ -8,7 +8,7 @@ import {
 } from "../../../../redux/currency"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
   const { loading } = useSelector((state) => state.currency || {});
   const {
     register,
@@ -39,6 +39,15 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
     }
   }, [mode, initialData, reset]);
 
+  const clearForm = () => {
+       reset({
+         name: "",
+        code: "",
+        is_active: "Y",
+        is_default: "N",
+       });
+       if (onClose) onClose(); // parent ko inform kar do
+     };
   const onSubmit = (data) => {
     const closeButton = document.getElementById("close_btn_currency_modal");
 
@@ -65,9 +74,17 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
       );
     }
     dispatch(fetchCurrencies());
-    reset(); // Clear the form
-    closeButton.click();
-  };
+   reset(); // Clear the form
+       if (closeButton) closeButton.click();
+     };
+      // Clear form when modal closes
+          useEffect(() => {
+            const modalEl = document.getElementById("add_edit_currency_modal");
+            if (modalEl) {
+              modalEl.addEventListener("hidden.bs.modal", clearForm);
+              return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+            }
+          }, [])
 
   return (
     <div className="modal fade" id="add_edit_currency_modal" role="dialog">
@@ -98,6 +115,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Currency Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "Currency name is required !",
@@ -128,6 +146,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Currency Code "
                   className={`form-control ${errors.code ? "is-invalid" : ""}`}
                   {...register("code", {
                     required: "Currency code is required !",

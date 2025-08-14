@@ -148,6 +148,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Name"
                   className="form-control"
                   {...register("name", {
                     required: "Name is required !",
@@ -168,6 +169,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 </div>
                 <input
                   type="text"
+                  placeholder="Enter Category "
                   className="form-control"
                   {...register("category", {
                     required: "Category is required !",
@@ -228,6 +230,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 </label>
                 <input
                   type="number"
+                  placeholder="Enter Rate"
                   className="form-control"
                   {...register("rate", {
                     required: "Rate is required !",
@@ -341,6 +344,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
                 <label className="col-form-label">External Code</label>
                 <input
                   type="text"
+                  placeholder="Enter External Code"
                   className="form-control"
                   {...register("external_code")}
                 />

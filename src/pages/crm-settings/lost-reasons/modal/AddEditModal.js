@@ -29,7 +29,7 @@ const AddEditModal = ({
     if (mode === "edit" && initialData) {
       reset({
         name: initialData.name || "",
-        is_active: initialData.is_active,
+        is_active: initialData.is_active ?? "Y",
         colorCode: initialData.colorCode || "",
         order: initialData.order || "",
       });
@@ -43,30 +43,38 @@ const AddEditModal = ({
     }
   }, [mode, initialData, reset]);
 
+  const clearForm = () => {
+    reset({
+      name: "",
+      is_active: "Y",
+      colorCode: "",
+      order: "",
+    });
+  };
+
   const onSubmit = (data) => {
     const closeButton = document.getElementById(
       "close_btn_add_edit_lost_reason_modal"
     );
+
     if (mode === "add") {
-      // Dispatch Add action
       dispatch(
         addLostReason({
-          name: data.name,
+          name: data.name.trim(),
           order: data.order ? Number(data.order) : null,
           is_active: data.is_active,
-          colorCode: colorCode,
+          colorCode: data.colorCode || "", // ensure from form
         })
       );
     } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
       dispatch(
         updateLostReason({
           id: initialData.id,
           lostReasonData: {
-            name: data.name,
+            name: data.name.trim(),
             order: data.order ? Number(data.order) : null,
             is_active: data.is_active,
-            colorCode: colorCode,
+            colorCode: data.colorCode || "",
           },
         })
       );
@@ -75,9 +83,22 @@ const AddEditModal = ({
         window.location.reload();
       }
     }
-    reset(); // Clear the form
-    closeButton.click();
+
+    clearForm();
+
+    if (closeButton) closeButton.click();
   };
+
+  // ✅ Modal close hone pe bhi form clear
+  useEffect(() => {
+    const modalEl = document.getElementById("add_edit_lost_reason_modal");
+    if (modalEl) {
+      modalEl.addEventListener("hidden.bs.modal", clearForm);
+      return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+    }
+  }, []);
+
+  
 
   return (
     <div className="modal fade" id="add_edit_lost_reason_modal" role="dialog">
@@ -108,6 +129,7 @@ const AddEditModal = ({
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Lead Status "
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "Lost reason is required !",
@@ -128,6 +150,7 @@ const AddEditModal = ({
                 </label>
                 <input
                   type="number"
+                  placeholder="Enter Order "
                   className={`form-control ${errors.order ? "is-invalid" : ""}`}
                   {...register("order", {
                     required: "Order is required !",

@@ -910,7 +910,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                   <label className="col-form-label">Call Subject</label>
                   <input
                     type="text"
-                    placeholder="Enter Call subJ"
+                    placeholder="Enter Call Subject"
                     className="form-control"
                     {...register("call_subject")}
                   />

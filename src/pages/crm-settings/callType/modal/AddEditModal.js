@@ -5,7 +5,7 @@ import { addCallStatus, updateCallStatus } from "../../../../redux/calls"; // Ad
 import { Link } from "react-router-dom";
 import { addCallType, updateCallType } from "../../../../redux/callType";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
   const { loading } = useSelector((state) => state.callStatuses);
 
   const {
@@ -19,50 +19,70 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   // Prefill form in edit mode
   useEffect(() => {
-    if (mode === "edit" && initialData) {
-      reset({
-        name: initialData.name || "",
-        description: initialData.description || "",
-        is_active: initialData.is_active,
-      });
-    } else {
-      reset({
-        name: "",
-        description: "",
-        is_active: "Y",
-      });
-    }
-  }, [mode, initialData, reset]);
-
-  const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_call_status_modal"
-    );
-    if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addCallType({
-          name: data.name,
-          description: data.description,
-          is_active: data.is_active,
-        })
-      );
-    } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
-      dispatch(
-        updateCallType({
-          id: initialData.id,
-          callTypeData: {
-            name: data.name,
-            description: data.description,
-            is_active: data.is_active,
-          },
-        })
-      );
-    }
-    reset(); // Clear the form
-    closeButton.click();
-  };
+       if (mode === "edit" && initialData) {
+         reset({
+         name: initialData.name || "",
+         description: initialData.description || "",
+         is_active: initialData.is_active,
+       });
+       } else {
+         reset({
+            name: "",
+         description: "",
+         is_active: "Y",
+         });
+       }
+     }, [mode, initialData, reset]);
+   
+      const clearForm = () => {
+       reset({
+         name: "",
+         description: "",
+         is_active: "Y",
+       });
+       if (onClose) onClose(); // parent ko inform kar do
+     };
+   
+     
+   const onSubmit = (data) => {
+       if (mode === "add") {
+         dispatch(
+           addCallType({
+           name: data.name,
+           description: data.description,
+           is_active: data.is_active,
+         })
+         );
+       } else if (mode === "edit" && initialData) {
+         dispatch(
+            updateCallType({
+           id: initialData.id,
+           callStatusData: {
+             name: data.name,
+             description: data.description,
+             is_active: data.is_active,
+           },
+         })
+         );
+       }
+   
+       clearForm();
+   
+       // Close the modal
+       const closeButton = document.getElementById(
+         "close_btn_add_edit_call_status_modal"
+       );
+       if (closeButton) closeButton.click();
+     };
+   
+     // Clear form when modal closes
+     useEffect(() => {
+       const modalEl = document.getElementById("add_edit_call_status_modal");
+       if (modalEl) {
+         modalEl.addEventListener("hidden.bs.modal", clearForm);
+         return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+       }
+     }, [])
 
   return (
     <div className="modal fade" id="add_edit_call_status_modal" role="dialog">
@@ -93,6 +113,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "Name is required !",
@@ -114,6 +135,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <textarea
                   type="text"
+                  placeholder="Enter Description"
                   rows="4"
                   className={`form-control ${errors.description ? "is-invalid" : ""}`}
                   {...register("description", {

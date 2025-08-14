@@ -1,24 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteContact } from "../../../redux/contacts/contactSlice";
 import { useNavigate } from "react-router-dom";
 
-const DeleteAlert = ({ showModal, setShowModal, selectedContact }) => {
+const DeleteAlert = ({ showModal, setShowModal, selectedContact, setSelectedContact }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // Handle the contact deletion
-  const handleDeleteContact = () => {
+
+  // Confirm delete
+  const deleteData = async () => {
     if (selectedContact) {
-      dispatch(deleteContact(selectedContact.id)); // Dispatch the delete action
-      navigate('/crms/contacts')
-      setShowModal(false); // Close the modal
+      try {
+        await dispatch(deleteContact(selectedContact?.id)).unwrap(); // Contact delete
+        setSelectedContact(null); // 🟢 Clear after delete
+        setShowModal(false); // Close modal
+        navigate("/crms/contacts"); // Redirect
+      } catch (error) {
+        console.error("Failed to delete contact:", error);
+        setSelectedContact(null); // 🟢 Clear after delete
+
+        setShowModal(false);
+      }
     }
   };
 
   return (
     <>
       {showModal && (
-        <div className="modal fade show" id="delete_contact" role="dialog" style={{ display: "block" }}>
+        <div
+          className="modal fade show"
+          id="delete_contact"
+          role="dialog"
+          style={{ display: "block" }}
+        >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-body">
@@ -33,14 +47,11 @@ const DeleteAlert = ({ showModal, setShowModal, selectedContact }) => {
                   <div className="d-flex align-items-center justify-content-center mt-4">
                     <button
                       className="btn btn-light me-2"
-                      onClick={() => setShowModal(false)} // Close the modal without deleting
+                      onClick={() => setShowModal(false)}
                     >
                       Cancel
                     </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={handleDeleteContact}
-                    >
+                    <button className="btn btn-danger" onClick={deleteData}>
                       Yes, Delete it
                     </button>
                   </div>

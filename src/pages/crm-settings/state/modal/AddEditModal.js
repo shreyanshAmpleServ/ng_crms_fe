@@ -9,7 +9,7 @@ import {
   updateMappedState,
 } from "../../../../redux/mappedState";
 
-const AddEditModal = ({ mode = "add", initialData = null }) => {
+const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
   const { loading } = useSelector((state) => state.states);
 
   const {
@@ -37,50 +37,68 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
   }));
   // Prefill form in edit mode
   useEffect(() => {
-    if (mode === "edit" && initialData) {
-      reset({
-        name: initialData.name || "",
-        country_code: initialData.country_code || null,
-        is_active: initialData.is_active,
-      });
-    } else {
-      reset({
-        name: "",
-        country_code: null,
-        is_active: "Y",
-      });
-    }
-  }, [mode, initialData, reset]);
+  if (mode === "edit" && initialData) {
+    reset({
+      name: initialData.name || "",
+      country_code: initialData.country_code || "",
+      is_active: initialData.is_active,
+    });
+  } else {
+    reset({
+      name: "",
+      country_code: "",
+      is_active: "Y",
+    });
+  }
+}, [mode, initialData, reset]);
 
-  const onSubmit = (data) => {
-    const closeButton = document.getElementById(
-      "close_btn_add_edit_state_modal"
+// Clear form function
+const clearForm = () => {
+  reset({
+    name: "",
+    country_code: "",
+    is_active: "Y",
+  });
+  if (onClose) onClose();
+};
+
+const onSubmit = (data) => {
+  if (mode === "add") {
+    dispatch(
+      addMappedState({
+        name: data.name,
+        country_code: data.country_code,
+        is_active: data.is_active,
+      })
     );
-    if (mode === "add") {
-      // Dispatch Add action
-      dispatch(
-        addMappedState({
+  } else if (mode === "edit" && initialData) {
+    dispatch(
+      updateMappedState({
+        id: initialData.id,
+        stateData: {
           name: data.name,
           country_code: data.country_code,
           is_active: data.is_active,
-        })
-      );
-    } else if (mode === "edit" && initialData) {
-      // Dispatch Edit action
-      dispatch(
-        updateMappedState({
-          id: initialData.id,
-          stateData: {
-            name: data.name,
-            country_code: data.country_code,
-            is_active: data.is_active,
-          },
-        })
-      );
-    }
-    reset(); // Clear the form
-    closeButton.click();
-  };
+        },
+      })
+    );
+  }
+
+  // Clear form and close modal
+  clearForm();
+  const closeButton = document.getElementById("close_btn_add_edit_state_modal");
+  if (closeButton) closeButton.click();
+};
+
+// Auto clear when modal closes
+useEffect(() => {
+  const modalEl = document.getElementById("add_edit_state_modal");
+  if (modalEl) {
+    modalEl.addEventListener("hidden.bs.modal", clearForm);
+    return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+  }
+}, []);
+
 
   return (
     <div className="modal fade" id="add_edit_state_modal" role="dialog">
@@ -147,6 +165,7 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                 </label>
                 <input
                   type="text"
+                  placeholder="Enter State"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
                     required: "State is required !",

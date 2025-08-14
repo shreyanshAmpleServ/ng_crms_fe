@@ -13,7 +13,7 @@ import { fetchSources } from "../../../redux/source";
 import { fetchCountries } from "../../../redux/country";
 import { fetchMappedStates } from "../../../redux/mappedState";
 import { fetchCurrencies } from "../../../redux/currency";
-
+import "./style.css"
 const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
   const {
     control,
@@ -641,26 +641,27 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         <label className="col-form-label">
                           Mobile <span className="text-danger">*</span>
                         </label>
-                        <input
-                          type="text" // use "text" to avoid browser-specific issues with type="number"
-                          placeholder="Enter Mobile"
-                          className={`form-control ${errors.mobile ? "is-invalid" : ""}`}
-                          {...register("mobile", {
-                            required: "Mobile number is required!",
-                            minLength: {
-                              value: 9,
-                              message: "Mobile must be at least 9 digits!",
-                            },
-                            maxLength: {
-                              value: 12,
-                              message: "Mobile must be at most 12 digits!",
-                            },
-                            pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Mobile must contain only numbers!",
-                            },
-                          })}
-                        />
+                       <input
+  type="number"
+  placeholder="Enter Mobile"
+  className={`form-control ${errors.mobile ? "is-invalid" : ""}`}
+  {...register("mobile", {
+    required: "Mobile number is required!",
+    minLength: {
+      value: 9,
+      message: "Mobile must be at least 9 digits!",
+    },
+    maxLength: {
+      value: 12,
+      message: "Mobile must be at most 12 digits!",
+    },
+    pattern: {
+      value: /^[0-9]+$/,
+      message: "Mobile must contain only numbers!",
+    },
+  })}
+/>
+
                         {errors.mobile && (
                           <small className="text-danger">
                             {errors.mobile.message}
@@ -669,39 +670,43 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                       </div>
                     </div>
 
-                    <div className="col-md-6">
-                      <div className="mb-3">
-                        <label className="col-form-label">
-  Phone&nbsp;<span className="text-danger">*</span>
-</label>
+                   <div className="col-md-6">
+  <div className="mb-3">
+    <label className="col-form-label">
+      Phone&nbsp;<span className="text-danger">*</span>
+    </label>
 
-                         <input
-                          type="text" // use "text" to avoid browser-specific issues with type="number"
-                          placeholder="Enter Phone"
-                          className={`form-control ${errors.phone? "is-invalid" : ""}`}
-                          {...register("phone", {
-                            required: "Phone number is required!",
-                            minLength: {
-                              value: 9,
-                              message: "Phone must be at least 9 digits!",
-                            },
-                            maxLength: {
-                              value: 12,
-                              message: "Phone must be at most 12 digits!",
-                            },
-                            pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Phone must contain only numbers!",
-                            },
-                          })}
-                        />
-                        {errors.phone && (
-                          <small className="text-danger">
-                            {errors.phone.message}
-                          </small>
-                        )}
-                      </div>
-                    </div>
+    <input
+      type="number"
+      placeholder="Enter Phone"
+      className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+      onInput={(e) => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, ""); // only digits
+      }}
+      {...register("phone", {
+        required: "Phone number is required!",
+        minLength: {
+          value: 9,
+          message: "Phone must be at least 9 digits!",
+        },
+        maxLength: {
+          value: 12,
+          message: "Phone must be at most 12 digits!",
+        },
+        pattern: {
+          value: /^[0-9]+$/,
+          message: "Phone must contain only numbers!",
+        },
+      })}
+    />
+    {errors.phone && (
+      <small className="text-danger">
+        {errors.phone.message}
+      </small>
+    )}
+  </div>
+</div>
+
 
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -880,7 +885,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           No of Employees&nbsp;<span className="text-danger">*</span>
                         </label>
                          <input
-                          type="text" // use "text" to avoid browser-specific issues with type="number"
+                          type="number" // use "text" to avoid browser-specific issues with type="number"
                           placeholder="Enter Employees"
                           className={`form-control ${errors.Employees ? "is-invalid" : ""}`}
                           {...register("no_of_employees", {
@@ -903,7 +908,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         </label>
                         <input
                           type="number"
-                          placeholder="Enter Annual Reveanue"
+                          placeholder="Enter Annual Revenue"
                           step="0.01"
                           className="form-control"
                           {...register("annual_revenue", {

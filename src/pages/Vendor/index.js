@@ -277,6 +277,7 @@ const exportToPDF = useCallback(() => {
     if (selectedVendor) {
       dispatch(deleteVenor(selectedVendor.id));
       setShowDeleteModal(false);
+      setSelectedVendor(null);
     }
   };
 
@@ -388,6 +389,7 @@ const exportToPDF = useCallback(() => {
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}
+         setVendor={setSelectedVendor}
       />
     </div>
   );

@@ -11,7 +11,8 @@ import { updateContact } from "../../../redux/contacts/contactSlice";
 
 const EditContactModal = ({contact}) => {
   const [selectedLogo , setSelectedLogo] = useState()
- 
+ const [selectedContact, setSelectedContact] = useState(null);
+
   const dealsopen = [
     { value: "choose", label: "Choose" },
     { value: "collins", label: "Collins" },
@@ -133,6 +134,7 @@ const EditContactModal = ({contact}) => {
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
       setSelectedLogo(file);
     }
@@ -141,45 +143,59 @@ const EditContactModal = ({contact}) => {
  const navigate = useNavigate();
  const { loading } = useSelector((state) => state.contacts);
   // Submit Handler
-  const onSubmit = async (data) => {
-    const formData = new FormData();
+ const onSubmit  = async (data) => {
+  const formData = new FormData();
 
-    // Append all form fields
-    Object?.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] !== undefined) {
-        // Convert complex data to strings if needed
-        formData.append(
-          key,
-          typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key],
-        );
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== null && data[key] !== undefined) {
+      let value = data[key];
+
+      if (key === "dateOfBirth") {
+        value = dayjs(value, "DD-MM-YYYY").toISOString();
       }
-    });
 
-    if (selectedLogo) {
-      formData.append("image", selectedLogo);
-    }
-    formData.append("id",contact.id)
+      if (key === "reviews") {
+        value = value ? Number(value) : null;
+      }
 
-    const closeButton = document.getElementById('closeEditModal');
-    try {
-      const transformedData = {
-        ...data,
-        reviews: data.reviews ? Number(data.reviews) : null, // Convert to number or null
-      };
-      await dispatch(updateContact(formData)).unwrap();
-      // await dispatch(updateContact( {id:contact.id, contactData:transformedData})).unwrap();
-      closeButton.click(); 
-      navigate('/crms/contacts')
-    } catch (error) {
-      closeButton.click();
-      navigate('/crms/contacts')
+      formData.append(
+        key,
+        typeof value === "object" ? JSON.stringify(value) : value
+      );
     }
-  };
+  });
+
+  if (selectedLogo) {
+    formData.append("image", selectedLogo);
+  }
+
+  if (contact) {
+    formData.append("id", contact.id);
+  }
+
+  const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
+
+  try {
+    await dispatch(updateContact(formData)).unwrap();
+    closeButton?.click();
+    navigate("/crms/contacts");
+  } catch (error) {
+    closeButton?.click();
+  } finally {
+    setSelectedLogo(null);
+    setSelectedContact();
+    reset();
+  }
+};
+
+
+  
+  
   return (
     <div
       className="offcanvas offcanvas-end offcanvas-large"
       tabIndex={-1}
-      id="offcanvas_edit"
+      id="offcanvas_edit_contacts"
     >
       <div className="offcanvas-header border-bottom">
         <h5 className="fw-semibold">Edit Contact</h5>
@@ -188,7 +204,7 @@ const EditContactModal = ({contact}) => {
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
-          id="closeEditModal"
+          id="offcanvas_edit_contacts"
         >
           <i className="ti ti-x" />
         </button>
@@ -864,7 +880,7 @@ const EditContactModal = ({contact}) => {
             {/* /Access */}`
 
           </div>
-          <div className="d-flex align-items-center justify-content-end">
+           <div className="d-flex align-items-center justify-content-end">
             <button
               type="button"
               data-bs-dismiss="offcanvas"

@@ -445,7 +445,7 @@ const EditCompanyModal = ({ company }) => {
               </div>
             </div>
           </div>
-          <div className="d-flex align-items-center justify-content-end">
+             <div className="d-flex align-items-center justify-content-end">
             <button
               type="button"
               data-bs-dismiss="offcanvas"
@@ -456,21 +456,9 @@ const EditCompanyModal = ({ company }) => {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loading}
+              disabled={loading} 
             >
-              {loading ? "Updating..." : "Update"}
-              {loading && (
-                <div
-                  style={{
-                    height: "15px",
-                    width: "15px",
-                  }}
-                  className="spinner-border ml-2 text-light"
-                  role="status"
-                >
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              )}
+             {loading ? 'Updating...' : 'Update'}
             </button>
           </div>
         </form>
