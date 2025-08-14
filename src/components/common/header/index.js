@@ -134,16 +134,34 @@ const Header = () => {
   </Link>
 
   {/* CRMS - Hamesha dikhe except jab sidebar mini hai left side mein */}
-  {/* {!miniSidebar && (
-    <Link
-      to="/crm"
-      className="text-primary fw-bold px-2"
-      id="crm_btn"
-      style={{ minWidth: "40px" }}
-    >
-      CRMS
-    </Link>
-  )} */}
+ {!miniSidebar && (
+  <Link
+    to="/crm"
+    id="crm_btn"
+    className="fw-bold fs-4 d-inline-block text-center"
+    style={{
+      minWidth: "50px",
+      padding: "6px 16px",
+      borderRadius: "8px",
+      transition: "all 0.3s ease",
+      textDecoration: "none",
+    letterSpacing: "4px", // adds spacing between letters
+
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.backgroundColor = "#e0f0ff";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.backgroundColor = "#f0f8ff";
+    }}
+  >
+    <span style={{ color: "#ff4d4f" }}>C</span>
+    <span style={{ color: "#40a9ff" }}>R</span>
+    <span style={{ color: "#73d13d" }}>M</span>
+    <span style={{ color: "#faad14" }}>S</span>
+  </Link>
+)}
+
 
   {/* Sidebar toggle button - hamesha visible */}
   <Link id="toggle_btn" to="#" onClick={toggleMiniSidebar}>
