@@ -1,74 +1,82 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchComments } from '../../../redux/quotation';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchComments, fetchCommentsApp } from "../../../redux/quotation";
 import { generateToken } from "../../../utils/publicToken";
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import ManageActivitiesModal from "./manageActivity";
 
-
-const DocumentComments = ({id}) => {
-  // Sample data based on your format
+const DocumentComments = ({ id, code }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // setActivity(null);
+  };
   const [comments, setComments] = useState([
     {
       id: 2,
       parent_id: null,
-      comments: "This quotation looks comprehensive, but I think we should review the pricing structure for better competitive positioning.",
+      comments:
+        "This quotation looks comprehensive, but I think we should review the pricing structure for better competitive positioning.",
       user_name: "Suraj Chaudhary",
       user_id: 8,
       obj_name: "Quotation",
       obj_id: 6,
       created_at: "2025-08-12T10:47:30.950Z",
-      likes: 3
+      likes: 3,
     },
     {
       id: 3,
       parent_id: 2,
-      comments: "I agree with your assessment. The material costs seem to be 15% higher than our usual estimates.",
+      comments:
+        "I agree with your assessment. The material costs seem to be 15% higher than our usual estimates.",
       user_name: "Priya Sharma",
       user_id: 12,
       obj_name: "Quotation",
       obj_id: 6,
       created_at: "2025-08-12T11:23:15.120Z",
-      likes: 1
+      likes: 1,
     },
     {
       id: 4,
       parent_id: null,
-      comments: "The delivery timeline mentioned in section 3 might be too optimistic given the current supply chain constraints.",
+      comments:
+        "The delivery timeline mentioned in section 3 might be too optimistic given the current supply chain constraints.",
       user_name: "Rahul Singh",
       user_id: 15,
       obj_name: "Quotation",
       obj_id: 6,
       created_at: "2025-08-12T12:15:45.330Z",
-      likes: 2
+      likes: 2,
     },
     {
       id: 5,
       parent_id: 4,
-      comments: "Good point! We should add a buffer of at least 2-3 weeks to be safe.",
+      comments:
+        "Good point! We should add a buffer of at least 2-3 weeks to be safe.",
       user_name: "Anjali Patel",
       user_id: 9,
       obj_name: "Quotation",
       obj_id: 6,
       created_at: "2025-08-12T12:45:20.450Z",
-      likes: 0
-    }
+      likes: 0,
+    },
   ]);
-//   const { id } = useParams();
+  //   const { id } = useParams();
 
-//   const newId = atob(decodeURIComponent(id));
-const newId = id
+  //   const newId = atob(decodeURIComponent(id));
+  const newId = id;
 
   const [likedComments, setLikedComments] = useState(new Set());
   const [showReplyForm, setShowReplyForm] = useState(null);
-  const [replyText, setReplyText] = useState('');
-    const [token, setToken] = useState();
-  
-  const dispatch =useDispatch()
-   React.useEffect(() => {
+  const [replyText, setReplyText] = useState("");
+  const [token, setToken] = useState();
+
+  const dispatch = useDispatch();
+  React.useEffect(() => {
     //   token && dispatch(fetchQuotationpPublicById({ id: newId, token }));
-    token && dispatch(fetchComments({id:newId ,token:token}))
-    }, [dispatch, token]);
+    dispatch(fetchCommentsApp({ id: newId }));
+  }, [dispatch]);
   React.useEffect(() => {
     const createToken = async () => {
       const genToken = await generateToken({ id: 1, username: "Anil" });
@@ -77,70 +85,82 @@ const newId = id
     };
     createToken();
   }, []);
-  const {comments: commentDAta  } = useSelector((state) => state.quotations);
-  console.log("Comment Data  : ", commentDAta)
+  const { appComments: commentDAta } = useSelector((state) => state.quotations);
+  console.log("Comment Data  : ", commentDAta);
   // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'Just now';
+
+    if (diffInHours < 1) return "Just now";
     if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInHours < 48) return 'Yesterday';
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    if (diffInHours < 48) return "Yesterday";
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   // Get user avatar color and initials
   const getUserAvatar = (userId, userName) => {
     const colors = [
-      'bg-primary', 'bg-success', 'bg-info', 'bg-warning',
-      'bg-danger', 'bg-secondary', 'bg-dark'
+      "bg-primary",
+      "bg-success",
+      "bg-info",
+      "bg-warning",
+      "bg-danger",
+      "bg-secondary",
+      "bg-dark",
     ];
-    const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+    const initials = userName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
     const colorClass = colors[userId % colors.length];
     return { initials, colorClass };
   };
 
   // Organize comments
   const organizeComments = (comments) => {
-    const parentComments = comments.filter(c => c.parent_id === null);
-    const replies = comments.filter(c => c.parent_id !== null);
-    
-    return parentComments.map(parent => ({
+    if (!comments) {
+      return;
+    }
+    const parentComments = comments.filter((c) => c.parent_id === null);
+    const replies = comments.filter((c) => c.parent_id !== null);
+
+    return parentComments.map((parent) => ({
       ...parent,
-      replies: replies.filter(reply => reply.parent_id === parent.id)
+      replies: replies.filter((reply) => reply.parent_id === parent.id),
     }));
   };
 
-  const handleLike = (commentId) => {
-    setLikedComments(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
+  //   const handleLike = (commentId) => {
+  //     setLikedComments(prev => {
+  //       const newSet = new Set(prev);
+  //       if (newSet.has(commentId)) {
+  //         newSet.delete(commentId);
+  //       } else {
+  //         newSet.add(commentId);
+  //       }
+  //       return newSet;
+  //     });
 
-    setComments(prev => prev.map(comment => 
-      comment.id === commentId 
-        ? { ...comment, likes: likedComments.has(commentId) ? comment.likes - 1 : comment.likes + 1 }
-        : comment
-    ));
-  };
+  //     setComments(prev => prev.map(comment =>
+  //       comment.id === commentId
+  //         ? { ...comment, likes: likedComments.has(commentId) ? comment.likes - 1 : comment.likes + 1 }
+  //         : comment
+  //     ));
+  //   };
 
   const handleReply = (parentId) => {
     if (!replyText.trim()) return;
 
     const newReply = {
-      id: Math.max(...comments.map(c => c.id)) + 1,
+      id: Math.max(...comments.map((c) => c.id)) + 1,
       parent_id: parentId,
       comments: replyText,
       user_name: "You",
@@ -148,31 +168,46 @@ const newId = id
       obj_name: "Quotation",
       obj_id: 6,
       created_at: new Date().toISOString(),
-      likes: 0
+      likes: 0,
     };
 
-    setComments(prev => [...prev, newReply]);
-    setReplyText('');
+    setComments((prev) => [...prev, newReply]);
+    setReplyText("");
     setShowReplyForm(null);
   };
 
-  const organizedComments = organizeComments(comments);
+  const organizedComments = organizeComments(commentDAta?.data);
+  //   const organizedComments = organizeComments(comments);
 
   const CommentItem = ({ comment, isReply = false }) => {
-    const { initials, colorClass } = getUserAvatar(comment.user_id, comment.user_name);
+    const { initials, colorClass } = getUserAvatar(
+      comment.user_id,
+      comment.user_name
+    );
     const isLiked = likedComments.has(comment.id);
 
     return (
-      <div className={`card mb-3 ${isReply ? 'ms-4 border-start border-3 border-info' : 'shadow-sm'}`} 
-           style={{ borderLeft: isReply ? '' : '4px solid #e9ecef', transition: 'all 0.2s ease' }}>
+      <div
+        className={`card mb-3 ${isReply ? "ms-4 border-start border-3 border-info" : "shadow-sm"}`}
+        style={{
+          borderLeft: isReply ? "" : "4px solid #e9ecef",
+          transition: "all 0.2s ease",
+        }}
+      >
         <div className="card-body border ">
           <div className="d-flex">
             {/* User Avatar */}
-            <div className={`rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3 p-2 ${colorClass}`}
-                 style={{ width: isReply ? '35px' : '45px', height: isReply ? '30px' : '40px', fontSize: isReply ? '14px' : '16px' }}>
+            <div
+              className={`rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3 p-2 ${colorClass}`}
+              style={{
+                width: isReply ? "35px" : "45px",
+                height: isReply ? "30px" : "40px",
+                fontSize: isReply ? "14px" : "16px",
+              }}
+            >
               {initials}
             </div>
-            
+
             <div className="flex-grow-1">
               {/* Comment Header */}
               <div className="d-flex justify-content-between align-items-start mb-2">
@@ -183,7 +218,7 @@ const newId = id
                     {formatDate(comment.created_at)}
                   </small>
                 </div>
-                
+
                 {/* Dropdown Menu */}
                 {/* <div className="dropdown">
                   <button className="btn btn-sm btn-outline-secondary border-0" type="button" data-bs-toggle="dropdown">
@@ -197,10 +232,12 @@ const newId = id
                   </ul>
                 </div> */}
               </div>
-              
+
               {/* Comment Content */}
-              <p className="text-dark mb-3">{comment.comments}</p>
-              
+              <p className="text-dark text-capitalize mb-3">
+                {comment.comments}
+              </p>
+
               {/* Comment Actions */}
               <div className="d-flex align-items-center">
                 {/* <button 
@@ -210,30 +247,40 @@ const newId = id
                   <i className={`fas fa-heart me-1`}></i>
                   {comment.likes}
                 </button> */}
-                
+
                 {!isReply && (
-                  <button 
-                  type='button'
+                  <button
+                    type="button"
                     className="btn btn-sm btn-outline-primary me-3"
-                    onClick={() => setShowReplyForm(showReplyForm === comment.id ? null : comment.id)}
+                    onClick={() =>
+                      setShowReplyForm(
+                        showReplyForm === comment.id ? null : comment.id
+                      )
+                    }
                   >
                     <i className="fas fa-reply me-1"></i>
                     Reply
                   </button>
                 )}
-                
+
                 {/* <button className="btn btn-sm btn-outline-secondary">
                   <i className="fas fa-share me-1"></i>
                   Share
                 </button> */}
               </div>
-              
+
               {/* Reply Form */}
               {showReplyForm === comment.id && (
                 <div className="mt-3 p-3 bg-light rounded">
                   <div className="d-flex">
-                    <div className="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold me-3"
-                         style={{ width: '35px', height: '35px', fontSize: '14px' }}>
+                    <div
+                      className="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold me-3"
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        fontSize: "14px",
+                      }}
+                    >
                       Y
                     </div>
                     <div className="flex-grow-1">
@@ -245,13 +292,13 @@ const newId = id
                         onChange={(e) => setReplyText(e.target.value)}
                       />
                       <div className="d-flex justify-content-end">
-                        <button 
+                        <button
                           className="btn btn-sm btn-secondary me-2"
                           onClick={() => setShowReplyForm(null)}
                         >
                           Cancel
                         </button>
-                        <button 
+                        <button
                           className="btn btn-sm btn-primary"
                           onClick={() => handleReply(comment.id)}
                           disabled={!replyText.trim()}
@@ -274,8 +321,18 @@ const newId = id
     <>
       {/* Include Bootstrap CSS */}
       {/* <div dangerouslySetInnerHTML={{ __html: bootstrapStyles }} /> */}
-      
-      <div className="container my-5">
+
+      <div className="container mb-5">
+      {/* <div className="header-actions d-flex justify-content-end">
+        <Link
+          to="#"
+          className="btn btn-purple btn-sm fw-medium px-3 mb-1 py-2 shadow-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#activity_modal"
+        >
+          <i className="ti ti-plus me-2"></i>Activity
+        </Link>
+        </div> */}
         {/* Header */}
         <div className="card mb-4 bg-purple-gradient text-white">
           <div className="card-body">
@@ -284,7 +341,9 @@ const newId = id
               <div>
                 <h3 className="card-title mb-1">Document Comments</h3>
                 <p className="card-text mb-0 opacity-75">
-                  {comments[0]?.obj_name} #{comments[0]?.obj_id} • {organizedComments.length} Comments • {comments.filter(c => c.parent_id !== null).length} Replies
+                  {comments[0]?.obj_name} # {code} • {organizedComments?.length}{" "}
+                  Comments
+                  {/* • {comments.filter(c => c.parent_id !== null).length} Replies */}
                 </p>
               </div>
             </div>
@@ -318,16 +377,16 @@ const newId = id
               </div>
             </div>
           </div>
-        </div> */} 
+        </div> */}
 
         {/* Comments List */}
         <div className="comments-section">
-          {organizedComments.length > 0 ? (
-            organizedComments.map(comment => (
+          {organizedComments?.length > 0 ? (
+            organizedComments?.map((comment) => (
               <div key={comment.id}>
                 <CommentItem comment={comment} />
                 {/* Replies */}
-                {comment.replies.map(reply => (
+                {comment.replies.map((reply) => (
                   <CommentItem key={reply.id} comment={reply} isReply={true} />
                 ))}
               </div>
@@ -337,12 +396,22 @@ const newId = id
               <div className="card-body">
                 <i className="fas fa-comments fs-1 text-muted mb-3"></i>
                 <h5 className="card-title text-muted">No Comments Yet</h5>
-                <p className="card-text text-muted">Be the first to share your thoughts on this document.</p>
+                <p className="card-text text-muted">
+                  Be the first to share your thoughts on this document.
+                </p>
               </div>
             </div>
           )}
         </div>
 
+        {/* <ManageActivitiesModal
+          activity={null}
+        //   setActivity={setActivity}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          mode="modal" 
+        /> */}
+        <ManageActivitiesModal activity={null} onClose={handleCloseModal} />
         {/* Load more button */}
         {/* {organizedComments.length > 0 && (
           <div className="text-center mt-4">

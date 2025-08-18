@@ -8,6 +8,7 @@ import FilesDetails from "../../../components/common/detailPages/UserDetails/Fil
 import DocAttachments from "../../../components/common/DocmentActivity";
 import QuotationAuditLog from "./AuditLog";
 import DocumentComments from "./commentList";
+import ManageActivityList from "./manageActivityList";
 
 export const AllActivities = ({
   id,
@@ -25,6 +26,7 @@ export const AllActivities = ({
   quotation,
 }) => {
   const [activeTab, setActiveTab] = useState("Email Message");
+  const [activeSubTab, setActiveSubTab] = useState("comments");
   // const [isNewMail,setIsNewMail] = useState(false)
   // const [threadId,setThreadId] = useState()
   const [isRefresh, setIsRefresh] = useState(false);
@@ -168,10 +170,104 @@ export const AllActivities = ({
           </div>
         </div>}
         {activeTab === "Logs Note" && <QuotationAuditLog id={id}/> }
-        {activeTab === "Activities" && <DocumentComments id={id}/> }
-        {activeTab === "Doc" &&  <div>
+        {/* {activeTab === "Activities" && <DocumentComments id={id} code={quotation?.quotation_code}/> } */}
+        {activeTab === "Activities" &&    <div className="quotation-tabs">
+      {/* Tab navigation */}
+      <div className="tab-header">
+        <button
+        type="button"
+
+          className={activeSubTab === 'comments' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setActiveSubTab('comments')}
+        >
+          Comment
+        </button>
+        <button
+        type="button"
+          className={activeSubTab === 'activity' ? 'tab-button active' : 'tab-button'}
+          onClick={() => setActiveSubTab('activity')}
+        >
+          Activity
+        </button>
+      </div>
+
+      {/* Tab content */}
+      <div className="tab-content p-0 pt-1">
+        {activeSubTab === 'comments' && (
+          <DocumentComments id={id} code={quotation?.quotation_code}/> 
+        )}
+        {activeSubTab === 'activity' && (
+          <ManageActivityList id={id} />
+        )}
+      </div>
+
+      {/* Basic styling */}
+      <style jsx>{`
+        .quotation-tabs {
+          border: 1px solid #ddd;
+          border-radius: 4px;
+        }
+        .tab-header {
+          display: flex;
+          background-color: #f5f5f5;
+          border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+          flex: 1;
+          padding: 0.75rem 1rem;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 1rem;
+        }
+        .tab-button:hover {
+          background-color: #e0e0e0;
+        }
+        .tab-button.active {
+          font-weight: bold;
+          border-bottom: 3px solid #0070f3;
+          background-color: white;
+        }
+        .tab-content {
+          padding: 1rem;
+        }
+      `}</style>
+    </div>
+ }
+        {activeTab === "Doc" && 
+         <div>
           <DocAttachments type={"Quotation"} type_id={id} type_name={quotation?.quotation_code}/>
           </div>}
+          <style jsx>{`
+        .quotation-tabs {
+          border: 1px solid #ddd;
+          border-radius: 4px;
+        }
+        .tab-header {
+          display: flex;
+          background-color: #f5f5f5;
+          border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+          flex: 1;
+          padding: 0.75rem 1rem;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 1rem;
+        }
+        .tab-button:hover {
+          background-color: #e0e0e0;
+        }
+        .tab-button.active {
+          font-weight: bold;
+          border-bottom: 3px solid #0070f3;
+          background-color: white;
+        }
+        .tab-content {
+          padding: 1rem;
+        }
+      `}</style>
       </div>
     </>
   );

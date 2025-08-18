@@ -231,6 +231,7 @@ const AddFiles = ({ data, setData, type, type_id, type_name }) => {
                 aria-label="Close"
                 style={{
                   backgroundColor: 'white',
+                  color:"red",
                   borderRadius: '50%',
                   width: '36px',
                   height: '36px',
