@@ -263,7 +263,7 @@ console.log("Quotation",auditLog, quotations?.auditLog)
             <p>Try adjusting your search or filters.</p>
           </div>
         ) : (
-          auditLog?.data?.map((entry) => {
+            auditLog?.data && auditLog?.data.map((entry) => {
             // const actionType = getActionType(entry?.column_name, entry?.old_value, entry?.new_value);
             return (
               <div key={entry?.id} className={`card ${entry?.action === "CREATE" ? "bg-success-light-gradient"  : entry?.action === "DELETE" ? "bg-danger-light-gradient" : "bg-light-gradient"} border border-black shadow-lg mb-0 p-4`}>
@@ -292,7 +292,7 @@ console.log("Quotation",auditLog, quotations?.auditLog)
 
                 {/* Change Values */}
                 {entry?.action === 'UPDATE' && Array.isArray(JSON.parse(entry?.new_value || '[]')) &&
-  JSON.parse(entry.new_value).map((item)=>
+  JSON.parse(entry.new_value)?.map((item)=>
 
                   <div className="d-flex align-items-center gap-2 mb-1 flex-wrap">
                     
@@ -320,7 +320,7 @@ console.log("Quotation",auditLog, quotations?.auditLog)
                 )}
 
                 {entry?.action === 'DELETE' && Array.isArray(JSON.parse(entry?.new_value || '[]')) &&
-  JSON.parse(entry.new_value).map((item)=>
+  JSON.parse(entry.new_value)?.map((item)=>
                   <div className="bg-light border border-danger-subtle rounded p-2 d-inline-flex align-items-center gap-2 mt-2">
                     <Trash2 size={16} className="text-danger" />
                     <code className="text-danger">{item?.item_name}</code>

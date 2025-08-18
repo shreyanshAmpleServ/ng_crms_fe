@@ -126,10 +126,6 @@ const Quotation = () => {
       ),
       sorter: (a, b) => new Date(a.due_date) - new Date(b.due_date), // Sort by date
     },
-    { value: "O", label: "Open" },
-    { value: "L", label: "Closed" },
-    { value: "C", label: "Canceled" },
-    { value: "P", label: "Pending" },
     {
       title: "Status",
       dataIndex: "status",

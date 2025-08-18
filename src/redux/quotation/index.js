@@ -8,11 +8,7 @@ export const fetchAuditLog = createAsyncThunk(
   "quotations/fetchAuditLog",
   async (datas, thunkAPI) => {
     try {
-      const params = {
-        search: datas?.search || "",
-        page: datas?.page || "",
-        size: datas?.size || "",
-      };
+      const params = {};
       if(datas.search) params.search = datas.search
       if(datas.page) params.page = datas.page
       if(datas.size) params.size = datas.size
@@ -21,6 +17,73 @@ export const fetchAuditLog = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch quotation audit log",
+      );
+    }
+  },
+);
+// export const fetchComments = createAsyncThunk(
+//   "quotations/fetchComments",
+//   async (datas, thunkAPI) => {
+//     try {
+     
+//       const response = await apiClient.get(`/v1/replies-msg/${datas.id}`);
+//       return response.data; // Returns a list of order
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data || "Failed to fetch quotation audit log",
+//       );
+//     }
+//   },
+// );
+export const fetchComments = createAsyncThunk(
+  "quotations/fetchComments",
+  async ({id,token}, thunkAPI) => {
+    const apiClient1 = axios.create({
+      baseURL: process.env.REACT_APP_API_BASE_URL || "233", // Set your API base URL
+      withCredentials: true,
+    });
+    try {
+      const response = await apiClient1.get(`/v1/public-replies-msg/${id}`,{
+        headers:{
+          Authorization:`Bearer ${token}`}
+       }
+     );
+      // const response = await apiClient.get(`/v1/replies-msg/${id}`);
+      return response.data; // Returns a list of order
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch quotation audit log",
+      );
+    }
+  },
+);
+export const sendComments = createAsyncThunk(
+  "quotations/sendComments",
+  async ({id,token,data}, thunkAPI) => {
+    console.log("Token : ",token)
+    const apiClient1 = axios.create({
+      baseURL: process.env.REACT_APP_API_BASE_URL || "233", // Set your API base URL
+      withCredentials: true,
+    });
+    try {
+      const response = await apiClient1.post(`/v1/send-reply/${id}`,data, {
+        headers:{
+          Authorization:`Bearer ${token}`}
+       }
+     );
+     return response.data; // Returns the order details
+    //   const response = await toast.promise(
+    //     apiClient.post("/v1/send-reply", orderData),
+    //     {
+    //         loading: "Quotation creating...",
+    //         success: (res) => res.data.message || "Quotation created successfully!",
+    //         error: "Failed to create quotation",
+    //     }
+    // );
+    } catch (error) {
+      toast.error(error.response?.data || "Failed to create comment");
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to create comment",
       );
     }
   },
@@ -226,6 +289,7 @@ const quotationSlice = createSlice({
     quotationDetail: null,
     salesTypes:[],
     auditLog:[],
+    comments:[],
     quotationCode:null,
     loading: false,
     error: false,
@@ -262,6 +326,32 @@ const quotationSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(addQuotation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(fetchComments.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchComments.fulfilled, (state, action) => {
+        state.loading = false;
+        state.comments = action.payload.data;
+      })
+      .addCase(fetchComments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(sendComments.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(sendComments.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.quotations = [action.payload.data, ...state.quotations];
+        state.comments = {...state.comments , data: [ action.payload.data ,...state?.comments?.data]};
+        state.success = action.payload.message;
+      })
+      .addCase(sendComments.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })

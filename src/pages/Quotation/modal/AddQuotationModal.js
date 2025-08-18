@@ -436,7 +436,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
       <div className="offcanvas-header d-flex justify-content-between border-bottom">
         <h4>{order ? "Update " : "Add New "} Quotation</h4>
         <div className="d-flex gap-3 align-items-center">
-          {!prevPdf ? (
+      {order &&  <div>  {!prevPdf  ? (
             <button
               type="button"
               // disabled={loading}
@@ -459,6 +459,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
               Cancel
             </button>
           )}
+          </div>}
           <button
             type="button"
             className="btn-close custom-btn-close m-0 border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"

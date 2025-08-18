@@ -7,6 +7,7 @@ import PreviewPdf from "./AttachmentPdf";
 import FilesDetails from "../../../components/common/detailPages/UserDetails/FilesDetails";
 import DocAttachments from "../../../components/common/DocmentActivity";
 import QuotationAuditLog from "./AuditLog";
+import DocumentComments from "./commentList";
 
 export const AllActivities = ({
   id,
@@ -167,6 +168,7 @@ export const AllActivities = ({
           </div>
         </div>}
         {activeTab === "Logs Note" && <QuotationAuditLog id={id}/> }
+        {activeTab === "Activities" && <DocumentComments id={id}/> }
         {activeTab === "Doc" &&  <div>
           <DocAttachments type={"Quotation"} type_id={id} type_name={quotation?.quotation_code}/>
           </div>}
