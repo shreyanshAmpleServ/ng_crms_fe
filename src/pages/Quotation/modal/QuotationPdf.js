@@ -3,8 +3,10 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Margin, usePDF } from "react-to-pdf";
 import {
+  fetchComments,
   fetchQuotationById,
   fetchQuotationpPublicById,
+  sendComments,
 } from "../../../redux/quotation";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -38,12 +40,14 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
   const newId = atob(decodeURIComponent(id));
   const [itemNumber, setItemNumber] = useState(initialItem);
   const [token, setToken] = useState();
+  const [comment,setComment] = useState("")
 
   const [optionalItem, setOptionalItem] = useState([]);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     token && dispatch(fetchQuotationpPublicById({ id: newId, token }));
+    dispatch(fetchComments({id:newId ,token:token}))
   }, [dispatch, token]);
   const {
     quotationDetail: order,
@@ -132,6 +136,10 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
     filename: `${order?.quotation_code}.pdf`,
     page: { margin: Margin.MEDIUM },
   });
+  
+  const handleSubmit =()=>{
+    dispatch(sendComments({id: newId, token,data: {comments:comment,obj_name:"Quotation",obj_id:newId,user_id:order?.quotation_vendor?.id,user_name:order?.quotation_vendor?.name} }))
+  }
 
   return (
     <>
@@ -179,7 +187,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
             style={{ height: "100%", overflow: "scroll" }}
             className=" px-4 pb-5 position-relative offcanvas-body overflow-scroll"
           >
-            <form
+            <div
               className="overflow-scroll"
               style={{ height: "100%", overflow: "scroll" }}
             >
@@ -513,17 +521,21 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                       Write the key points you want to modify
                     </div>
                     {/* Reply message    */}
-                    <div>
+                    <form onSubmit={handleSubmit}>
                       <div className="d-flex gap-3">
                         <textarea
+                        required
                           style={{ width: "100%" }}
                           rows={6}
                           type="text"
+                          value={comment}
+                          onChange={(e)=>setComment(e.target.value)}
                           placeholder="Reply Comments"
                           className=" p-2 "
                         />
                       </div>
-                      <span
+                      <button
+                      type="submit"
                         style={{
                           width: "10%",
                           height: "40px",
@@ -541,8 +553,8 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                             fontWeight: 600,
                           }}
                         />
-                      </span>
-                    </div>
+                      </button>
+                    </form>
                   </div>
                   {/* Attachment 1  */}
                   {/* <div className="col-md-6">
@@ -602,7 +614,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                 </div> */}
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
