@@ -361,6 +361,7 @@ const exportToPDF = useCallback(() => {
     if (selectedOrder) {
       dispatch(deleteOrder(selectedOrder.id));
       setShowDeleteModal(false);
+      setSelectedOrder(null);
     }
   };
   const syncInvoiceData = (data) => {
@@ -478,6 +479,7 @@ const exportToPDF = useCallback(() => {
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}
+        setOrder={setSelectedOrder}
       />
     </div>
   );

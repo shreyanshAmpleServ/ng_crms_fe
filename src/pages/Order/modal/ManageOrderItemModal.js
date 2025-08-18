@@ -161,14 +161,13 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
                     <div className="input-table input-table-descripition">
                       <Controller
                         name="item_id"
-                        rules={{ required: "Vendor is required !" }} // Make the field required
+                        rules={{ required: "Vendor is required !" }} 
                         control={control}
                         render={({ field }) => (
                           <Select
                             {...field}
                             options={productList}
                             placeholder="Select..."
-
                             className="select2"
                             classNamePrefix="react-select"
                             onChange={(selectedOption) => {

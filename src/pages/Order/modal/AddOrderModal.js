@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DatePicker } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,9 +14,11 @@ import {
 import { fetchTaxSetup } from "../../../redux/taxSetUp";
 import { fetchVendors } from "../../../redux/vendor";
 import ManageOrderItemModal from "./ManageOrderItemModal";
-import toast from "react-hot-toast"; 
+import toast from "react-hot-toast";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
+import { AllActivities } from "./Activities";
+import PreviewPdf from "./AttachmentPdf";
 const initialItem = [
   {
     parent_id: null,
@@ -47,7 +49,16 @@ const AddProductModal = ({ order, setOrder }) => {
   const { salesTypes, orderCode, loading } = useSelector(
     (state) => state.orders
   );
+  const [prevPdf, setPrevPdf] = useState(null);
+  const [attachments, setAttachments] = useState([]);
+  const [isNewMail, setIsNewMail] = useState(false);
+  const [threadId, setThreadId] = useState(null);
+  const [msgId, setMsgId] = useState(null);
 
+  const firstDivRef = useRef(null);
+
+  // If `height` is supposed to be dynamic:
+  const [height, setHeight] = useState(0);
   const formatNumber = (num) => {
     if (num === 0 || isNaN(num)) {
       return "0";
@@ -116,7 +127,9 @@ const AddProductModal = ({ order, setOrder }) => {
         cont_person: order?.cont_person || "",
         address: order?.address || "",
         currency: order?.currency || null,
-        due_date: dayjs(new Date(order?.due_date)) ||  dayjs(new Date()).format("DD-MM-YYYY") ,
+        due_date:
+          dayjs(new Date(order?.due_date)) ||
+          dayjs(new Date()).format("DD-MM-YYYY"),
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -259,22 +272,21 @@ const AddProductModal = ({ order, setOrder }) => {
     const closeButton = document.getElementById("close_add_edit_order");
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-          if (data[key] !== null && data[key] != "due_date" && data[key] !== undefined) {
-            let value = data[key];
-            if (
-              (key === "due_date" )
-            ) {
-              value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
-            }
-            if (
-              ( key === "apr_date") &&
-              value instanceof Date
-            ) {
-              value = dayjs(data.apr_date).toISOString();
-            }
-            formData.append(key, value);
-          }
-        })
+      if (
+        data[key] !== null &&
+        data[key] != "due_date" &&
+        data[key] !== undefined
+      ) {
+        let value = data[key];
+        if (key === "due_date") {
+          value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
+        }
+        if (key === "apr_date" && value instanceof Date) {
+          value = dayjs(data.apr_date).toISOString();
+        }
+        formData.append(key, value);
+      }
+    });
     // Object.keys(data).forEach((key) => {
     //   if (data[key] !== null) {
     //     formData.append(key, (key=== "due_date" || key === "apr_date") ? data[key] ? data[key]?.toISOString() : "" : data[key]);
@@ -292,500 +304,559 @@ const AddProductModal = ({ order, setOrder }) => {
       closeButton.click();
       dispatch(fetchOrderCode());
       reset();
-         setItemNumber([
-       {
-         parent_id: null,
-         item_id: null,
-         item_name: "",
-         quantity: 1,
-         delivered_qty: 0,
-         unit_price: 0,
-         currency: null,
-         rate: 0,
-         disc_prcnt: 0,
-         disc_amount: 0,
-         tax_id: null,
-         tax_per: 0.0,
-         line_tax: 0,
-         total_bef_disc: 0,
-         total_amount: 0,
-       },
-     ]);
-         } catch (error) {
-           closeButton.click();
-         }
-       };
-       React.useEffect(() => {
-         const offcanvasElement = document.getElementById(
-           "offcanvas_add_edit_order"
-         );
-         if (offcanvasElement) {
-           const handleModalClose = () => {
-             setOrder();
-             reset();
-             setItemNumber([
-       {
-         parent_id: null,
-         item_id: null,
-         item_name: "",
-         quantity: 1,
-         delivered_qty: 0,
-         unit_price: 0,
-         currency: null,
-         rate: 0,
-         disc_prcnt: 0,
-         disc_amount: 0,
-         tax_id: null,
-         tax_per: 0.0,
-         line_tax: 0,
-         total_bef_disc: 0,
-         total_amount: 0,
-       },
-     ]);
-             // setItemNumber(initialItem)
-           };
-           offcanvasElement.addEventListener(
-             "hidden.bs.offcanvas",
-             handleModalClose
-           );
-           return () => {
-             offcanvasElement.removeEventListener(
-               "hidden.bs.offcanvas",
-               handleModalClose
-             );
-           };
-         }
-       }, []);
+      setItemNumber([
+        {
+          parent_id: null,
+          item_id: null,
+          item_name: "",
+          quantity: 1,
+          delivered_qty: 0,
+          unit_price: 0,
+          currency: null,
+          rate: 0,
+          disc_prcnt: 0,
+          disc_amount: 0,
+          tax_id: null,
+          tax_per: 0.0,
+          line_tax: 0,
+          total_bef_disc: 0,
+          total_amount: 0,
+        },
+      ]);
+    } catch (error) {
+      closeButton.click();
+    }
+  };
+  React.useEffect(() => {
+    const offcanvasElement = document.getElementById(
+      "offcanvas_add_edit_order"
+    );
+    if (offcanvasElement) {
+      const handleModalClose = () => {
+        setOrder();
+        reset();
+        setItemNumber([
+          {
+            parent_id: null,
+            item_id: null,
+            item_name: "",
+            quantity: 1,
+            delivered_qty: 0,
+            unit_price: 0,
+            currency: null,
+            rate: 0,
+            disc_prcnt: 0,
+            disc_amount: 0,
+            tax_id: null,
+            tax_per: 0.0,
+            line_tax: 0,
+            total_bef_disc: 0,
+            total_amount: 0,
+          },
+        ]);
+        // setItemNumber(initialItem)
+      };
+      offcanvasElement.addEventListener(
+        "hidden.bs.offcanvas",
+        handleModalClose
+      );
+      return () => {
+        offcanvasElement.removeEventListener(
+          "hidden.bs.offcanvas",
+          handleModalClose
+        );
+      };
+    }
+  }, []);
   return (
     <div
-      className="offcanvas offcanvas-end offcanvas-large"
+      className="offcanvas offcanvas-end offcanvas-larger"
       tabIndex={-1}
       id="offcanvas_add_edit_order"
     >
-      <div className="offcanvas-header border-bottom">
+      <div className="offcanvas-header d-flex justify-content-between border-bottom">
         <h4>{order ? "Update " : "Add New "} Order</h4>
-        <button
-          type="button"
-          className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-          id="close_add_edit_order"
-        >
-          <i className="ti ti-x" />
-        </button>
+        <div className="d-flex gap-3 align-items-center">
+          {order && (
+            <div>
+              {" "}
+              {!prevPdf ? (
+                <button
+                  type="button"
+                  // disabled={loading}
+                  onClick={() => setPrevPdf(true)}
+                  className="btn  btn-success"
+                >
+                  Send Order
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  // disabled={loading}
+                  onClick={() => {
+                    setAttachments();
+                    setAttachments([]);
+                    setPrevPdf(false);
+                  }}
+                  className="btn btn-primary"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          )}
+          <button
+            type="button"
+            className="btn-close custom-btn-close m-0 border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+            id="close_add_edit_order"
+          >
+            <i className="ti ti-x" />
+          </button>
+        </div>
       </div>
-      <div className="offcanvas-body">
+
+      <div style={{ position: "relative" }} className="offcanvas-body">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div className="row">
-              {/* Vendor  */}
-              <div className=" col-md-6 mb-3">
-                <div className="d-flex align-items-center justify-content-between">
-                  <label className="col-form-label">
-                    Customer <span className="text-danger"> *</span>
-                  </label>
+              <div
+                ref={firstDivRef}
+                className={`row ${order ? "col-md-6" : "col-md-12"}`}
+              >
+                {/* Vendor  */}
+                <div className=" col-md-6 mb-3">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <label className="col-form-label">
+                      Customer <span className="text-danger"> *</span>
+                    </label>
+                  </div>
+                  <Controller
+                    name="cust_id"
+                    rules={{ required: "Customer is required !" }} // Make the field required
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={vendorList}
+                        placeholder="Select..."
+                        className="select2"
+                        classNamePrefix="react-select"
+                        onChange={(selectedOption) => {
+                          field.onChange(selectedOption?.value || null);
+                          setValue("cont_person", selectedDate?.label);
+                        }}
+                        value={
+                          vendorList?.find(
+                            (option) => option.value === watch("cust_id")
+                          ) || ""
+                        }
+                        styles={{
+                          menu: (provided) => ({ ...provided, zIndex: 9999 }),
+                        }}
+                      />
+                    )}
+                  />
+                  {errors.cust_id && (
+                    <small className="text-danger">
+                      {errors.cust_id.message}
+                    </small>
+                  )}
                 </div>
-                <Controller
-                  name="cust_id"
-                  rules={{ required: "Customer is required !" }} // Make the field required
-                  control={control}
-                  render={({ field }) => (
+                {/* Order Code  */}
+                <div className=" col-md-6 mb-3">
+                  <label className="col-form-label">Order Code</label>
+                  <input
+                    type="text"
+                    disabled
+                    value={watch("order_code") || ""}
+                    className="form-control"
+                    {...register("order_code")}
+                  />
+                </div>
+                {/* Contact Person  */}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Contact Person<span className="text-danger"> *</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter Contact Person"
+                      className="form-control"
+                      {...register("cont_person", {
+                        required: "Contact person to is required !",
+                      })}
+                    />
+                    {errors.cont_person && (
+                      <small className="text-danger">
+                        {errors.cont_person.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                {/* Bill To  */}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Bill To<span className="text-danger"> *</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter Bill To"
+                      className="form-control"
+                      {...register("billto", {
+                        required: "Bill to is required !",
+                      })}
+                    />
+                    {errors.billto && (
+                      <small className="text-danger">
+                        {errors.billto.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                {/* Ship To  */}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Ship To<span className="text-danger"> *</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter Ship To"
+                      className="form-control"
+                      {...register("shipto", {
+                        required: "Ship to is required !",
+                      })}
+                    />
+                    {errors.shipto && (
+                      <small className="text-danger">
+                        {errors.shipto.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                {/* Sales Type  */}
+                <div className="col-md-6">
+                  <div className="mb-1">
+                    <label className="col-form-label ">Sales Type</label>
                     <Select
-                      {...field}
-                      options={vendorList}
+                      className="select"
+                      options={salesTypesOption}
                       placeholder="Select..."
-
-                      className="select2"
                       classNamePrefix="react-select"
                       onChange={(selectedOption) => {
-                        field.onChange(selectedOption?.value || null);
-                        setValue("cont_person", selectedDate?.label);
+                        setValue("sales_type", selectedOption.value);
                       }}
                       value={
-                        vendorList?.find(
-                          (option) => option.value === watch("cust_id")
+                        salesTypesOption?.find(
+                          (option) => option.value === watch("sales_type")
                         ) || ""
                       }
                       styles={{
                         menu: (provided) => ({ ...provided, zIndex: 9999 }),
                       }}
                     />
-                  )}
-                />
-                {errors.cust_id && (
-                  <small className="text-danger">
-                    {errors.cust_id.message}
-                  </small>
-                )}
-              </div>
-              {/* Order Code  */}
-              <div className=" col-md-6 mb-3">
-                <label className="col-form-label">Order Code</label>
-                <input
-                  type="text"
-                  disabled
-                  value={watch("order_code") || ""}
-                  className="form-control"
-                  {...register("order_code")}
-                />
-              </div>
-              {/* Contact Person  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Contact Person<span className="text-danger"> *</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter Contact Person"
-                    className="form-control"
-                    {...register("cont_person", {
-                      required: "Contact person to is required !",
-                    })}
-                  />
-                  {errors.cont_person && (
-                    <small className="text-danger">
-                      {errors.cont_person.message}
-                    </small>
-                  )}
+                  </div>
                 </div>
-              </div>
-              {/* Bill To  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Bill To<span className="text-danger"> *</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter Bill To"
-                    className="form-control"
-                    {...register("billto", {
-                      required: "Bill to is required !",
-                    })}
-                  />
-                  {errors.billto && (
-                    <small className="text-danger">
-                      {errors.billto.message}
-                    </small>
-                  )}
-                </div>
-              </div>
-              {/* Ship To  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Ship To<span className="text-danger"> *</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter Ship To"
-                    className="form-control"
-                    {...register("shipto", {
-                      required: "Ship to is required !",
-                    })}
-                  />
-                  {errors.shipto && (
-                    <small className="text-danger">
-                      {errors.shipto.message}
-                    </small>
-                  )}
-                </div>
-              </div>
-              {/* Sales Type  */}
-              <div className="col-md-6">
-                <div className="mb-1">
-                  <label className="col-form-label ">Sales Type</label>
-                  <Select
-                    className="select"
-                    options={salesTypesOption}
-                    placeholder="Select..."
-
-                    classNamePrefix="react-select"
-                    onChange={(selectedOption) => {
-                      setValue("sales_type", selectedOption.value);
-                    }}
-                    value={
-                      salesTypesOption?.find(
-                        (option) => option.value === watch("sales_type")
-                      ) || ""
-                    }
-                    styles={{
-                      menu: (provided) => ({ ...provided, zIndex: 9999 }),
-                    }}
-                  />
-                </div>
-              </div>
-              {/* Currency */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Currency <span className="text-danger">*</span>
-                  </label>
-                  <Controller
-                    name="currency"
-                    rules={{ required: "Currency is required !" }} // Make the field required
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={CurrencyList}
-                        placeholder="Select..."
-
-                        className="select2"
-                        classNamePrefix="react-select"
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption?.value || null)
-                        } // Send only value
-                        value={
-                          watch("currency") &&
-                          CurrencyList?.find(
-                            (option) => option.value === watch("currency")
-                          )
-                        }
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9999, // Ensure this value is higher than the icon's z-index
-                          }),
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.currency && (
-                    <small className="text-danger">
-                      {errors.currency.message}
-                    </small>
-                  )}
-                </div>
-              </div>
-              {/* Due Date  */}
-             <div className="col-md-6">
-               <div className="mb-3">
-                 <label className="col-form-label">
-                   Due Date <span className="text-danger">*</span>
-                 </label>
-                 <div className="mb-3 icon-form">
-                   <span className="form-icon z-1">
-                     <i className="ti ti-calendar-check" />
-                   </span>
-                   <Controller
-                     name="due_date"
+                {/* Currency */}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Currency <span className="text-danger">*</span>
+                    </label>
+                    <Controller
+                      name="currency"
+                      rules={{ required: "Currency is required !" }} // Make the field required
                       control={control}
-                                   rules={{ required: "Start date is required !" }} // Make the field required
-                                   render={({ field }) => (
-                                     <DatePicker
-                                       {...field}
-                                       className="form-control"
-                                       value={
-                                         field.value
-                                           ? dayjs(field.value, "DD-MM-YYYY")
-                                           : null
-                                       }
-                                       format="DD-MM-YYYY"
-                                       onChange={(date, dateString) => {
-                                         field.onChange(dateString);
-                                       }}
-                                     />
-                     )}
-                   />
-                   {errors.due_date && (
-                     <small className="text-danger">
-                       {errors.due_date.message}
-                     </small>
-                   )}
-                 </div>
-               </div>
-             </div>
-              {/* Status */}
-              <div className="col-md-6">
-                <div className="mb-1">
-                  <label className="col-form-label ">Status</label>
-                  <Select
-                    className="select"
-                    options={OrderStatusOptions}
-                    placeholder="Select..."
-
-                    classNamePrefix="react-select"
-                    onChange={(selectedOption) => {
-                      setValue("status", selectedOption.value);
-                    }}
-                    value={
-                      OrderStatusOptions?.find(
-                        (option) => option.value === watch("status")
-                      ) || ""
-                    }
-                  />
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={CurrencyList}
+                          placeholder="Select..."
+                          className="select2"
+                          classNamePrefix="react-select"
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption?.value || null)
+                          } // Send only value
+                          value={
+                            watch("currency") &&
+                            CurrencyList?.find(
+                              (option) => option.value === watch("currency")
+                            )
+                          }
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999, // Ensure this value is higher than the icon's z-index
+                            }),
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.currency && (
+                      <small className="text-danger">
+                        {errors.currency.message}
+                      </small>
+                    )}
+                  </div>
                 </div>
-              </div>
-              {/* Order Items  */}
-              <ManageOrderItemModal
-                itemNumber={itemNumber}
-                setItemNumber={setItemNumber}
-              />
-              {/* Amount Calculation  */}
-              <div className="subtotal-div mb-3">
-                <ul className="mb-3">
-                  <li>
-                    <h5>Total Before Tax</h5>
-                    <input
-                      name="total_bef_tax"
-                      type="text"
-                      value={formatNumber(watch("total_bef_tax"))}
-                      disabled
+                {/* Due Date  */}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Due Date <span className="text-danger">*</span>
+                    </label>
+                    <div className="mb-3 icon-form">
+                      <span className="form-icon z-1">
+                        <i className="ti ti-calendar-check" />
+                      </span>
+                      <Controller
+                        name="due_date"
+                        control={control}
+                        rules={{ required: "Start date is required !" }} // Make the field required
+                        render={({ field }) => (
+                          <DatePicker
+                            {...field}
+                            className="form-control"
+                            value={
+                              field.value
+                                ? dayjs(field.value, "DD-MM-YYYY")
+                                : null
+                            }
+                            format="DD-MM-YYYY"
+                            onChange={(date, dateString) => {
+                              field.onChange(dateString);
+                            }}
+                          />
+                        )}
+                      />
+                      {errors.due_date && (
+                        <small className="text-danger">
+                          {errors.due_date.message}
+                        </small>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {/* Status */}
+                <div className="col-md-6">
+                  <div className="mb-1">
+                    <label className="col-form-label ">Status</label>
+                    <Select
+                      className="select"
+                      options={OrderStatusOptions}
+                      placeholder="Select..."
+                      classNamePrefix="react-select"
+                      onChange={(selectedOption) => {
+                        setValue("status", selectedOption.value);
+                      }}
+                      value={
+                        OrderStatusOptions?.find(
+                          (option) => option.value === watch("status")
+                        ) || ""
+                      }
                     />
-                  </li>
-                  <li>
-                    <h5>Total Discount </h5>
-                    <input
-                      name="disc_prcnt"
-                      type="text"
-                      value={formatNumber(watch("disc_prcnt"))}
-                      disabled
-                    />
-                  </li>
-                  <li>
-                    <h5>
-                      Rounded
+                  </div>
+                </div>
+                {/* Order Items  */}
+                <ManageOrderItemModal
+                  itemNumber={itemNumber}
+                  setItemNumber={setItemNumber}
+                />
+                {/* Amount Calculation  */}
+                <div className="subtotal-div mb-3">
+                  <ul className="mb-3">
+                    <li>
+                      <h5>Total Before Tax</h5>
                       <input
-                        type="checkbox"
-                        className="mx-3"
-                        onChange={(e) => {
-                          const newValue = e.target.checked ? "Y" : "N";
-                          setValue("rounding", newValue);
-                          const totalAmount =
-                            parseFloat(watch("total_amount")) || 0;
-                          const roundedAmount = e.target.checked
-                            ? Math.ceil(totalAmount)
-                            : totalAmount;
-                          setValue("rounding_amount", roundedAmount);
-                        }}
-                        checked={watch("rounding") === "Y"}
-                      />{" "}
-                    </h5>
+                        name="total_bef_tax"
+                        type="text"
+                        value={formatNumber(watch("total_bef_tax"))}
+                        disabled
+                      />
+                    </li>
+                    <li>
+                      <h5>Total Discount </h5>
+                      <input
+                        name="disc_prcnt"
+                        type="text"
+                        value={formatNumber(watch("disc_prcnt"))}
+                        disabled
+                      />
+                    </li>
+                    <li>
+                      <h5>
+                        Rounded
+                        <input
+                          type="checkbox"
+                          className="mx-3"
+                          onChange={(e) => {
+                            const newValue = e.target.checked ? "Y" : "N";
+                            setValue("rounding", newValue);
+                            const totalAmount =
+                              parseFloat(watch("total_amount")) || 0;
+                            const roundedAmount = e.target.checked
+                              ? Math.ceil(totalAmount)
+                              : totalAmount;
+                            setValue("rounding_amount", roundedAmount);
+                          }}
+                          checked={watch("rounding") === "Y"}
+                        />{" "}
+                      </h5>
 
-                    <input
-                      name="rounding"
-                      type="text"
-                      value={
-                        watch("rounding") === "Y"
-                          ? formatNumber(Math.round(watch("rounding_amount")))
-                          : formatNumber(watch("rounding_amount"))
-                      }
-                      disabled
-                    />
-                  </li>
-                  <li>
-                    <h5>Total Tax Amount
-</h5>
-                    <input
-                      name="tax_total"
-                      type="text"
-                      value={formatNumber(watch("tax_total"))}
-                      disabled
-                    />
-                  </li>
-                  <li>
-                    <h5>Total Amount</h5>
-                    <input
-                      name="total_amount"
-                      type="text"
-                      value={
-                        watch("rounding") === "Y"
-                          ? formatNumber(Math.round(watch("rounding_amount")))
-                          : formatNumber(watch("total_amount"))
-                      }
-                      disabled
-                    />
-                  </li>
-                </ul>
-              </div>
-              {/* Attachment 1  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">Attachment 1</label>
-                  <input
-                    type="file"
-                    name="attachment1"
-                    className="form-control"
-                    // value={watch("attachment1") || ""}
-                    onChange={handleAvatarChange}
-                  />
-                  {watch("attachment1")?.size > 5 * 1024 * 1024 && (
-                    <small className="text-danger">
-                      File size exceeds 5MB. Please select a smaller file
-                    </small>
-                  )}
+                      <input
+                        name="rounding"
+                        type="text"
+                        value={
+                          watch("rounding") === "Y"
+                            ? formatNumber(Math.round(watch("rounding_amount")))
+                            : formatNumber(watch("rounding_amount"))
+                        }
+                        disabled
+                      />
+                    </li>
+                    <li>
+                      <h5>Total Tax Amount</h5>
+                      <input
+                        name="tax_total"
+                        type="text"
+                        value={formatNumber(watch("tax_total"))}
+                        disabled
+                      />
+                    </li>
+                    <li>
+                      <h5>Total Amount</h5>
+                      <input
+                        name="total_amount"
+                        type="text"
+                        value={
+                          watch("rounding") === "Y"
+                            ? formatNumber(Math.round(watch("rounding_amount")))
+                            : formatNumber(watch("total_amount"))
+                        }
+                        disabled
+                      />
+                    </li>
+                  </ul>
                 </div>
-              </div>
-              {/* Attachment 2  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">Attachment 2</label>
-                  <input
-                    type="file"
-                    name="attachment2"
-                    className="form-control"
-                    //  value={watch("attachment2") || ""}
-                    onChange={handleAvatarChange}
-                    // ref={fileInputRef}
-                    // value={selectedFile}
-                  />
-                  {watch("attachment2")?.size > 5 * 1024 * 1024 && (
-                    <small className="text-danger">
-                      {watch("attachment2") &&
-                        "File size exceeds 5MB. Please select a smaller file."}
-                    </small>
-                  )}
-                  {/* <div className="upload-content border p-1 ">
+                {/* Attachment 1  */}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">Attachment 1</label>
+                    <input
+                      type="file"
+                      name="attachment1"
+                      className="form-control"
+                      // value={watch("attachment1") || ""}
+                      onChange={handleAvatarChange}
+                    />
+                    {watch("attachment1")?.size > 5 * 1024 * 1024 && (
+                      <small className="text-danger">
+                        File size exceeds 5MB. Please select a smaller file
+                      </small>
+                    )}
+                  </div>
+                </div>
+                {/* Attachment 2  */}
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="col-form-label">Attachment 2</label>
+                    <input
+                      type="file"
+                      name="attachment2"
+                      className="form-control"
+                      //  value={watch("attachment2") || ""}
+                      onChange={handleAvatarChange}
+                      // ref={fileInputRef}
+                      // value={selectedFile}
+                    />
+                    {watch("attachment2")?.size > 5 * 1024 * 1024 && (
+                      <small className="text-danger">
+                        {watch("attachment2") &&
+                          "File size exceeds 5MB. Please select a smaller file."}
+                      </small>
+                    )}
+                    {/* <div className="upload-content border p-1 ">
                    <div className="upload-btn">
                      <input
                        type="file"
                        accept="image/*"
                        onChange={handleAvatarChange}
                      /> */}
-                  {/* <span>
+                    {/* <span>
              <i className="ti ti-file-broken" />
              Upload File
            </span> */}
-                  {/* </div> */}
-                  {/* <p>JPG, GIF, or PNG. Max size of 800K</p> */}
-                  {/* </div> */}
+                    {/* </div> */}
+                    {/* <p>JPG, GIF, or PNG. Max size of 800K</p> */}
+                    {/* </div> */}
+                  </div>
+                </div>
+                {/* Address */}
+                <div className="col-md-12">
+                  <div className="mb-3">
+                    <label className="col-form-label">
+                      Address<span className="text-danger"> *</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter Address"
+                      className="form-control"
+                      {...register("address", {
+                        required: "Address is required !",
+                      })}
+                    />
+                    {errors.address && (
+                      <small className="text-danger">
+                        {errors.address.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+                {/* Description */}
+                <div className="col-md-12 mb-3">
+                  <div className="mb-0">
+                    <label className="col-form-label">Remarks</label>
+                    <textarea
+                      className="form-control"
+                      placeholder="Enter Remarks"
+                      rows={4}
+                      {...register("remarks")}
+                    />
+                  </div>
                 </div>
               </div>
-              {/* Address */}
-              <div className="col-md-12">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Address<span className="text-danger"> *</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter Address"
-                    className="form-control"
-                    {...register("address", {
-                      required: "Address is required !",
-                    })}
+              {order && (
+                <div
+                  style={{ height: height }}
+                  className="col-md-6 border   border-top-0"
+                >
+                  <div
+                    style={{ fontSize: "15px" }}
+                    className="fw-bold text-center p-2 pt-0 border-bottom"
+                  >
+                    Activities
+                  </div>
+                  <AllActivities
+                    isNewMail={isNewMail}
+                    setIsNewMail={setIsNewMail}
+                    threadId={threadId}
+                    setThreadId={setThreadId}
+                    msgId={msgId}
+                    setMsgId={setMsgId}
+                    id={order?.id}
+                    vendor={order?.quotation_vendor}
+                    quotaiton={order}
+                    prevPdf={prevPdf}
+                    setPrevPdf={setPrevPdf}
+                    attachments={attachments}
+                    setAttachments={setAttachments}
                   />
-                  {errors.address && (
-                    <small className="text-danger">
-                      {errors.address.message}
-                    </small>
-                  )}
                 </div>
-              </div>
-              {/* Description */}
-              <div className="col-md-12 mb-3">
-                <div className="mb-0">
-                  <label className="col-form-label">Remarks</label>
-                  <textarea
-                    className="form-control"
-                    placeholder="Enter Remarks"
-                    rows={4}
-                    {...register("remarks")}
-                  />
-                </div>
-              </div>
+              )}
             </div>
           </div>
           <div className="d-flex align-items-center justify-content-end">
@@ -823,6 +894,18 @@ const AddProductModal = ({ order, setOrder }) => {
             </button>
           </div>
         </form>
+        {prevPdf && (
+          <div
+            style={{ zIndex: 5 }}
+            className="position-absolute w-full top-0 bg-white"
+          >
+            <PreviewPdf
+              setAttachments={setAttachments}
+              setPrevPdf={setPrevPdf}
+              id={order?.id}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

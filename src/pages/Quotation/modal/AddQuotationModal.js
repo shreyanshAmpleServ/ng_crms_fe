@@ -471,6 +471,8 @@ const AddQuotationModal = ({ order, setOrder }) => {
           </button>
         </div>
       </div>
+
+      
       <div style={{ position: "relative" }} className="offcanvas-body ">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>

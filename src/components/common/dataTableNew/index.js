@@ -29,7 +29,7 @@ const Datatable = ({ columns, dataSource,className,border, paginationData,onPage
       ) :
 
        isView ? (
-<Table
+      <Table
           className={`table datanew dataTable no-footer  ${className}` }
           columns={columns}
           dataSource={dataSource}
