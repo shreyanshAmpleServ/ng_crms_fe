@@ -438,9 +438,6 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                     control={control}
                     rules={{ required: "Status is required !" }} // Validation rule
                     render={({ field }) => {
-                      const selectedDeal = deals?.data?.find(
-                        (deal) => deal.id === field.value
-                      );
                       return (
                         <Select
                           {...field}
