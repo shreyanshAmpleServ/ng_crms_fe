@@ -16,7 +16,7 @@ import { fetchProducts } from "../../../redux/products";
 const AddCaseModal = ({ cases, setCases }) => {
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.users);
-  const { cashNumber, loading } = useSelector((state) => state.cases);
+  const { cashNumber, loading } = useSelector((state) =>  state.cases);
 
   // React Hook Form setup
   const {
@@ -77,8 +77,8 @@ const AddCaseModal = ({ cases, setCases }) => {
       });
     } else {
       reset({
-        id: "",
         name: "",
+        is_active: "Y",
         case_number: "",
         case_owner_id: null,
         case_owner_name: "",
@@ -96,7 +96,6 @@ const AddCaseModal = ({ cases, setCases }) => {
         email: "",
         phone: "",
         description: "",
-        is_active: "Y",
       });
     }
   }, [cases]);
@@ -141,37 +140,36 @@ const AddCaseModal = ({ cases, setCases }) => {
       label: emnt.name,
     })) || [];
 
- const onSubmit = async (data) => {
-    const closeButton = document.getElementById("close_add_user");
+const onSubmit = async (data) => {
+  const closeButton = document.getElementById("close_add_user");
 
-    const FinalData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      FinalData.append(key, value ?? "");
-    });
-
-    // Ensure ID is set in edit mode
-    if (cases?.id && !FinalData.get("id")) {
-      FinalData.append("id", cases.id);
-    }
-
-    // Debug log
-    console.log("Submitting case payload:", Object.fromEntries(FinalData));
-
-    try {
-      if (cases) {
-        await dispatch(updateCases(FinalData)).unwrap();
-      } else {
-        await dispatch(addCases(FinalData)).unwrap();
-      }
-      if (closeButton) closeButton.click();
-      reset();
-      dispatch(fetchCasesCode());
-    } catch (error) {
-      console.error("Error saving case:", error);
-      if (closeButton) closeButton.click();
-      dispatch(fetchCasesCode());
-    }
+  // Prepare final payload as plain object
+  let FinalData = {
+    ...data,
   };
+
+  // If editing, include id
+  if (cases) {
+    FinalData.id = cases.id;
+  }
+
+  try {
+    if (cases) {
+      await dispatch(updateCases(FinalData)).unwrap();
+    } else {
+      await dispatch(addCases(FinalData)).unwrap();
+    }
+
+    if (closeButton) closeButton.click();
+    reset();
+    dispatch(fetchCasesCode());
+  } catch (error) {
+    console.error("Error saving case:", error);
+    if (closeButton) closeButton.click();
+    dispatch(fetchCasesCode());
+  }
+};
+
 
   React.useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add_edit_case");
@@ -217,7 +215,8 @@ const AddCaseModal = ({ cases, setCases }) => {
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
-                  Name <span className="text-danger">*</span>
+                  Name 
+                  <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"

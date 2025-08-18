@@ -63,12 +63,13 @@ export const addCases = createAsyncThunk(
 export const updateCases = createAsyncThunk(
   "cases/updateCases",
   async (orderData, thunkAPI) => {
-    let id = orderData.get("id");  // FormData se id nikal rahe hain
-
     try {
+      const id = orderData.get ? orderData.get("id") : orderData.id; // handle both FormData & JSON
+
       const response = await apiClient.put(`/v1/cases/${id}`, orderData);
+
       toast.success(response.data.message || "Case updated successfully!");
-      return response.data;  // backend se pura response aayega
+      return response.data; // must be the actual updated case object
     } catch (error) {
       if (error.response?.status === 404) {
         toast.error("Case not found");
@@ -77,13 +78,14 @@ export const updateCases = createAsyncThunk(
           message: "Case not found",
         });
       }
-      toast.error(error.response?.data || "Failed to update Case");
+      toast.error(error.response?.data?.message || "Failed to update Case");
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to update Case"
       );
     }
   }
 );
+
 
 // Delete a Case
 export const deleteCases = createAsyncThunk(
