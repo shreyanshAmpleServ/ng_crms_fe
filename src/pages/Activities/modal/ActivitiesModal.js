@@ -724,7 +724,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                             {...field}
                             className="select"
                             options={contacts?.data?.map((i) => ({
-                              label: `${i?.firstName} ${i?.lastName}`,
+                              label: `${i?.firstName} ${i?.lastName} ${i?.jobTitle ? `(${i?.jobTitle})` : ""}`,
                               value: i?.id,
                             }))}
                             isSearchable
@@ -733,7 +733,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                             value={
                               selectedValue
                                 ? {
-                                    label: `${selectedValue.firstName} ${selectedValue.lastName}`,
+                                    label: `${selectedValue.firstName} ${selectedValue.lastName} ${selectedValue.jobTitle ? `(${selectedValue.jobTitle})` : ""}`,
                                     value: selectedValue.id,
                                   }
                                 : null

@@ -367,8 +367,8 @@ const exportToPDF = useCallback(() => {
   return (
     <div>
       <Helmet>
-        <title>DCC CRMS - Deals</title>
-        <meta name="Deals" content="This is Deals page of DCC CRMS." />
+        <title>DCC CRMS - Opportunity</title>
+        <meta name="Deals" content="This is Opportunity page of DCC CRMS." />
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
@@ -397,7 +397,7 @@ const exportToPDF = useCallback(() => {
                 <div className="row align-items-center">
                   <div className="col-8">
                     <h4 className="page-title">
-                      Deals
+                    Opportunity
                       <span className="count-title">{deals?.data?.length || 0}</span>
                     </h4>
                   </div>
@@ -416,7 +416,7 @@ const exportToPDF = useCallback(() => {
                     <SearchBar
                       searchText={searchText}
                       handleSearch={handleSearch}
-                      label="Search Deals"
+                      label="Search Opportunity"
                     />
                     {/* /Search */}
                     <dic className="col-sm-8">

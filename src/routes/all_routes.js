@@ -26,7 +26,7 @@ export const all_routes = {
   /* /pipeline Route */
 
   /* Deals Route*/
-  deals: "/crms/deals",
+  deals: "/crms/opportunity",
   dealtDetail: "/crms/deals/:id",
   dealsKanban: "/crms/deals-by-stage",
   /* /Deals Route */
@@ -103,6 +103,7 @@ export const all_routes = {
   dealsDashboard: "/crms/dashboard/deals-dashboard",
   leadsDashboard: "/crms/dashboard/leads-dashboard",
   projectDashboard: "/crms/dashboard/project-dashboard",
+  activityDashboard: "/crms/dashboard/activity-dashboard",
 
   // Vendor
   vendor: "/crms/vendor",

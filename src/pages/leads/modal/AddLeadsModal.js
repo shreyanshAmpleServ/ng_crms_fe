@@ -60,6 +60,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
       country: "",
       description: "",
       is_active: "Y", // Default to 'Y' as per schema
+      is_contact: false,
     },
   });
 
@@ -68,7 +69,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
       reset({
         lead_owner: selectedLead?.lead_owner || null,
         lead_owner_name: selectedLead?.lead_owner_name || "",
-        company_icon: selectedLead?.company_icon || null,
+        company_icon: null,
         company_id: selectedLead?.company_id || "",
         first_name: selectedLead?.first_name || "",
         last_name: selectedLead?.last_name || "",
@@ -86,6 +87,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         revenue_currency: selectedLead?.revenue_currency || "",
         rating: selectedLead?.rating || "",
         tags: selectedLead?.tags || "",
+        jobTitle: selectedLead?.jobTitle || "",
         email_opt_out: selectedLead?.email_opt_out || "N",
         secondary_email: selectedLead?.secondary_email || "",
         facebook_ac: selectedLead?.facebook_ac || "",
@@ -101,6 +103,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         country: selectedLead?.country || "",
         description: selectedLead?.description || "",
         is_active: selectedLead?.is_active || "Y",
+        is_contact: selectedLead?.is_contact || false,
       });
     } else {
       reset({
@@ -112,6 +115,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         last_name: "",
         title: "",
         email: "",
+        jobTitle:"",
         phone: "",
         fax: "",
         mobile: "",
@@ -124,6 +128,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         revenue_currency: "",
         rating: "",
         tags: "",
+        jobTitle: "",
         email_opt_out: "N",
         secondary_email: "",
         facebook_ac: "",
@@ -139,6 +144,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         country: "",
         description: "",
         is_active: "Y",
+        is_contact: false,
       });
     }
   }, [selectedLead]);
@@ -231,9 +237,14 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
 
     // Append all form fields to FormData
     Object.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] !== undefined) {
-        // Append other fields as-is
-        formData.append(key, data[key]);
+      if (key === "is_contact") {
+        if (!selectedLead) {
+          formData.append("is_contact", data[key] ? "Y" : "N");
+        }
+      } else {
+        if (data[key] !== null && data[key] !== undefined) {
+          formData.append(key, data[key]);
+        }
       }
     });
     if (selectedLogo) {
@@ -481,6 +492,12 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           <label className="col-form-label">
                             Companies <span className="text-danger">*</span>
                           </label>
+                          <div>
+                            <Link to="#" className="link-purple">
+                            <i className="ti ti-plus me-1" />
+                            Add 
+                            </Link>
+                            </div>
                         </div>
                         <Controller
                           name="company_id"
@@ -557,6 +574,26 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         {errors.title && (
                           <small className="text-danger">
                             {errors.title.message}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                         Job Title <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter Job Title"
+                          className="form-control"
+                          {...register("jobTitle", {
+                            required: "Job Title is required !",
+                          })}
+                        />
+                        {errors.jobTitle && (
+                          <small className="text-danger">
+                            {errors.jobTitle.message}
                           </small>
                         )}
                       </div>
@@ -1009,6 +1046,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         )}
                       </div>
                     </div>
+                   
                   </div>
                 </div>
               </div>
@@ -1316,6 +1354,34 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                 </div>
               </div>
             </div>
+              <div className="col-md-6 my-3 d-flex align-items-center">
+                    <div className="status-toggle small-toggle-btn d-flex align-items-center">
+                            <span className="me-2 label-text">
+                             Is Contact?
+                            </span>
+                            <Controller
+                              name="is_contact"
+                              control={control}
+                              render={({ field }) => (
+                                <>
+                                  <input
+                                    type="checkbox"
+                                    id="isContact" // Add the ID here
+                                    className="check"
+                                    {...field}
+                                    checked={field.value}
+                                  />
+                                  <label
+                                    htmlFor="isContact" // Ensure this matches the input ID
+                                    className="checktoggle"
+                                  >
+                                    Is Contact?
+                                  </label>
+                                </>
+                          )}
+                        />
+                      </div>
+                    </div>
             {/* /Social Profile */} {/* Access */}
             {/* <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">

@@ -28,7 +28,7 @@ const deleteData = () => {
   };
   return (
     <>
-      {/* <div style={{zIndex:2}} className="tab-pane fade" id="files"> */}
+      <div style={{zIndex:2}} className="tab-pane fade" id="files">
         <div className="card">
           <div className="card-header">
             <h4 className="fw-semibold">Files</h4>
@@ -132,7 +132,7 @@ const deleteData = () => {
           
           </div>
         </div>
-      {/* </div> */}
+      </div>
       <AddFile data={data} setData={setData}  type={type} type_id={type_id} type_name={type_name} />
       <DeleteAlert
         label={"Attachment"}
