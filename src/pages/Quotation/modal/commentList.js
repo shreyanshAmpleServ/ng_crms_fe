@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { fetchComments, fetchCommentsApp } from "../../../redux/quotation";
+import {
+  fetchComments,
+  fetchCommentsApp,
+  sendCommentReply,
+} from "../../../redux/quotation";
 import { generateToken } from "../../../utils/publicToken";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -75,8 +79,8 @@ const DocumentComments = ({ id, code }) => {
   const dispatch = useDispatch();
   React.useEffect(() => {
     //   token && dispatch(fetchQuotationpPublicById({ id: newId, token }));
-    dispatch(fetchCommentsApp({ id: newId }));
-  }, [dispatch]);
+    newId && dispatch(fetchCommentsApp({ id: newId }));
+  }, [dispatch, newId]);
   React.useEffect(() => {
     const createToken = async () => {
       const genToken = await generateToken({ id: 1, username: "Anil" });
@@ -160,7 +164,7 @@ const DocumentComments = ({ id, code }) => {
     if (!replyText.trim()) return;
 
     const newReply = {
-      id: Math.max(...comments.map((c) => c.id)) + 1,
+      //   id: Math.max(...comments.map((c) => c.id)) + 1,
       parent_id: parentId,
       comments: replyText,
       user_name: "You",
@@ -170,10 +174,12 @@ const DocumentComments = ({ id, code }) => {
       created_at: new Date().toISOString(),
       likes: 0,
     };
+    dispatch(sendCommentReply({ id: newId, data: newReply }));
+    dispatch(fetchCommentsApp({ id: newId }));
 
-    setComments((prev) => [...prev, newReply]);
-    setReplyText("");
-    setShowReplyForm(null);
+    // setComments((prev) => [...prev, newReply]);
+    // setReplyText("");
+    // setShowReplyForm(null);
   };
 
   const organizedComments = organizeComments(commentDAta?.data);
@@ -248,7 +254,7 @@ const DocumentComments = ({ id, code }) => {
                   {comment.likes}
                 </button> */}
 
-                {!isReply && (
+                {/* {!isReply && (
                   <button
                     type="button"
                     className="btn btn-sm btn-outline-primary me-3"
@@ -261,7 +267,7 @@ const DocumentComments = ({ id, code }) => {
                     <i className="fas fa-reply me-1"></i>
                     Reply
                   </button>
-                )}
+                )} */}
 
                 {/* <button className="btn btn-sm btn-outline-secondary">
                   <i className="fas fa-share me-1"></i>
@@ -288,7 +294,7 @@ const DocumentComments = ({ id, code }) => {
                         className="form-control mb-2"
                         rows="3"
                         placeholder="Write a reply..."
-                        value={replyText}
+                        value={replyText} // <-- keep this
                         onChange={(e) => setReplyText(e.target.value)}
                       />
                       <div className="d-flex justify-content-end">
@@ -323,7 +329,7 @@ const DocumentComments = ({ id, code }) => {
       {/* <div dangerouslySetInnerHTML={{ __html: bootstrapStyles }} /> */}
 
       <div className="container mb-5">
-      {/* <div className="header-actions d-flex justify-content-end">
+        {/* <div className="header-actions d-flex justify-content-end">
         <Link
           to="#"
           className="btn btn-purple btn-sm fw-medium px-3 mb-1 py-2 shadow-sm"

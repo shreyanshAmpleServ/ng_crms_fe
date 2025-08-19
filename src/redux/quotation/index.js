@@ -35,6 +35,20 @@ export const fetchCommentsApp = createAsyncThunk(
     }
   },
 );
+export const sendCommentReply = createAsyncThunk(
+  "quotations/sendCommentReply",
+  async (datas, thunkAPI) => {
+    try {
+     
+      const response = await apiClient.post(`/v1/send-app-reply/${datas.id}`,datas.data);
+      return response.data; // Returns a list of order
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch quotation audit log",
+      );
+    }
+  },
+);
 export const fetchComments = createAsyncThunk(
   "quotations/fetchComments",
   async ({id,token}, thunkAPI) => {
@@ -365,6 +379,20 @@ const quotationSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(sendComments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(sendCommentReply.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(sendCommentReply.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.quotations = [action.payload.data, ...state.quotations];
+        state.comments = {...state.comments , data: [ action.payload.data ,...state?.comments?.data]};
+        state.success = action.payload.message;
+      })
+      .addCase(sendCommentReply.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })

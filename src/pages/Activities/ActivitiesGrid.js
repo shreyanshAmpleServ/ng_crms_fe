@@ -48,9 +48,9 @@ const ActivitiesGrid = ({ data }) => {
                         activity.activity_type?.name === "Calls"
                           ? "bg-success"
                           : activity.activity_type?.name === "Emails"
-                          ? "bg-primary"
-                          : activity.activity_type?.name === "Task"
-                          ? "bg-warning text-dark"
+                          ? "bg-purple"
+                          : activity.activity_type?.name === "Tasks"
+                          ? "bg-pink text-light"
                           : "bg-secondary"
                       }`}
                     >
