@@ -209,7 +209,7 @@ const EditDealModal = ({ deal }) => {
       id="offcanvas_edit_deal"
     >
       <div className="offcanvas-header border-bottom">
-        <h5 className="fw-semibold">Edit Deal</h5>
+        <h5 className="fw-semibold">Edit Opportunity</h5>
         <button
           type="button"
           className="btn-close custom-btn-close border p-1 me-0 d-flex align-items-center justify-content-center rounded-circle"
@@ -227,13 +227,13 @@ const EditDealModal = ({ deal }) => {
             <div className="col-md-12">
               <div className="mb-3">
                 <label className="col-form-label">
-                  Deal Name <span className="text-danger">*</span>
+                Opportunity Name <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className="form-control"
                   {...register("dealName", {
-                    required: "Deal name is required !",
+                    required: "Opportunity name is required !",
                   })}
                 />
                 {errors.dealName && (
