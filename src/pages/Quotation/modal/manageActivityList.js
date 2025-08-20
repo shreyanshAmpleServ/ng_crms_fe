@@ -28,7 +28,7 @@ const ActivityList = ({
   onDeleteActivity,
 }) => {
   const dispatch = useDispatch();
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activity,setActivity]=useState()
 
@@ -36,8 +36,8 @@ const ActivityList = ({
     (state) => state.activities || {}
   );
   useEffect(() => {
-    id && dispatch(fetchActivitiesByObject({ object_id: id }));
-  }, [dispatch, id]);
+    id && dispatch(fetchActivitiesByObject({ object_id: id,activityType:Number(selectedFilter) }));
+  }, [dispatch, id,selectedFilter]);
   // Static mock data based on your activity structure
   //   const activities = [
   //     {
@@ -183,43 +183,36 @@ const ActivityList = ({
     });
   };
 
-  const filteredActivities = activities?.data?.filter((activity) => {
-    const matchesFilter =
-      selectedFilter === "all" || activity.status === selectedFilter;
-    const matchesSearch =
-      activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      activity.owner_name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-
-  //   const filterOptions = [
-  //     { value: "all", label: "All Activities", count: activities.length },
-  //     { value: "pending", label: "Pending", count: activities.filter(a => a.status === "pending").length },
-  //     { value: "in_progress", label: "In Progress", count: activities.filter(a => a.status === "in_progress").length },
-  //     { value: "completed", label: "Completed", count: activities.filter(a => a.status === "completed").length },
-  //     { value: "overdue", label: "Overdue", count: activities.filter(a => a.status === "overdue").length }
-  //   ];
+  const filteredActivities = activities?.data
+  // const filteredActivities = activities?.data?.filter((activity) => {
+  //   const matchesFilter =
+  //     selectedFilter === "all" || activity.status === selectedFilter;
+  //   const matchesSearch =
+  //     activity.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     activity.owner_name.toLowerCase().includes(searchTerm.toLowerCase());
+  //   return matchesFilter && matchesSearch;
+  // });
+    const activityTypes = useSelector((state) => state.activities.activityTypes);
 
   return (
     <div
-      className="container-fluid p-4"
+      className="container-fluid "
       style={{ backgroundColor: "#f8fafc", minHeight: "100vh" }}
     >
       {/* Enhanced Header */}
       <div className="row">
         <div className="col-12">
           <div
-            className="card mb-2 border-0 shadow-sm"
+            className="card mb-2 bg-purple-gradient border-0 shadow-sm"
             style={{
-              borderRadius: "20px",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              borderRadius: "10px",
             }}
           >
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center text-white">
                 <div>
-                  <h2 className="mb-2 fw-bold">📋 Activities</h2>
-                  <p className="mb-0 opacity-90">
+                  <h3 className="mb-1 text-white">📋 Activities</h3>
+                  <p className="card-text mb-0 opacity-90">
                     Manage and track your team's activities efficiently
                   </p>
                 </div>
@@ -234,7 +227,7 @@ const ActivityList = ({
                 <div className="header-actions d-flex justify-content-end">
                   <Link
                     to="#"
-                    className="btn btn-purple btn-sm fw-medium px-3 mb-1 py-2 shadow-sm"
+                    className="btn btn-light text-dark btn-sm fw-medium px-3 mb-1 py-2 shadow-sm"
                     data-bs-toggle="modal"
                     data-bs-target="#activity_modal"
                   >
@@ -248,18 +241,18 @@ const ActivityList = ({
       </div>
 
       {/* Filters and Search */}
-      {/* <div className="row mb-4">
+      <div className="row mb-0">
         <div className="col-12">
           <div className="card border-0 shadow-sm" style={{ borderRadius: "16px" }}>
             <div className="card-body p-4">
               <div className="row align-items-center">
-                <div className="col-md-8">
+                <div className="col-md-12">
                   <div className="d-flex gap-2 flex-wrap">
-                    {filterOptions.map((filter) => (
-                      <button
-                        key={filter.value}
+                  <button
+                        // key={}
+                        type="button"
                         className={`btn px-3 py-2 ${
-                          selectedFilter === filter.value 
+                          selectedFilter === "" 
                             ? 'btn-primary' 
                             : 'btn-outline-secondary'
                         }`}
@@ -268,11 +261,36 @@ const ActivityList = ({
                           fontSize: "0.9rem",
                           fontWeight: "500"
                         }}
-                        onClick={() => setSelectedFilter(filter.value)}
+                        onClick={() => setSelectedFilter("")}
                       >
-                        {filter.label}
+                       All Activities
+                        {/* <span className={`ms-2 badge ${
+                          selectedFilter === "" 
+                            ? 'bg-white text-primary' 
+                            : 'bg-secondary'
+                        }`}>
+                          {filter.count}
+                        </span> */}
+                      </button>
+                    {activityTypes?.map((filter) => (
+                      <button
+                      type="button"
+                        key={filter.id}
+                        className={`btn px-3 py-2 ${
+                          selectedFilter == filter.id 
+                            ? 'btn-primary' 
+                            : 'btn-outline-secondary'
+                        }`}
+                        style={{ 
+                          borderRadius: "10px",
+                          fontSize: "0.9rem",
+                          fontWeight: "500"
+                        }}
+                        onClick={() => setSelectedFilter(filter.id)}
+                      >
+                        {filter.name}
                         <span className={`ms-2 badge ${
-                          selectedFilter === filter.value 
+                          selectedFilter == filter.id 
                             ? 'bg-white text-primary' 
                             : 'bg-secondary'
                         }`}>
@@ -282,7 +300,7 @@ const ActivityList = ({
                     ))}
                   </div>
                 </div>
-                <div className="col-md-4">
+                {/* <div className="col-md-4">
                   <div className="position-relative">
                     <Search 
                       className="position-absolute" 
@@ -307,16 +325,16 @@ const ActivityList = ({
                       }}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
 
       {/* Activity Cards */}
       <div className="row">
-        {filteredActivities.length === 0 ? (
+        {filteredActivities?.length === 0 ? (
           <div className="col-12">
             <div
               className="card border-0 shadow-sm text-center py-3"
@@ -344,8 +362,8 @@ const ActivityList = ({
             </div>
           </div>
         ) : (
-          filteredActivities.map((activity) => {
-            const IconComponent = getActivityIcon(activity.type_name);
+          filteredActivities?.map((activity) => {
+            const IconComponent = getActivityIcon(activity?.activity_type?.name);
             const statusConfig = getStatusColor(activity.status);
             const priorityConfig = getPriorityConfig(activity.priority);
 
@@ -412,7 +430,22 @@ const ActivityList = ({
                         )}
                       </div>
                     </div>
-                    <div className="dropdown">
+                    <div>
+                    <button
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#activity_modal"
+
+                            className="dropdown-item rounded-circle px-2 text-dark bg-soft-purple d-flex align-items-center gap-2"
+                            onClick={() =>setActivity(activity)
+                          
+                            }
+                          >
+                            <Edit2 size={14} />
+                            {/* Edit Activity */}
+                          </button>
+                          </div>
+                    {/* <div className="dropdown">
                       <button
                         type="button"
                         className="btn btn-link p-0 text-muted"
@@ -441,7 +474,7 @@ const ActivityList = ({
                         <li>
                           <hr className="dropdown-divider" />
                         </li>
-                        {/* <li>
+                        <li>
                           <button
                             type="button"
                             className="dropdown-item text-danger d-flex align-items-center gap-2"
@@ -452,9 +485,9 @@ const ActivityList = ({
                             <Trash2 size={14} />
                             Delete Activity
                           </button>
-                        </li> */}
+                        </li>
                       </ul>
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Card Body */}

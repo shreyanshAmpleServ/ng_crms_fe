@@ -302,7 +302,178 @@ console.log("payload")
               </Button>
             </div>
           </div>
+  {/* Email Form */}
+  {showEmailForm && (
+            <div className="card shadow-lg border-0 rounded-4">
+              <div className="card-header bg-gradient text-white border-0"
+                   style={{ background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' }}>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex align-items-center">
+                    <div className="bg-white bg-opacity-20 rounded-3 p-2 me-3">
+                      <FaEnvelope size={20} />
+                    </div>
+                    <div>
+                      <h4 className="mb-1 fw-bold">Send Quotation Email</h4>
+                      <p className="mb-0 opacity-75">Send quotation PDF to customer</p>
+                    </div>
+                  </div>
+                  <button 
+                    className="btn btn-outline-light btn-sm"
+                    onClick={() => setShowEmailForm(false)}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+              </div>
 
+              <div className="card-body p-4">
+                {error && (
+                  <div className="alert alert-danger" role="alert">
+                    <i className="fas fa-exclamation-triangle me-2"></i>
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleEmailSubmit}>
+                  {/* Recipient Fields */}
+                  <div className="mb-4">
+                    <div className="row align-items-center mb-3">
+                      <div className="col-1">
+                        <label className="form-label fw-bold mb-0">To:</label>
+                      </div>
+                      <div className="col-9">
+                        <input
+                          type="email"
+                          name="to"
+                          className="form-control form-control-lg"
+                          placeholder="Enter recipient email"
+                          value={emailForm.to}
+                          onChange={handleEmailChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                   
+                  </div>
+
+                  {/* Subject */}
+                  <div className="row align-items-center mb-4">
+                    <div className="col-1">
+                      <label className="form-label fw-bold mb-0">Subject:</label>
+                    </div>
+                    <div className="col-9">
+                      <input
+                        type="text"
+                        name="subject"
+                        className="form-control form-control-lg"
+                        placeholder="Enter email subject"
+                        value={emailForm.subject}
+                        onChange={handleEmailChange}
+                        required
+                      />
+                    </div>
+                   
+                  </div>
+
+                  {/* Attachment Info */}
+                  <div className="mb-4">
+                    <div className="alert alert-info d-flex align-items-center">
+                      <MdAttachFile className="me-2" size={20} />
+                      <span>
+                        <strong>Attachment:</strong> {quotationDetail?.quotation_code}.pdf will be automatically attached
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Email Body */}
+                  <div className="mb-4 " 
+                  
+                  style={{ height: "400px",}}
+                  >
+                    <label className="form-label fw-semibold">Message Body</label>
+                    <ReactQuill
+                                  name="body"
+                            id="body"
+                            value={emailForm.body}
+                            onChange={(value)=> setEmailForm((prev) => ({ ...prev, body: value }))}
+                            placeholder='Write your message body...'
+                            style={{ height: "300px",marginBottom:"30px"}}
+                            modules={{
+                              toolbar: [
+                                [{ header: [1, 2,3,4,5,6, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ list: 'ordered' }, { list: 'bullet' }],
+                                [{ script: 'sub' }, { script: 'super' }],
+                                [{ indent: '-1' }, { indent: '+1' }],
+                                [{ direction: 'rtl' }],
+                                // [{ size: ['small', false, 'large', 'huge'] }],
+                                [{ font: [] }],
+                                ['link',],
+                                ['link', 'image', 'video'],
+                                [{ color: [] }, { background: [] }],
+                                [{ align: [] }],
+                                ['clean'],
+                                ['code-block', 'blockquote'],
+                                ['table'], // Table option if using custom modules/plugins
+                              ],
+                            }}
+                          />
+                    {/* <textarea
+                      name="body"
+                      className="form-control"
+                      rows="6"
+                      placeholder="Write your message..."
+                      value={emailForm.body}
+                      onChange={handleEmailChange}
+                      style={{ minHeight: '150px' }}
+                    /> */}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="d-flex justify-content-between align-items-center pt-3 border-top">
+                    <div>
+                      <small className="text-muted">
+                        <FaFilePdf className="me-1" />
+                        PDF attachment ready
+                      </small>
+                    </div>
+
+                    <div className="d-flex gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowEmailForm(false)}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-success btn-lg px-4"
+                        disabled={sending}
+                        style={{ 
+                          background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                          border: 'none'
+                        }}
+                      >
+                        {sending ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-2" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <FaPaperPlane className="me-2" />
+                            Send Email
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
           {/* PDF Preview */}
           <div className="card shadow-lg border-0 rounded-4 mb-4 position-relative overflow-none">
             <div ref={targetRef} id="pdf-preview-container"  className="card-body p-5 position-relative overflow-none" style={{overflow:"hidden"}}>
@@ -521,178 +692,7 @@ console.log("payload")
             </div>
           </div>
 
-          {/* Email Form */}
-          {showEmailForm && (
-            <div className="card shadow-lg border-0 rounded-4">
-              <div className="card-header bg-gradient text-white border-0"
-                   style={{ background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' }}>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <div className="bg-white bg-opacity-20 rounded-3 p-2 me-3">
-                      <FaEnvelope size={20} />
-                    </div>
-                    <div>
-                      <h4 className="mb-1 fw-bold">Send Quotation Email</h4>
-                      <p className="mb-0 opacity-75">Send quotation PDF to customer</p>
-                    </div>
-                  </div>
-                  <button 
-                    className="btn btn-outline-light btn-sm"
-                    onClick={() => setShowEmailForm(false)}
-                  >
-                    <FaTimes />
-                  </button>
-                </div>
-              </div>
-
-              <div className="card-body p-4">
-                {error && (
-                  <div className="alert alert-danger" role="alert">
-                    <i className="fas fa-exclamation-triangle me-2"></i>
-                    {error}
-                  </div>
-                )}
-
-                <form onSubmit={handleEmailSubmit}>
-                  {/* Recipient Fields */}
-                  <div className="mb-4">
-                    <div className="row align-items-center mb-3">
-                      <div className="col-1">
-                        <label className="form-label fw-bold mb-0">To:</label>
-                      </div>
-                      <div className="col-9">
-                        <input
-                          type="email"
-                          name="to"
-                          className="form-control form-control-lg"
-                          placeholder="Enter recipient email"
-                          value={emailForm.to}
-                          onChange={handleEmailChange}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                   
-                  </div>
-
-                  {/* Subject */}
-                  <div className="row align-items-center mb-4">
-                    <div className="col-1">
-                      <label className="form-label fw-bold mb-0">Subject:</label>
-                    </div>
-                    <div className="col-9">
-                      <input
-                        type="text"
-                        name="subject"
-                        className="form-control form-control-lg"
-                        placeholder="Enter email subject"
-                        value={emailForm.subject}
-                        onChange={handleEmailChange}
-                        required
-                      />
-                    </div>
-                   
-                  </div>
-
-                  {/* Attachment Info */}
-                  <div className="mb-4">
-                    <div className="alert alert-info d-flex align-items-center">
-                      <MdAttachFile className="me-2" size={20} />
-                      <span>
-                        <strong>Attachment:</strong> {quotationDetail?.quotation_code}.pdf will be automatically attached
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Email Body */}
-                  <div className="mb-4 " 
-                  
-                  style={{ height: "400px",}}
-                  >
-                    <label className="form-label fw-semibold">Message Body</label>
-                    <ReactQuill
-                                  name="body"
-                            id="body"
-                            value={emailForm.body}
-                            onChange={(value)=> setEmailForm((prev) => ({ ...prev, body: value }))}
-                            placeholder='Write your message body...'
-                            style={{ height: "300px",marginBottom:"30px"}}
-                            modules={{
-                              toolbar: [
-                                [{ header: [1, 2,3,4,5,6, false] }],
-                                ['bold', 'italic', 'underline', 'strike'],
-                                [{ list: 'ordered' }, { list: 'bullet' }],
-                                [{ script: 'sub' }, { script: 'super' }],
-                                [{ indent: '-1' }, { indent: '+1' }],
-                                [{ direction: 'rtl' }],
-                                // [{ size: ['small', false, 'large', 'huge'] }],
-                                [{ font: [] }],
-                                ['link',],
-                                ['link', 'image', 'video'],
-                                [{ color: [] }, { background: [] }],
-                                [{ align: [] }],
-                                ['clean'],
-                                ['code-block', 'blockquote'],
-                                ['table'], // Table option if using custom modules/plugins
-                              ],
-                            }}
-                          />
-                    {/* <textarea
-                      name="body"
-                      className="form-control"
-                      rows="6"
-                      placeholder="Write your message..."
-                      value={emailForm.body}
-                      onChange={handleEmailChange}
-                      style={{ minHeight: '150px' }}
-                    /> */}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="d-flex justify-content-between align-items-center pt-3 border-top">
-                    <div>
-                      <small className="text-muted">
-                        <FaFilePdf className="me-1" />
-                        PDF attachment ready
-                      </small>
-                    </div>
-
-                    <div className="d-flex gap-2">
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary"
-                        onClick={() => setShowEmailForm(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success btn-lg px-4"
-                        disabled={sending}
-                        style={{ 
-                          background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                          border: 'none'
-                        }}
-                      >
-                        {sending ? (
-                          <>
-                            <span className="spinner-border spinner-border-sm me-2" />
-                            Sending...
-                          </>
-                        ) : (
-                          <>
-                            <FaPaperPlane className="me-2" />
-                            Send Email
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
+        
         </div>
       </div>
     </div>

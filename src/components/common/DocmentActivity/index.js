@@ -244,9 +244,9 @@ const DocAttachments = ({ type, type_id, type_name = "Unknown" }) => {
 
   return (
     <>
-      <div className="files-container">
+      <div className="files-container px-3">
         {/* Modern Header */}
-        <div className="files-header bg-gradient-primary rounded-4 p-4 mb-4 text-white position-relative overflow-hidden">
+        <div className="files-header bg-purple-gradient text-white rounded p-4 mb-4 text-white position-relative overflow-hidden">
           <div className="header-pattern position-absolute top-0 start-0 w-100 h-100 opacity-10"></div>
           <div className="position-relative z-1">
             <div className="row align-items-center">
@@ -256,7 +256,7 @@ const DocAttachments = ({ type, type_id, type_name = "Unknown" }) => {
                     <i className="ti ti-folder-open display-6"></i>
                   </div>
                   <div>
-                    <h3 className="mb-1 fw-bold">Files & Documents</h3>
+                    <h3 className="mb-1 fw-bold text-white">Files & Documents</h3>
                     <p className="mb-0 opacity-90">
                       {attachments?.data?.length || 0} files attached to {type_name}
                     </p>
@@ -340,10 +340,10 @@ const DocAttachments = ({ type, type_id, type_name = "Unknown" }) => {
               </div> */}
             </>
           ) : (
-            <div className="empty-state text-center py-5">
-              <div className="empty-icon mb-4">
+            <div className="empty-state text-center pt-0">
+              {/* <div className="empty-icon mb-4">
                 <i className="ti ti-folder-x display-1 text-muted"></i>
-              </div>
+              </div> */}
               <NoDataFound />
             </div>
           )}

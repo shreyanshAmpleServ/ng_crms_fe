@@ -190,7 +190,7 @@ export default function GmailSection({
                               <div
                                 key={i}
                                 style={{ height: "150px" }}
-                                className="mb-2 position-relative col-6"
+                                className="mb-2 position-relative col-4"
                               >
                                 {attachment.mimeType.startsWith("image/") ? (
                                   <div

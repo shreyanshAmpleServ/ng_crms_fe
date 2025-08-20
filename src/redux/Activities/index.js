@@ -53,6 +53,7 @@ export const fetchActivitiesByObject = createAsyncThunk(
       if (reqBody?.page) params.page = reqBody.page;
       if (reqBody?.size) params.size = reqBody.size;
       if (reqBody?.object_id) params.object_id = reqBody.object_id;
+      if (reqBody?.activityType) params.activityType = reqBody.activityType;
 
       const response = await apiClient.get(`/v1/activities-by-object`, { params });
       return response.data;

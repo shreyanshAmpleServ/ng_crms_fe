@@ -19,6 +19,7 @@ import { privateRoutes } from "../../../routes/router.link";
 import ImageWithDatabase from "../ImageFromDatabase";
 import { ModuleOptions } from "../selectoption/selectoption";
 import DeleteAlert from "./DeleteAlert";
+import CRMSLogo from "./logo";
 
 
 const Header = () => {
@@ -135,33 +136,33 @@ const Header = () => {
 
   {/* CRMS - Hamesha dikhe except jab sidebar mini hai left side mein */}
  {!miniSidebar && (
-  <Link
-    to="/crm"
-    id="crm_btn"
-    className="fw-bold fs-4 d-inline-block text-center"
-    style={{
-      minWidth: "50px",
-      padding: "6px 16px",
-      borderRadius: "8px",
-      transition: "all 0.3s ease",
-      textDecoration: "none",
-    letterSpacing: "4px", // adds spacing between letters
+  // <Link
+  //   to="/crm"
+  //   id="crm_btn"
+  //   className="fw-bold fs-4 d-inline-block text-center"
+  //   style={{
+  //     minWidth: "50px",
+  //     padding: "6px 16px",
+  //     borderRadius: "8px",
+  //     transition: "all 0.3s ease",
+  //     textDecoration: "none",
+  //   letterSpacing: "4px", // adds spacing between letters
 
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.backgroundColor = "#e0f0ff";
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.backgroundColor = "#f0f8ff";
-    }}
-  >
-    <span style={{ color: "#ff4d4f" }}>C</span>
-    <span style={{ color: "#40a9ff" }}>R</span>
-    <span style={{ color: "#73d13d" }}>M</span>
-    <span style={{ color: "#faad14" }}>S</span>
-  </Link>
+  //   }}
+  //   onMouseEnter={(e) => {
+  //     e.currentTarget.style.backgroundColor = "#e0f0ff";
+  //   }}
+  //   onMouseLeave={(e) => {
+  //     e.currentTarget.style.backgroundColor = "#f0f8ff";
+  //   }}
+  // >
+  //   <span style={{ color: "#ff4d4f" }}>C</span>
+  //   <span style={{ color: "#40a9ff" }}>R</span>
+  //   <span style={{ color: "#73d13d" }}>M</span>
+  //   <span style={{ color: "#faad14" }}>S</span>
+  // </Link>
+<CRMSLogo />
 )}
-
 
   {/* Sidebar toggle button - hamesha visible */}
   <Link id="toggle_btn" to="#" onClick={toggleMiniSidebar}>

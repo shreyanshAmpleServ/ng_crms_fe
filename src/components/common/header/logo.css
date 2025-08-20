@@ -1,0 +1,107 @@
+/* CRMSLogo.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap');
+
+.crms-logo-container {
+  text-align: center;
+  padding: 5px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.1);
+  transition: all 0.3s ease;
+}
+
+.crms-logo-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(220, 38, 38, 0.15);
+}
+
+.crms-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: #dc2626;
+  text-shadow: 2px 2px 4px rgba(220, 38, 38, 0.2);
+  position: relative;
+  display: inline-block;
+}
+
+.letter {
+  display: inline-block;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform-origin: center;
+}
+
+/* Individual letter animations */
+.animated .letter-c {
+  animation: slideInLeft 0.8s ease-out 0.1s both;
+}
+
+.animated .letter-r {
+  animation: bounceIn 0.8s ease-out 0.3s both;
+}
+
+.animated .letter-m {
+  animation: slideInUp 0.8s ease-out 0.5s both;
+}
+
+.animated .letter-s {
+  animation: slideInRight 0.8s ease-out 0.7s both;
+}
+
+/* Keyframe animations */
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Hover effects for individual letters */
+.crms-text .letter:hover {
+  transform: scale(1.2) rotateY(360deg);
+  color: #b91c1c;
+  text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+}
