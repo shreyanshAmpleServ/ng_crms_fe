@@ -79,10 +79,13 @@ export const updateTaxSetup = createAsyncThunk(
         async (id, thunkAPI) => {
             try {
                 const response = await apiClient.delete(`/v1/tax-setup/${id}`);
+                
+                
                 return {
                     data: { id },
                     message: response.data.message || "tax deleted successfully",
                 };
+                
             } catch (error) {
                 return thunkAPI.rejectWithValue(
                     error.response?.data || "Failed to delete tax"
@@ -162,10 +165,14 @@ const taxsSlice = createSlice({
                     (data) => data.id !== action.payload.data.id
                 );
                 state.success = action.payload.message;
+                                toast.success(action.payload.message || "Tax deleted successfully"); // ✅ toast
+                
             })
             .addCase(deleteTaxSetup.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.message;
+                                toast.success(action.payload.message || "Tax deleted successfully"); // ✅ toast
+
             });
     },
 });

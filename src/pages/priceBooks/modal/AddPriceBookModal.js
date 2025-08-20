@@ -6,6 +6,8 @@ import Select from "react-select";
 import { priceModelOptions } from "../../../components/common/selectoption/selectoption";
 import { addPriceBook, updatePriceBook } from "../../../redux/priceBook";
 import ManageOrderItemModal from "./ManagePriceDetailsModal";
+import dayjs from "dayjs";
+import { Controller } from "react-hook-form";
 
 const initialItem = [
   {
@@ -52,8 +54,8 @@ const AddInvoiceModal = ({ order, setOrder }) => {
       model: "",
       is_active: "Y",
       description: "",
-      effectivate_from: new Date(),
-      effectivate_to: new Date(),
+      effectivate_from: dayjs(new Date()).format("DD-MM-YYYY"),
+      effectivate_to: dayjs(new Date()).format("DD-MM-YYYY"),
     },
   });
 
@@ -64,8 +66,9 @@ const AddInvoiceModal = ({ order, setOrder }) => {
         model: order?.model || "",
         is_active: order?.is_active || "Y",
         description: order?.description || "",
-        effectivate_from: order?.effectivate_from || new Date(),
-        effectivate_to: order?.effectivate_to || new Date(),
+        effectivate_from: dayjs(new Date(order?.effectivate_from)) ||dayjs(new Date()).format("DD-MM-YYYY"),
+        effectivate_to: dayjs(new Date(order?.effectivate_to)) ||dayjs(new Date()).format("DD-MM-YYYY") 
+        
       });
       setItemNumber(
         order?.price_book_details?.map((item) => ({
@@ -81,8 +84,8 @@ const AddInvoiceModal = ({ order, setOrder }) => {
         model: "",
         is_active: "Y",
         description: "",
-        effectivate_from: new Date(),
-        effectivate_to: new Date(),
+        effectivate_from: dayjs(new Date()).format("DD-MM-YYYY"),
+        effectivate_to: dayjs(new Date()).format("DD-MM-YYYY"),
       });
     }
   }, [order]);
@@ -226,12 +229,21 @@ const AddInvoiceModal = ({ order, setOrder }) => {
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
                     </span>
-                    <DatePicker
-                      className="form-control datetimepicker"
-                      selected={watch("effectivate_from")}
-                      onChange={(date) => setValue("effectivate_from", date)}
-                      dateFormat="dd-MM-yyyy"
-                    />
+                     <Controller
+                            name="effectivate_from"
+                            control={control}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                className="form-control"
+                                value={field.value ? dayjs(field.value , "DD-MM-YYYY") : null}
+                                onChange={(date, dateString) => {
+                                  field.onChange(dateString);
+                                }}
+                                format="DD-MM-YYYY"
+                              />
+                            )}
+                          />
                   </div>
                 </div>
               </div>
@@ -245,12 +257,21 @@ const AddInvoiceModal = ({ order, setOrder }) => {
                     <span className="form-icon">
                       <i className="ti ti-calendar-check" />
                     </span>
-                    <DatePicker
-                      className="form-control datetimepicker"
-                      selected={watch("effectivate_to")}
-                      onChange={(date) => setValue("effectivate_to", date)}
-                      dateFormat="dd-MM-yyyy"
-                    />
+                    <Controller
+                            name="effectivate_to"
+                            control={control}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                className="form-control"
+                                value={field.value ? dayjs(field.value , "DD-MM-YYYY") : null}
+                                onChange={(date, dateString) => {
+                                  field.onChange(dateString);
+                                }}
+                                format="DD-MM-YYYY"
+                              />
+                            )}
+                          />
                   </div>
                 </div>
               </div>

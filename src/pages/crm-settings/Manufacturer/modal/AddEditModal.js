@@ -44,6 +44,9 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
 
   // Handle form submit
   const onSubmit = (data) => {
+     const closeButton = document.getElementById(
+      "close_btn_add_edit_lost_reason_modal"
+    );
     if (mode === "add") {
       dispatch(addManufacturer(data));
     } else if (mode === "edit" && initialData) {
@@ -54,6 +57,10 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
         })
       );
     }
+
+    clearForm();
+
+    if (closeButton) closeButton.click();
   };
 
   // Attach modal close listener to clear form
@@ -78,6 +85,8 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
               className="btn-close custom-btn-close border p-1 me-0 text-dark"
               data-bs-dismiss="modal"
               aria-label="Close"
+           id="close_btn_add_edit_lost_reason_modal"
+
             >
               <i className="ti ti-x" />
             </button>

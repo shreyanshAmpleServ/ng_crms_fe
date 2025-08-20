@@ -34,7 +34,7 @@ const TaxSetUpList = () => {
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "S. No.",
+      title: "Sr. No.",
       width: 50,
       render: (text, record, index) => index + 1,
       // sorter: (a, b) => a.code.localeCompare(b.name),
@@ -202,6 +202,7 @@ const TaxSetUpList = () => {
       dispatch(deleteTaxSetup(selectedTax.id));
       // navigate(`/taxs`);
       setShowDeleteModal(false);
+      setSelectedTax(null);
     }
   };
 
@@ -284,7 +285,7 @@ const TaxSetUpList = () => {
         label="Tax"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
-        selectedTax={selectedTax}
+        selectedTax={setSelectedTax}
         onDelete={deleteData}
       />
     </div>

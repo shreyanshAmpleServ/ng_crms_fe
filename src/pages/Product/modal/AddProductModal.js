@@ -234,7 +234,7 @@ const AddProductModal = ({ product, setProduct }) => {
           <input type="hidden" {...register("username", { value: watch('email') })} /> */}
           <div className="row">
             {/* Profile Image Upload */}
-            {/* <div className="col-md-12">
+            <div className="col-md-12">
               <div className="profile-pic-upload ">
                 <div className="profile-pic">
                   {selectedAvatar ? (
@@ -242,6 +242,7 @@ const AddProductModal = ({ product, setProduct }) => {
                       src={URL.createObjectURL(selectedAvatar)}
                       alt="Avatar Preview"
                       className="img-fluid h-100 w-100"
+                      
                     />
                   ) : product?.product_image ? (
                     <ImageWithDatabase
@@ -270,9 +271,9 @@ const AddProductModal = ({ product, setProduct }) => {
                   <p>JPG, GIF, or PNG. Max size of 800K</p>
                 </div>
               </div>
-            </div> */}
+            </div>
 
-            <div className="col-md-12">
+            {/* <div className="col-md-12">
                       <div className="mb-3">
                         <div className="profile-upload">
                           <div className="profile-upload-img">
@@ -317,7 +318,7 @@ const AddProductModal = ({ product, setProduct }) => {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
             {/* Full Name */}
             <div className="col-md-6">

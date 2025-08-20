@@ -36,7 +36,7 @@ const LostReasonsList = () => {
 
   const columns = [
     {
-      title: "S. No.",      width: 50,
+      title: "Sr. No.",      width: 50,
       render: (text,record,index) =>index+1 ,
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },

@@ -51,8 +51,8 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       name: "",
       status: "",
       type: "",
-      start_date: dayjs().toISOString(),
-end_date: dayjs().toISOString(),
+      start_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      end_date: dayjs(new Date()).format("DD-MM-YYYY"),
 
       exp_revenue: "",
       camp_cost: "",
@@ -72,13 +72,13 @@ end_date: dayjs().toISOString(),
           name: campaign?.name || "",
           status: campaign?.status || "",
           type: campaign?.type || null,
-          start_date: campaign?.start_date
-  ? dayjs(campaign.start_date).toISOString()
-  : dayjs().toISOString(),
+          start_date:
+            dayjs(new Date(campaign?.start_date)) ||
+            dayjs(new Date()).format("DD-MM-YYYY"),
 
-end_date: campaign?.end_date
-  ? dayjs(campaign.end_date).toISOString()
-  : dayjs().toISOString(),
+          end_date:
+            dayjs(new Date(campaign?.end_date)) ||
+            dayjs(new Date()).format("DD-MM-YYYY"),
 
           exp_revenue: campaign?.exp_revenue || "",
           camp_cost: campaign?.camp_cost || "",
@@ -136,11 +136,10 @@ end_date: campaign?.end_date
   const onSubmit = async (data) => {
     const finalData = {
       ...data,
-      contact_ids: data.contact_ids?.map((contact) => contact.value),
+      contact_ids: data.contact_ids?.map((contacts) => contacts.value),
       // lead_id: data.lead_id?.map((contact) => contact.value),
-  start_date: new Date(),
-end_date: new Date(),
-
+      start_date: new Date(),
+      end_date: new Date(),
     };
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
@@ -300,19 +299,19 @@ end_date: new Date(),
                     <Controller
                       name="start_date"
                       control={control}
-                      rules={{ required: "Start date is required !" }}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
-                          selected={field.value}
                           value={
                             field.value
-                              ? dayjs(field.value, "dd-MM-yyyy")
+                              ? dayjs(field.value, "DD-MM-YYYY")
                               : null
                           }
-                          onChange={field.onChange}
-                          dateFormat="dd-MM-yyyy"
+                          onChange={(date, dateString) => {
+                            field.onChange(dateString);
+                          }}
+                          format="DD-MM-YYYY"
                         />
                       )}
                     />
@@ -334,21 +333,20 @@ end_date: new Date(),
                     </span>
                     <Controller
                       name="end_date"
-                      rules={{ required: "End date is required !" }}
                       control={control}
                       render={({ field }) => (
                         <DatePicker
                           {...field}
-                          placeholder="Select Time"
                           className="form-control"
                           value={
                             field.value
-                              ? dayjs(field.value, "dd-MM-yyyy")
+                              ? dayjs(field.value, "DD-MM-YYYY")
                               : null
                           }
-                          selected={field.value}
-                          onChange={field.onChange}
-                          dateFormat="dd-MM-yyyy"
+                          onChange={(date, dateString) => {
+                            field.onChange(dateString);
+                          }}
+                          format="DD-MM-YYYY"
                         />
                       )}
                     />

@@ -104,11 +104,15 @@ const CampaignsList = () => {
     {
       title: "Start Date",
       dataIndex: "start_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+
       sorter: (a, b) => a.start_date.length - b.start_date.length,
     },
     {
       title: "End Date",
       dataIndex: "end_date",
+            render: (text) => <div>{moment(text).format("DD-MM-YYYY")}</div>,
+
       sorter: (a, b) => a.end_date.length - b.end_date.length,
     },
     {

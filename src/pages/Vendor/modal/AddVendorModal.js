@@ -211,6 +211,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                       src={URL.createObjectURL(selectedAvatar)}
                       alt="Avatar Preview"
                       className="img-fluid"
+                      
                     />
                   ) : vendor?.profile_img ? (
                     <ImageWithDatabase src={vendor?.profile_img} alt="image" />

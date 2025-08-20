@@ -31,7 +31,7 @@ const ProductCategory = () => {
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "S. No.",      width: 50,
+      title: "Sr. No.",      width: 50,
       render: (text,record,index) =>index+1 ,
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
@@ -247,7 +247,7 @@ const ProductCategory = () => {
 
       <AddEditModal mode={mode} initialData={selectedIndustry} />
       <DeleteAlert
-        label="Industry"
+        label="Product Category"
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         selectedIndustry={selectedIndustry}
