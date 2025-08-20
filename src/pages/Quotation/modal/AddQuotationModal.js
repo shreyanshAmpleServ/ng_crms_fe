@@ -1053,7 +1053,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
                     setMsgId={setMsgId}
                     id={order?.id}
                     vendor={order?.quotation_vendor}
-                    quotaiton={order}
+                    quotation={order}
                     prevPdf={prevPdf}
                     setPrevPdf={setPrevPdf}
                     attachments={attachments}

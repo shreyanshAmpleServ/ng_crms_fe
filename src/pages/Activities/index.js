@@ -116,7 +116,7 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
         <>
           {text?.id ? (
             <span
-              className={`badge activity-badge ${text?.name === "Calls" ? "bg-success" : text?.name === "Emails" ? "bg-purple" : text?.name === "Task" ? "bg-blue" : text?.name === "Task" ? "bg-red" : "bg-warning"}`}
+              className={`badge activity-badge ${text?.name === "Calls" ? "bg-success" : text?.name === "Emails" ? "bg-purple" : text?.name === "Tasks" ? "bg-pink" : text?.name === "Task" ? "bg-red" : "bg-warning"}`}
             >
               {/* <i className={record?.icon} /> */}
 

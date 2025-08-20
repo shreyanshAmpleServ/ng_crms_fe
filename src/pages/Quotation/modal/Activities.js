@@ -190,14 +190,14 @@ export const AllActivities = ({
           Activity
         </button>
       </div>
-
+{console.log("Quotation",quotation?.quotation_code)}
       {/* Tab content */}
       <div className="tab-content p-0 pt-1">
         {activeSubTab === 'comments' && (
           <DocumentComments id={id} code={quotation?.quotation_code}/> 
         )}
         {activeSubTab === 'activity' && (
-          <ManageActivityList id={id} />
+          <ManageActivityList id={id} code={quotation?.quotation_code} />
         )}
       </div>
 
