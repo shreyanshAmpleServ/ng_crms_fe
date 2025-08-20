@@ -254,8 +254,8 @@ $value in $theme-colors {
     color: $text-color;
 }
 .bg-soft-dark {
-    background-color: rgba($dark, 0.3);
-    color: $white;
+    background-color: rgba($dark, 0.3) !important; 
+    color: $white !important;
 }
 .bg-light {
   color: $text-color;

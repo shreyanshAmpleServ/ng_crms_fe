@@ -13,7 +13,11 @@ import { fetchSources } from "../../../redux/source";
 import { fetchCountries } from "../../../redux/country";
 import { fetchMappedStates } from "../../../redux/mappedState";
 import { fetchCurrencies } from "../../../redux/currency";
-import "./style.css"
+import "./style.css";
+import AddEditModal from "../../crm-settings/sources/modal/AddEditModal";
+import AddEditModalIndustry from "../../crm-settings/industries/modal/AddEditModal";
+import AddEditModalCurrency from "../../crm-settings/currency/modal/AddEditModal";
+import AddEditModalStatus from "../../crm-settings/lost-reasons/modal/AddEditModal";
 const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
   const {
     control,
@@ -60,6 +64,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
       country: "",
       description: "",
       is_active: "Y", // Default to 'Y' as per schema
+      is_contact: false,
     },
   });
 
@@ -68,7 +73,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
       reset({
         lead_owner: selectedLead?.lead_owner || null,
         lead_owner_name: selectedLead?.lead_owner_name || "",
-        company_icon: selectedLead?.company_icon || null,
+        company_icon: null,
         company_id: selectedLead?.company_id || "",
         first_name: selectedLead?.first_name || "",
         last_name: selectedLead?.last_name || "",
@@ -86,6 +91,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         revenue_currency: selectedLead?.revenue_currency || "",
         rating: selectedLead?.rating || "",
         tags: selectedLead?.tags || "",
+        jobTitle: selectedLead?.jobTitle || "",
         email_opt_out: selectedLead?.email_opt_out || "N",
         secondary_email: selectedLead?.secondary_email || "",
         facebook_ac: selectedLead?.facebook_ac || "",
@@ -101,6 +107,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         country: selectedLead?.country || "",
         description: selectedLead?.description || "",
         is_active: selectedLead?.is_active || "Y",
+        is_contact: selectedLead?.is_contact || false,
       });
     } else {
       reset({
@@ -112,6 +119,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         last_name: "",
         title: "",
         email: "",
+        jobTitle: "",
         phone: "",
         fax: "",
         mobile: "",
@@ -124,6 +132,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         revenue_currency: "",
         rating: "",
         tags: "",
+        jobTitle: "",
         email_opt_out: "N",
         secondary_email: "",
         facebook_ac: "",
@@ -139,6 +148,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
         country: "",
         description: "",
         is_active: "Y",
+        is_contact: false,
       });
     }
   }, [selectedLead]);
@@ -231,9 +241,14 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
 
     // Append all form fields to FormData
     Object.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] !== undefined) {
-        // Append other fields as-is
-        formData.append(key, data[key]);
+      if (key === "is_contact") {
+        if (!selectedLead) {
+          formData.append("is_contact", data[key] ? "Y" : "N");
+        }
+      } else {
+        if (data[key] !== null && data[key] !== undefined) {
+          formData.append(key, data[key]);
+        }
       }
     });
     if (selectedLogo) {
@@ -481,6 +496,17 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           <label className="col-form-label">
                             Companies <span className="text-danger">*</span>
                           </label>
+                          <div>
+                            <Link
+                              to="#"
+                              className="link-purple"
+                              data-bs-toggle="modal"
+                              data-bs-target="#modal_add_company"
+                            >
+                              <i className="ti ti-plus me-1" />
+                              Add
+                            </Link>
+                          </div>
                         </div>
                         <Controller
                           name="company_id"
@@ -557,6 +583,26 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         {errors.title && (
                           <small className="text-danger">
                             {errors.title.message}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Job Title <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter Job Title"
+                          className="form-control"
+                          {...register("jobTitle", {
+                            required: "Job Title is required !",
+                          })}
+                        />
+                        {errors.jobTitle && (
+                          <small className="text-danger">
+                            {errors.jobTitle.message}
                           </small>
                         )}
                       </div>
@@ -641,26 +687,26 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                         <label className="col-form-label">
                           Mobile <span className="text-danger">*</span>
                         </label>
-                       <input
-  type="number"
-  placeholder="Enter Mobile"
-  className={`form-control ${errors.mobile ? "is-invalid" : ""}`}
-  {...register("mobile", {
-    required: "Mobile number is required!",
-    minLength: {
-      value: 9,
-      message: "Mobile must be at least 9 digits!",
-    },
-    maxLength: {
-      value: 12,
-      message: "Mobile must be at most 12 digits!",
-    },
-    pattern: {
-      value: /^[0-9]+$/,
-      message: "Mobile must contain only numbers!",
-    },
-  })}
-/>
+                        <input
+                          type="number"
+                          placeholder="Enter Mobile"
+                          className={`form-control ${errors.mobile ? "is-invalid" : ""}`}
+                          {...register("mobile", {
+                            required: "Mobile number is required!",
+                            minLength: {
+                              value: 9,
+                              message: "Mobile must be at least 9 digits!",
+                            },
+                            maxLength: {
+                              value: 12,
+                              message: "Mobile must be at most 12 digits!",
+                            },
+                            pattern: {
+                              value: /^[0-9]+$/,
+                              message: "Mobile must contain only numbers!",
+                            },
+                          })}
+                        />
 
                         {errors.mobile && (
                           <small className="text-danger">
@@ -670,43 +716,45 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                       </div>
                     </div>
 
-                   <div className="col-md-6">
-  <div className="mb-3">
-    <label className="col-form-label">
-      Phone&nbsp;<span className="text-danger">*</span>
-    </label>
+                    <div className="col-md-6">
+                      <div className="mb-3">
+                        <label className="col-form-label">
+                          Phone&nbsp;<span className="text-danger">*</span>
+                        </label>
 
-    <input
-      type="number"
-      placeholder="Enter Phone"
-      className={`form-control ${errors.phone ? "is-invalid" : ""}`}
-      onInput={(e) => {
-        e.target.value = e.target.value.replace(/[^0-9]/g, ""); // only digits
-      }}
-      {...register("phone", {
-        required: "Phone number is required!",
-        minLength: {
-          value: 9,
-          message: "Phone must be at least 9 digits!",
-        },
-        maxLength: {
-          value: 12,
-          message: "Phone must be at most 12 digits!",
-        },
-        pattern: {
-          value: /^[0-9]+$/,
-          message: "Phone must contain only numbers!",
-        },
-      })}
-    />
-    {errors.phone && (
-      <small className="text-danger">
-        {errors.phone.message}
-      </small>
-    )}
-  </div>
-</div>
-
+                        <input
+                          type="number"
+                          placeholder="Enter Phone"
+                          className={`form-control ${errors.phone ? "is-invalid" : ""}`}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(
+                              /[^0-9]/g,
+                              ""
+                            ); // only digits
+                          }}
+                          {...register("phone", {
+                            required: "Phone number is required!",
+                            minLength: {
+                              value: 9,
+                              message: "Phone must be at least 9 digits!",
+                            },
+                            maxLength: {
+                              value: 12,
+                              message: "Phone must be at most 12 digits!",
+                            },
+                            pattern: {
+                              value: /^[0-9]+$/,
+                              message: "Phone must contain only numbers!",
+                            },
+                          })}
+                        />
+                        {errors.phone && (
+                          <small className="text-danger">
+                            {errors.phone.message}
+                          </small>
+                        )}
+                      </div>
+                    </div>
 
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -734,9 +782,22 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
+                      <div className="d-flex align-items-center justify-content-between">
+                          <label className="col-form-label">
                           Source <span className="text-danger">*</span>
-                        </label>
+                          </label>
+                          <div>
+                            <Link
+                              to="#"
+                              className="link-purple"
+                              data-bs-toggle="modal"
+                              data-bs-target="#add_edit_source_modal"
+                            >
+                              <i className="ti ti-plus me-1" />
+                              Add
+                            </Link>
+                          </div>
+                        </div>
                         <Controller
                           name="lead_source"
                           rules={{ required: "Source is required !" }} // Make the field required
@@ -767,9 +828,22 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
+                       <div className="d-flex align-items-center justify-content-between">
+                          <label className="col-form-label">
                           Industry <span className="text-danger">*</span>
-                        </label>
+                          </label>
+                          <div>
+                            <Link
+                              to="#"
+                              className="link-purple"
+                              data-bs-toggle="modal"
+                              data-bs-target="#add_edit_industry_modal"
+                            >
+                              <i className="ti ti-plus me-1" />
+                              Add
+                            </Link>
+                          </div>
+                        </div>
                         <Controller
                           name="industry"
                           rules={{ required: "Industry is required !" }} // Make the field required
@@ -799,9 +873,22 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
+                      <div className="d-flex align-items-center justify-content-between">
+                          <label className="col-form-label">
                           Lead status <span className="text-danger">*</span>
-                        </label>
+                          </label>
+                          <div>
+                            <Link
+                              to="#"
+                              className="link-purple"
+                              data-bs-toggle="modal"
+                              data-bs-target="#add_edit_lost_reason_modal"
+                            >
+                              <i className="ti ti-plus me-1" />
+                              Add
+                            </Link>
+                          </div>
+                        </div>
                         <Controller
                           name="lead_status"
                           rules={{ required: "Lead status is required !" }}
@@ -831,7 +918,6 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                       </div>
                     </div>
                     <div className="col-md-6">
-                      
                       <div className="mb-3">
                         <label className="col-form-label">
                           Owner <span className="text-danger">*</span>
@@ -860,7 +946,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             />
                           )}
                         />
-                        
+
                         {errors.lead_owner && (
                           <small className="text-danger">
                             {errors.lead_owner.message}
@@ -882,15 +968,15 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">
-                          No of Employees&nbsp;<span className="text-danger">*</span>
+                          No of Employees&nbsp;
+                          <span className="text-danger">*</span>
                         </label>
-                         <input
+                        <input
                           type="number" // use "text" to avoid browser-specific issues with type="number"
                           placeholder="Enter Employees"
                           className={`form-control ${errors.Employees ? "is-invalid" : ""}`}
                           {...register("no_of_employees", {
                             required: " Employees  is required!",
-                           
                           })}
                         />
                         {errors.no_of_employees && (
@@ -945,9 +1031,22 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
 
                     <div className="col-md-6">
                       <div className="mb-3">
-                        <label className="col-form-label">
+                        <div className="d-flex align-items-center justify-content-between">
+                          <label className="col-form-label">
                           Currency <span className="text-danger">*</span>
-                        </label>
+                          </label>
+                          <div>
+                            <Link
+                              to="#"
+                              className="link-purple"
+                              data-bs-toggle="modal"
+                              data-bs-target="#add_edit_currency_modal"
+                            >
+                              <i className="ti ti-plus me-1" />
+                              Add
+                            </Link>
+                          </div>
+                        </div>
                         <Controller
                           name="revenue_currency"
                           rules={{ required: "Currency is required !" }} // Validation rule
@@ -1316,6 +1415,35 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                 </div>
               </div>
             </div>
+            {
+            !selectedLead &&  <div className="col-md-6 my-3 d-flex align-items-center">
+            <div className="status-toggle small-toggle-btn d-flex align-items-center">
+              <span className="me-2 label-text">Is Contact?</span>
+              <Controller
+                name="is_contact"
+                control={control}
+                render={({ field }) => (
+                  <>
+                    <input
+                      type="checkbox"
+                      id="isContact" // Add the ID here
+                      className="check"
+                      {...field}
+                      checked={field.value}
+                    />
+                    <label
+                      htmlFor="isContact" // Ensure this matches the input ID
+                      className="checktoggle"
+                    >
+                      Is Contact?
+                    </label>
+                  </>
+                )}
+              />
+            </div>
+          </div>
+            }
+           
             {/* /Social Profile */} {/* Access */}
             {/* <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
@@ -1408,6 +1536,11 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
           </div>
         </form>
       </div>
+
+      <AddEditModal mode="add" initialData={null} />
+      <AddEditModalIndustry  mode="add" initialData={null}/>
+      <AddEditModalCurrency  mode="add" initialData={null}/>
+      <AddEditModalStatus  mode="add" initialData={null}/>
     </div>
   );
 };

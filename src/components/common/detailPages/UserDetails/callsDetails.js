@@ -84,10 +84,10 @@ const CallsDetailsOfUsers = ({ lead_id=null, contact_id=null ,project_id=null })
                     <div className="d-sm-flex align-items-center justify-content-between pb-2">
                       <div className="d-flex align-items-center mb-2">
                         <span className="avatar avatar-md me-2 flex-shrink-0">
-                          { item.created_by_user.profile_img ? (
+                          { item?.created_by_user?.profile_img ? (
                             <ImageWithDatabase
                               src={
-                               item.created_by_user.profile_img
+                               item?.created_by_user?.profile_img
                               }
                               alt="img"
                             />

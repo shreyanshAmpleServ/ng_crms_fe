@@ -81,6 +81,7 @@ import Modules from "../pages/crm-settings/Modules";
 import DealsDashboard from "../pages/main-menu/deals-dashboard";
 import LeadsDashboard from "../pages/main-menu/leads-dashboard";
 import ProjectDashboard from "../pages/main-menu/project-dashboard";
+import ActivityDashboard from "../pages/main-menu/activity-dashboard";
 import Vendor from "../pages/Vendor";
 import VendorDetail from "../pages/Vendor/VendorDetail";
 
@@ -149,7 +150,7 @@ export const privateRoutes = [
     path: route.deals,
     element: <DealList />,
     route: Route,
-    title: "Deals",
+    title: "Opportunity",
   },
   {
     path: route.activities,
@@ -642,6 +643,12 @@ export const privateRoutes = [
     element: <ProjectDashboard />,
     route: Route,
     title: "Projects Dashboard",
+  },
+  {
+    path: route.activityDashboard,
+    element: <ActivityDashboard />,
+    route: Route,
+    title: "Activity Dashboard",
   },
 ];
 

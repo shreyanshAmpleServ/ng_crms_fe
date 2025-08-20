@@ -32,6 +32,11 @@ export const SidebarData = [
             icon: "ti ti-layout-dashboard",
             showSubRoute: false,
           },
+          // {
+          //   label: "Activity Dashboard",
+          //   link: route.activityDashboard,
+          //   showSubRoute: false,
+          // },
         ],
       },
       // {
@@ -76,7 +81,7 @@ export const SidebarData = [
         submenu: false,
       },
       {
-        label: "Deals",
+        label: "Opportunity",
         link: route.deals,
         subLink1: route.dealtDetail,
         subLink2: route.dealsKanban,

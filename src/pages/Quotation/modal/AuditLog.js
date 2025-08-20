@@ -20,104 +20,6 @@ const QuotationAuditLog = ({id}) => {
   const [selectedAction, setSelectedAction] = useState('all');
   const dispatch = useDispatch()
 
-  const auditLogData = [
-    {
-      id: 1,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'vendor_id',
-      old_value: 'Vendor ABC Corp',
-      new_value: 'Vendor XYZ Ltd',
-      createdby: 1,
-      createdate: '2024-08-04T10:30:00Z',
-      user_name: 'John Doe',
-      user_avatar: 'JD'
-    },
-    {
-      id: 2,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'currency',
-      old_value: 'USD',
-      new_value: 'EUR',
-      createdby: 1,
-      createdate: '2024-08-04T10:30:00Z',
-      user_name: 'John Doe',
-      user_avatar: 'JD'
-    },
-    {
-      id: 3,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'quotation_items.quantity',
-      old_value: '10',
-      new_value: '15',
-      createdby: 2,
-      createdate: '2024-08-04T11:15:00Z',
-      user_name: 'Jane Smith',
-      user_avatar: 'JS'
-    },
-    {
-      id: 4,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'quotation_items.rate',
-      old_value: '$100.00',
-      new_value: '$120.00',
-      createdby: 2,
-      createdate: '2024-08-04T11:15:00Z',
-      user_name: 'Jane Smith',
-      user_avatar: 'JS'
-    },
-    {
-      id: 5,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'quotation_items',
-      old_value: '-',
-      new_value: 'Premium Laptop Item',
-      createdby: 1,
-      createdate: '2024-08-04T14:20:00Z',
-      user_name: 'John Doe',
-      user_avatar: 'JD'
-    },
-    {
-      id: 6,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'quotation_items',
-      old_value: 'Old Monitor Item',
-      new_value: '-',
-      createdby: 2,
-      createdate: '2024-08-04T15:45:00Z',
-      user_name: 'Jane Smith',
-      user_avatar: 'JS'
-    },
-    {
-      id: 7,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'status',
-      old_value: 'Draft',
-      new_value: 'Approved',
-      createdby: 3,
-      createdate: '2024-08-04T16:30:00Z',
-      user_name: 'Mike Johnson',
-      user_avatar: 'MJ'
-    },
-    {
-      id: 8,
-      table_name: 'Quotation',
-      record_id: 1001,
-      column_name: 'due_date',
-      old_value: '2024-08-15',
-      new_value: '2024-08-20',
-      createdby: 1,
-      createdate: '2024-08-04T17:10:00Z',
-      user_name: 'John Doe',
-      user_avatar: 'JD'
-    }
-  ];
   React.useEffect(() => {
     id && dispatch(fetchAuditLog({id}))
   }, [dispatch,id]);
@@ -169,21 +71,6 @@ console.log("Quotation",auditLog, quotations?.auditLog)
     });
   };
 
-  const filteredData = useMemo(() => {
-    return auditLogData.filter(entry => {
-      const matchesSearch =
-        entry?.column_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry?.old_value.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry?.new_value.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry?.user_name.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const actionType = getActionType(entry?.column_name, entry?.old_value, entry?.new_value);
-      const matchesAction = selectedAction === 'all' || actionType === selectedAction;
-
-      return matchesSearch && matchesAction;
-    });
-  }, [auditLogData, searchTerm, selectedAction]);
-
   const getBadgeClass = (actionType) => {
     switch (actionType) {
       case 'CREATE':
@@ -208,7 +95,7 @@ console.log("Quotation",auditLog, quotations?.auditLog)
   };
 
   return (
-    <div className="container  p-1">
+    <div className="container  p-4 pt-0">
       {/* <div className="text-center mb-5">
         <div className="mb-3">
           <Clock size={32} className="text-primary" />

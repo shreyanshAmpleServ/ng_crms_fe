@@ -40,6 +40,30 @@ export const fetchActivities = createAsyncThunk(
     }
   }
 );
+export const fetchActivitiesByObject = createAsyncThunk(
+  "activities/fetchActivitiesByObject",
+  async (reqBody, thunkAPI) => {
+    try {
+      const params = {};
+      if (reqBody?.search) params.search = reqBody.search;
+      if (reqBody?.filter) params.filter = reqBody.filter;
+      if (reqBody?.filter2) params.filter2 = reqBody.filter2;
+      if (reqBody?.startDate) params.startDate = reqBody.startDate?.toISOString();
+      if (reqBody?.endDate) params.endDate = reqBody.endDate?.toISOString();
+      if (reqBody?.page) params.page = reqBody.page;
+      if (reqBody?.size) params.size = reqBody.size;
+      if (reqBody?.object_id) params.object_id = reqBody.object_id;
+      if (reqBody?.activityType) params.activityType = reqBody.activityType;
+
+      const response = await apiClient.get(`/v1/activities-by-object`, { params });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch activities"
+      );
+    }
+  }
+);
 
 // Fetch Grouped Activities
 export const fetchGroupedActivities = createAsyncThunk(
@@ -145,6 +169,19 @@ const acticitiesSlice = createSlice({
         state.activities = action.payload.data;
       })
       .addCase(fetchActivities.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+        toast.error(action.payload.message || "Failed to fetch activities");
+      })
+      .addCase(fetchActivitiesByObject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchActivitiesByObject.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activities = action.payload.data;
+      })
+      .addCase(fetchActivitiesByObject.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
         toast.error(action.payload.message || "Failed to fetch activities");

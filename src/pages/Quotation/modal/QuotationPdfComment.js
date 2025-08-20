@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   fetchComments,
-  fetchCommentsApp,
   sendCommentReply,
+  sendComments,
 } from "../../../redux/quotation";
 import { generateToken } from "../../../utils/publicToken";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ManageActivitiesModal from "./manageActivity";
 
-const DocumentComments = ({ id, code }) => {
+const PublicDocumentComments = ({ id, order }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -77,10 +77,14 @@ const DocumentComments = ({ id, code }) => {
   const [token, setToken] = useState();
 
   const dispatch = useDispatch();
+
+  const { comments: commentDAta } = useSelector((state) => state.quotations);
+  console.log("Comment sj: ",commentDAta)
+
   React.useEffect(() => {
     //   token && dispatch(fetchQuotationpPublicById({ id: newId, token }));
-    newId && dispatch(fetchCommentsApp({ id: newId }));
-  }, [dispatch, newId]);
+    if(!commentDAta && newId && token) dispatch(fetchComments({ id: newId , token }));
+  }, [dispatch, newId,token,commentDAta]);
   React.useEffect(() => {
     const createToken = async () => {
       const genToken = await generateToken({ id: 1, username: "Anil" });
@@ -89,8 +93,7 @@ const DocumentComments = ({ id, code }) => {
     };
     createToken();
   }, []);
-  const { appComments: commentDAta } = useSelector((state) => state.quotations);
-  console.log("Comment Data  : ", commentDAta);
+  
   // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -160,27 +163,44 @@ const DocumentComments = ({ id, code }) => {
   //     ));
   //   };
 
-  const handleReply = (parentId) => {
+  const handleReply = async (parentId) => {
     if (!replyText.trim()) return;
-
+  
     const newReply = {
-      //   id: Math.max(...comments.map((c) => c.id)) + 1,
       parent_id: parentId,
       comments: replyText,
-      user_name: "You",
-      user_id: 1,
+      user_name:order?.quotation_vendor?.name,
+      user_id: order?.quotation_vendor?.id,
       obj_name: "Quotation",
-      obj_id: 6,
+      obj_id: newId,
       created_at: new Date().toISOString(),
-      likes: 0,
+    //   likes: 0,
     };
-    dispatch(sendCommentReply({ id: newId, data: newReply }));
-    dispatch(fetchCommentsApp({ id: newId }));
+  
+    try {
+      // Wait until reply is sent successfully
+        // await  dispatch(sendComments({id: newId, token,data: {comments:comment,obj_name:"Quotation",obj_id:newId,user_id:order?.quotation_vendor?.id,user_name:order?.quotation_vendor?.name} }))
+      
+      await dispatch(sendComments({ id: newId,token, data: newReply })).unwrap();
+  
+      // Only then fetch comments again
+      await dispatch(fetchComments({ id: newId,token }));
+  
+      // Reset UI
+      setReplyText("");
+      setShowReplyForm(null);
+  
+    } catch (error) {
+      console.error("Failed to send reply:", error);
+      // Optionally show error toast
+    }
+  };
+  
 
     // setComments((prev) => [...prev, newReply]);
     // setReplyText("");
     // setShowReplyForm(null);
-  };
+//   };
 
   const organizedComments = organizeComments(commentDAta?.data);
   //   const organizedComments = organizeComments(comments);
@@ -194,19 +214,19 @@ const DocumentComments = ({ id, code }) => {
 
     return (
       <div
-        className={`card mb-3 ${isReply ? "ms-4 border-start border-3 border-info" : "shadow-sm"}`}
+        className={`card mb-2 ${isReply ? "ms-4 border-start border-3 border-info" : "shadow-sm"}`}
         style={{
           borderLeft: isReply ? "" : "4px solid #e9ecef",
           transition: "all 0.2s ease",
         }}
       >
-        <div className="card-body border ">
+        <div className="card-body border p-4 ">
           <div className="d-flex">
             {/* User Avatar */}
             <div
               className={`rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3 p-2 ${colorClass}`}
               style={{
-                width: isReply ? "35px" : "45px",
+                width: isReply ? "30px" : "40px",
                 height: isReply ? "30px" : "40px",
                 fontSize: isReply ? "14px" : "16px",
               }}
@@ -240,7 +260,7 @@ const DocumentComments = ({ id, code }) => {
               </div>
 
               {/* Comment Content */}
-              <p className="text-dark text-capitalize mb-3">
+              <p className="text-dark text-capitalize mb-2">
                 {comment.comments}
               </p>
 
@@ -290,6 +310,7 @@ const DocumentComments = ({ id, code }) => {
                       Y
                     </div>
                     <div className="flex-grow-1">
+                        
                       <textarea
                         className="form-control mb-2"
                         rows="3"
@@ -340,14 +361,14 @@ const DocumentComments = ({ id, code }) => {
         </Link>
         </div> */}
         {/* Header */}
-        <div className="card mb-4 bg-purple-gradient text-white">
+        <div className="card mb-4 bg-dark-gradient border">
           <div className="card-body">
             <div className="d-flex align-items-center">
               <i className="fas fa-comments me-3 fs-2"></i>
               <div>
                 <h3 className="card-title mb-1">Document Comments</h3>
                 <p className="card-text mb-0 opacity-75">
-                  {comments[0]?.obj_name} # {code} • {organizedComments?.length}{" "}
+                  {comments[0]?.obj_name} # {order?.quotation_code} • {organizedComments?.length}{" "}
                   Comments
                   {/* • {comments.filter(c => c.parent_id !== null).length} Replies */}
                 </p>
@@ -417,7 +438,7 @@ const DocumentComments = ({ id, code }) => {
           onClose={handleCloseModal}
           mode="modal" 
         /> */}
-        <ManageActivitiesModal activity={null} onClose={handleCloseModal} />
+        {/* <ManageActivitiesModal activity={null} onClose={handleCloseModal} /> */}
         {/* Load more button */}
         {/* {organizedComments.length > 0 && (
           <div className="text-center mt-4">
@@ -432,4 +453,4 @@ const DocumentComments = ({ id, code }) => {
   );
 };
 
-export default DocumentComments;
+export default PublicDocumentComments;

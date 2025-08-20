@@ -25,6 +25,7 @@ import FilterComponent from "./modal/FilterComponent";
 import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import { Helmet } from "react-helmet-async";
 import LeadsKanban from "./LeadsKanban.js";
+import AddCompanyModal from "../companies/modal/AddCompanyModal.js";
 
 const LeadList = () => {
   const navigate = useNavigate();
@@ -489,6 +490,7 @@ React.useEffect(()=>{
         </div>
       </div>
       <AddLeadsModal setSelectedLead={setSelectedLead} selectedLead={selectedLead} />
+      <AddCompanyModal type="modal"/>
       <EditLeadsModal lead={selectedLead} />
       <DeleteAlert
       label="Lead"
