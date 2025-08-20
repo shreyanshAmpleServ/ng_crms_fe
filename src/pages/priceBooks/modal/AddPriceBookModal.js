@@ -64,8 +64,8 @@ const AddInvoiceModal = ({ order, setOrder }) => {
         model: order?.model || "",
         is_active: order?.is_active || "Y",
         description: order?.description || "",
-        effectivate_from: new Date(order?.effectivate_from) || new Date(),
-        effectivate_to: new Date(order?.effectivate_to) || new Date(),
+        effectivate_from: order?.effectivate_from || new Date(),
+        effectivate_to: order?.effectivate_to || new Date(),
       });
       setItemNumber(
         order?.price_book_details?.map((item) => ({
@@ -174,7 +174,7 @@ const AddInvoiceModal = ({ order, setOrder }) => {
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter name"
+                    placeholder="Enter Name"
                     className="form-control"
                     {...register("name", {
                       required: "Contact person to is required !",

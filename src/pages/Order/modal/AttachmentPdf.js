@@ -276,7 +276,7 @@ console.log("payload")
   };
 
   return (
-<div className="container-fluid py-4">
+<div className="container-fluid py-4 mb-5 border-opacity-75" >
       <div className="row"  >
         <div className="col-12">
           {/* Action Buttons */}

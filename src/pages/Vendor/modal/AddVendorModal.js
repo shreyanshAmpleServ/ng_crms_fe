@@ -121,7 +121,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
   }));
 
   // Handle avatar upload
-  const handleAvatarChange = (e) => {
+ const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedAvatar(file);
@@ -151,7 +151,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
 
     try {
       vendor
-        ? await dispatch(updateVendor({ id: vendor?.id, vendorData: formData }))
+        ? await dispatch(updateVendor({ id: vendor?.id, vendorData: formData })).unwrap()
         : await dispatch(addVendor(formData)).unwrap();
       closeButton.click();
       reset();
@@ -203,7 +203,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
           <input type="hidden" {...register("username", { value: watch('email') })} /> */}
           <div className="row">
             {/* Profile Image Upload */}
-            {/* <div className="col-md-12">
+            <div className="col-md-12">
               <div className="profile-pic-upload">
                 <div className="profile-pic">
                   {selectedAvatar ? (
@@ -236,11 +236,11 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                   <p>JPG, GIF, or PNG. Max size of 800K</p>
                 </div>
               </div>
-            </div> */}
+            </div>
 
 
 
-              <div className="col-md-12">
+              {/* <div className="col-md-12">
                       <div className="mb-3">
                         <div className="profile-upload">
                           <div className="profile-upload-img">
@@ -285,7 +285,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
             {/* Full Name */}
             <div className="col-md-6">

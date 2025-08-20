@@ -1,15 +1,13 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ImageWithBasePath from "../../components/common/imageWithBasePath";
-import { deleteUser } from "../../redux/manage-user";
-import EditUserModal from "./modal/EditUserModal"; // Update modal for editing users
+import { deleteVenor } from "../../redux/vendor";
 import DeleteAlert from "./alert/DeleteAlert";
+import AddVendorModal from "./modal/AddVendorModal";
 
 const UsersGrid = ({ data }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [selectedUser, setSelectedUser] = useState(null); // For modal context
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Delete confirmation
@@ -25,7 +23,7 @@ const UsersGrid = ({ data }) => {
   // Confirm and delete the user
   const deleteData = () => {
     if (selectedUser) {
-      dispatch(deleteUser(selectedUser.id)); // Call delete action with user ID
+      dispatch(deleteVenor(selectedUser.id)); // Call delete action with user ID
       setShowDeleteModal(false); // Close modal
     }
   };
@@ -79,7 +77,17 @@ const UsersGrid = ({ data }) => {
                       {/* <span className="avatar avatar-xs bg-light-300 p-0 flex-shrink-0 rounded-circle text-dark me-2">
                         <i className="ti ti-map-pin" />
                       </span> */}
-                      <p>{`${user?.billing_street} ${user?.billing_city} ${user?.state?.name} ${user?.country.name} ${user?.billing_zipcode && "( "+ user?.billing_zipcode+" )"}`}</p>
+<p>
+  {[
+    user?.billing_street,
+    user?.billing_city,
+    user?.state?.name,
+    user?.country?.name,
+    user?.billing_zipcode ? `( ${user.billing_zipcode} )` : null,
+  ]
+    .filter(Boolean) // remove null/undefined/empty
+    .join(" ")}
+</p>
                     </div>
                     </div>
                   </div>
@@ -99,7 +107,7 @@ const UsersGrid = ({ data }) => {
                         className="dropdown-item"
                         to="#"
                         data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvas_edit_user"
+                       data-bs-target="#offcanvas_add_vendor"
                         onClick={() => setSelectedUser(user)}
                       >
                         <i className="ti ti-edit text-blue" /> Edit
@@ -127,10 +135,20 @@ const UsersGrid = ({ data }) => {
                       <i className="ti ti-phone text-dark me-1" />
                       {user.phone || "No Phone"}
                     </p>
-                    <p className="text-default d-inline-flex align-items-center">
-                      <i className="ti ti-map-pin text-dark me-1" />
-                      {`${user?.billing_street} ${user?.billing_city} ${user?.state?.name} ${user?.country.name} ${user?.billing_zipcode && "( "+ user?.billing_zipcode+" )"}`}
-                    </p>
+                   <p>
+  <i className="ti ti-map-pin text-dark me-1" />
+  {[
+    user?.billing_street,
+    user?.billing_city,
+    user?.state?.name,
+    user?.country?.name,
+    user?.billing_zipcode ? `( ${user.billing_zipcode} )` : null,
+  ]
+    .filter(Boolean) // removes null/undefined/empty
+    .join(" ")}
+</p>
+
+
                   </div>
                 </div>
               </div>
@@ -153,14 +171,17 @@ const UsersGrid = ({ data }) => {
         </div>
       )}
       {/* Modals */}
-      <EditUserModal user={selectedUser} /> {/* Edit user modal */}
-      <DeleteAlert
-        label="User"
+      <AddVendorModal vendor={selectedUser} setVendor={setSelectedUser} />
+
+      {/* <EditUserModal user={selectedUser} /> Edit user modal */}
+            <DeleteAlert
+        label="Vendor"
         showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
-        selectedUser={selectedUser}
+        onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}
-      />{" "}
+         setVendor={selectedUser}
+      />
+
       {/* Delete confirmation modal */}
     </>
   );
