@@ -117,9 +117,9 @@ export const DataTable = ({
     return datas;
   }, [data, sortOrder]);
 
-  useEffect(() => {
-    setFilteredData?.(filteredData);
-  }, [filteredData]);
+  // useEffect(() => {
+  //   setFilteredData?.(filteredData);
+  // }, [filteredData]);
 
   return (
     <div className="card-body">

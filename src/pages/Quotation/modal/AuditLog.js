@@ -153,7 +153,7 @@ console.log("Quotation",auditLog, quotations?.auditLog)
             auditLog?.data && auditLog?.data.map((entry) => {
             // const actionType = getActionType(entry?.column_name, entry?.old_value, entry?.new_value);
             return (
-              <div key={entry?.id} className={`card ${entry?.action === "CREATE" ? "bg-success-light-gradient"  : entry?.action === "DELETE" ? "bg-danger-light-gradient" : "bg-light-gradient"} border border-black shadow-lg mb-0 p-4`}>
+              <div key={entry?.id} className={`card ${entry?.action === "CREAT2E" ? "bg-success-light-gradient"  : entry?.action === "DE2LETE" ? "bg-danger-light-gradient" : "bg-light"} border border-black shadow-lg mb-0 p-4`}>
                 <div className="d-flex justify-content-between align-items-start mb-1">
                   <div className="d-flex align-items-center gap-3">
                     <div className={`badge ${getBadgeClass(entry?.action)} p-2`}>
@@ -168,10 +168,14 @@ console.log("Quotation",auditLog, quotations?.auditLog)
                   </div>
                   <div className="d-flex align-items-center gap-2">
                     <div className="rounded-circle bg-purple-gradient text-black d-flex align-items-center justify-content-center" style={{ width: 32, height: 32, fontSize: 12 }}>
-                     { "QA" || entry?.obj_name}
+                    {(entry?.updated_by_name?.trim()?.split(" ") || [])
+    .map((w, i, arr) =>
+      i === 0 || i === arr.length - 1 ? w[0].toUpperCase() : ""
+    )
+    .join("") || "NA"}
                     </div>
                     <div>
-                      <div className="fw-medium text-black">{entry?.obj_name}</div>
+                      <div className="fw-medium text-black text-capitalize">{entry?.updated_by_name || "Unknown"}</div>
                       <div className="text-muted small">{formatDateTime(entry?.updated_at)}</div>
                     </div>
                   </div>
@@ -181,18 +185,18 @@ console.log("Quotation",auditLog, quotations?.auditLog)
                 {entry?.action === 'UPDATE' && Array.isArray(JSON.parse(entry?.new_value || '[]')) &&
   JSON.parse(entry.new_value)?.map((item)=>
 
-                  <div className="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                  <div className="d-flex align-items-center bg-gray-50 rounded gap-2 mb-1 flex-wrap">
                     
-                    <div className="bg-light border border-danger-subtle rounded p-2 d-flex align-items-center gap-2">
+                    <div className=" border border-danger-subtle rounded p-2 d-flex align-items-center gap-2">
                       <small className="text-danger fw-bold">FROM</small>
                       <code className="text-danger">{item?.field == "status" ? getStatus(item?.oldValue) : item?.oldValue || '(empty)'}</code>
                     </div>
                     <ArrowRight size={16} className="text-muted" />
-                    <div className="bg-light border border-success-subtle rounded p-2 d-flex align-items-center gap-2">
+                    <div className="bg- border border-success-subtle rounded p-2 d-flex align-items-center gap-2">
                       <small className="text-success fw-bold">TO</small>
                       <code className="text-success">{item?.field == "status" ? getStatus(item?.oldValue) : item?.newValue || '(empty)'}</code>
                     </div>
-                    <div className="bg-light border border-danger-subtle rounded p-2 d-flex align-items-center gap-2">
+                    <div className="bg- border border-danger-subtle rounded p-2 d-flex align-items-center gap-2">
                       <small className="text-danger fw-bold text-capitalize">  {item?.field?.replace(/_/g, ' ')}</small>
                       {/* <code className="text-danger">{item?.oldValue || '(empty)'}</code> */}
                     </div>
@@ -200,19 +204,24 @@ console.log("Quotation",auditLog, quotations?.auditLog)
                 )}
 
                 {entry?.action === 'CREATE' && (
-                  <div className="bg-light border border-success-subtle rounded p-2 d-inline-flex align-items-center gap-2 mt-2">
+                  <div className="bg-gray-50 border border-success-subtle rounded p-2 d-inline-flex align-items-center gap-2 mt-2">
                     <Plus size={16} className="text-success" />
                     <code className="text-success">{JSON.parse(entry?.new_value)?.item_name}</code>
                   </div>
                 )}
 
-                {entry?.action === 'DELETE' && Array.isArray(JSON.parse(entry?.new_value || '[]')) &&
-  JSON.parse(entry.new_value)?.map((item)=>
-                  <div className="bg-light border border-danger-subtle rounded p-2 d-inline-flex align-items-center gap-2 mt-2">
+                {entry?.action === 'DELETE' &&
+                //  Array.isArray(JSON.parse(entry?.old_value || '[]')) &&
+  // JSON.parse(entry?.old_value)?.map((item)=>
+  //                 <div className="bg-gray-50 border border-danger-subtle rounded p-2 d-inline-flex align-items-center gap-2 mt-2">
+  //                   <Trash2 size={16} className="text-danger" />
+  //                   <code className="text-danger">{item?.item_name}</code>
+  //                 </div>)
+                  <div className="bg-gray-50 border border-danger-subtle rounded p-2 d-inline-flex align-items-center gap-2 mt-2">
                     <Trash2 size={16} className="text-danger" />
-                    <code className="text-danger">{item?.item_name}</code>
+                    <code className="text-danger">{JSON.parse(entry?.old_value)?.item_name}</code>
                   </div>
-                )}
+                }
               </div>
             );
           })

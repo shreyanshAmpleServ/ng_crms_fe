@@ -139,5 +139,5 @@ export const all_routes = {
   taskReport:"/crms/task-report",
   noPermission:"/crms/no-permission",
 
-  quoteTemplate:"/crems/quote-template"
+  quoteTemplate:"/crms/quote-template"
 };
