@@ -100,7 +100,7 @@ export const deleteLead = createAsyncThunk(
         {
           loading: "Deleting lead...",
           success: (res) => res.data.message || "Lead deleted successfully!",
-          error: "Failed to delete lead",
+          error: (res) => res.response?.data?.message || "Failed to delete lead",
         }
       );
       return {
@@ -109,7 +109,7 @@ export const deleteLead = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete lead"
+        error?.response?.data?.message || "Failed to delete lead2"
       );
     }
   }

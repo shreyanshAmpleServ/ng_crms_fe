@@ -112,7 +112,7 @@ const LostReasonsList = () => {
     }]:[])
   ];
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const { lostReasons, loading, error, success } = useSelector(
     (state) => state.lostReasons,
   );

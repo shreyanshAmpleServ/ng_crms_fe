@@ -105,6 +105,7 @@ export const deleteCases = createAsyncThunk(
       return {
         data: { id },
         message: response.data.message || "Case deleted successfully",
+        
       };
     } catch (error) {
       toast.error(error.response?.data || "Failed to delete Case");

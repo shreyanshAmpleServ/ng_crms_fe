@@ -71,7 +71,7 @@ export const deleteContact = createAsyncThunk(
         {
           loading: 'Deleting contact...',
           success: (res) => res.data.message || 'Contact deleted successfully!',
-          error: 'Failed to delete contact',
+          error: (res) => res.response?.data?.message || 'Failed to delete contact',
         }
       );
       return {

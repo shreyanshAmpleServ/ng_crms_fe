@@ -348,6 +348,7 @@ const SalesInvoice = () => {
     if (selectedOrder) {
       dispatch(deleteSalesInvoice(selectedOrder.id));
       setShowDeleteModal(false);
+      setSelectedOrder(null);
     }
   };
 
@@ -463,6 +464,7 @@ const SalesInvoice = () => {
         showModal={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onDelete={deleteData}
+setOrder={setSelectedOrder}
       />
     </div>
   );

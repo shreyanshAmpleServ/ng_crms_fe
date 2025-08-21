@@ -235,7 +235,7 @@ const DealList = () => {
   const deleteData = () => {
     if (selecectDeal) {
       dispatch(deleteDeal(selecectDeal.id)); // Dispatch the delete action
-      navigate(`/crms/deals`); // Navigate to the specified route
+      // navigate(`/crms`); // Navigate to the specified route
       setShowDeleteModal(false); // Close the modal
     }
   };

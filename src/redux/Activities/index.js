@@ -135,7 +135,7 @@ export const deleteActivities = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete activity"
+          error?.response?.data?.message || "Failed to delete activity"
       );
     }
   }

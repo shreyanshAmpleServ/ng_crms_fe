@@ -86,7 +86,7 @@ export const deleteSalesInvoice = createAsyncThunk(
         {
           loading: " sales invoice deleting...",
           success: (res) => res.data.message || "Sales invoice deleted successfully!",
-          error: "Failed to delete sales invoice",
+            error: (res) => res.response?.data?.message || "Failed to delete sales invoice",
         }
       );
       // const response = await apiClient.delete(`/v1/sales-invoice/${id}`);

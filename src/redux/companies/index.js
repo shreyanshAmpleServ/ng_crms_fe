@@ -70,7 +70,7 @@ export const deleteCompany = createAsyncThunk(
         {
           loading: "Deleting company...",
           success: (res) => res.data.message || "Company deleted successfully!",
-          error: "Failed to delete company",
+          error: (res) => res.response?.data?.message || "Failed to delete company",
         }
       );
       return {

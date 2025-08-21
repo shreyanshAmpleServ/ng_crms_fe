@@ -3,12 +3,13 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { updateCompany } from "../../../redux/companies/";
+import { CiImageOn } from "react-icons/ci";
 
 const EditCompanyModal = ({ company }) => {
   const [selectedLogo, setSelectedLogo] = useState(null);
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.companies);
-
+console.log("Company : ",company)
   const {
     control,
     handleSubmit,
@@ -38,11 +39,57 @@ const EditCompanyModal = ({ company }) => {
       entityType: "company",
     },
   });
+   React.useEffect(() => {
+      if (!company) {
+        reset({
+      name: "",
+      registrationNumber: "",
+      email: "",
+      phone: "",
+      website: "",
+      address: "",
+      industryType: "",
+      annualRevenue: null,
+      employeeCount: "",
+      businessType: "",
+      primaryContactName: "",
+      primaryContactRole: "",
+      primaryContactEmail: "",
+      primaryContactPhone: "",
+      secondaryContactName: "",
+      secondaryContactRole: "",
+      secondaryContactEmail: "",
+      secondaryContactPhone: "",
+       entityType: "company",});
+      } else {
+        reset({
+      name: company?.name || "",
+      registrationNumber: company?.registrationNumber || "",
+      email: company?.email || "",
+      phone: company?.phone || "",
+      website: company?.website || "",
+      address: company?.address || "",
+      industryType: company?.industryType || "",
+      annualRevenue: company?.annualRevenue || null,
+      employeeCount: company?.employeeCount || "",
+      businessType: company?.businessType || "",
+      primaryContactName: company?.primaryContactName || "",
+      primaryContactRole: company?.primaryContactRole || "",
+      primaryContactEmail: company?.primaryContactEmail || "",
+      primaryContactPhone: company?.primaryContactPhone || "",
+      secondaryContactName: company?.secondaryContactName || "",
+      secondaryContactRole: company?.secondaryContactRole || "",
+      secondaryContactEmail: company?.secondaryContactEmail || "",
+      secondaryContactPhone: company?.secondaryContactPhone || "",
+      entityType: "company",
+        });
+      }
+    }, [company]);
 
-  useEffect(() => {
-    reset({ ...company });
-    setSelectedLogo(company?.logo);
-  }, [company, reset]);
+  // useEffect(() => {
+  //   reset({ ...company });
+  //   setSelectedLogo(company?.logo);
+  // }, [company, reset]);
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -133,59 +180,52 @@ const EditCompanyModal = ({ company }) => {
               >
                 <div className="accordion-body border-top">
                   <div className="row">
-                    <div className="col-md-12">
-                      <div className="mb-3">
-                        <div className="profile-upload">
-                          <div className="profile-upload-img">
-                            {selectedLogo ? (
-                              <img
-                                src={URL.createObjectURL(selectedLogo)}
-                                alt="Company Logo"
-                                className="preview w-100 h-100 object-fit-cover"
-                                // style={{image}}
-                              />
-                            ) : company ? (
-                              <img
-                                src={company.image}
-                                alt="Company Logo"
-                                className="preview w-100 h-100 object-fit-cover"
-                              />
-                            ) : (
-                              <span>
-                                <i className="ti ti-photo" />
-                              </span>
-                            )}
-                            <button
-                              type="button"
-                              className="profile-remove"
-                              onClick={() => setSelectedLogo(null)}
-                            >
-                              <i className="ti ti-x" />
-                            </button>
-                            {/* <img
-                              src="assets/img/profiles/avatar-20.jpg"
-                              alt="img"
-                              className="preview1"
-                            />
-                            <button type="button" className="profile-remove">
-                              <i className="ti ti-x" />
-                            </button> */}
-                          </div>
-                          <div className="profile-upload-content">
-                            <label className="profile-upload-btn">
-                              <i className="ti ti-file-broken" /> Upload File
-                              <input
-                                type="file"
-                                accept="image/*"
-                                className="input-img"
-                                onChange={handleLogoChange}
-                              />
-                            </label>
-                            <p>JPG, GIF or PNG. Max size of 800 Kb</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                     <div className="col-md-12">
+      <div className="mb-3">
+        <div className="profile-upload">
+          <div className="profile-upload-img">
+            {selectedLogo ? (
+              <img
+                src={URL.createObjectURL(selectedLogo)}
+                alt="Company Logo"
+                className="preview w-100 h-100 object-fit-cover"
+              />
+            ) : company && company.logo ? (
+              <img
+                src={company.logo}
+                alt="Company Logo"
+                className="preview w-100 h-100 object-fit-cover"
+              />
+            ) : (
+              <span className="flex items-center justify-center w-full h-full text-gray-400 text-5xl">
+                <CiImageOn />
+              </span>
+            )}
+
+            <button
+              type="button"
+              className="profile-remove"
+              onClick={() => setSelectedLogo(null)}
+            >
+              <i className="ti ti-x" />
+            </button>
+          </div>
+
+          <div className="profile-upload-content">
+            <label className="profile-upload-btn">
+              <i className="ti ti-file-broken" /> Upload File
+              <input
+                type="file"
+                accept="image/*"
+                className="input-img"
+                onChange={handleLogoChange}
+              />
+            </label>
+            <p>JPG, GIF or PNG. Max size of 800 Kb</p>
+          </div>
+        </div>
+      </div>
+    </div>
                     <div className="col-md-6">
                       <div className="mb-3">
                         <label className="col-form-label">

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addCompany } from "../../../redux/companies/";
+               import { CiImageOn } from "react-icons/ci";
 
 const AddCompanyModal = ({ company, type = "offcanvas" }) => {
   const [selectedLogo, setSelectedLogo] = useState(null);
@@ -128,50 +129,66 @@ const AddCompanyModal = ({ company, type = "offcanvas" }) => {
           >
             <div className="accordion-body border-top">
               <div className="row">
-                <div className="col-md-12">
-                  <div className="mb-3">
-                    <div className="profile-upload">
-                      <div className="profile-upload-img">
-                        {selectedLogo ? (
-                          <img
-                            src={URL.createObjectURL(selectedLogo)}
-                            alt="Company Logo"
-                            className="preview w-100 h-100 object-fit-cover"
-                          />
-                        ) : company ? (
-                          <img
-                            src={company.image}
-                            alt="Company Logo"
-                            className="preview w-100 h-100 object-fit-cover"
-                          />
-                        ) : (
-                          <span>
-                            <i className="ti ti-photo" />
-                          </span>
-                        )}
-                        <button
-                          type="button"
-                          className="profile-remove"
-                          onClick={() => setSelectedLogo(null)}
-                        >
-                          <i className="ti ti-x" />
-                        </button>
-                      </div>
-                      <div className="profile-upload-content">
-                        <label className="profile-upload-btn">
-                          <i className="ti ti-file-broken" /> Upload File
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="input-img"
-                            onChange={handleLogoChange}
-                          />
-                        </label>
-                        <p>JPG, GIF or PNG. Max size of 800 Kb</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
+<div className="col-md-12">
+  <div className="mb-3">
+    <div className="profile-upload">
+      <div className="profile-upload-img" style={{ position: "relative" }}>
+        {selectedLogo ? (
+          <>
+            <img
+              src={URL.createObjectURL(selectedLogo)}
+              className="preview w-100 h-100 object-fit-cover"
+            />
+            <button
+              type="button"
+              className="profile-remove"
+              style={{
+                position: "absolute",
+                top: "-10px",
+                right: "-13px",
+                border: "none",
+                background: "white",
+                borderRadius: "50%",
+                cursor: "pointer",
+                padding: "2px 5px",
+              }}
+              onClick={() => setSelectedLogo(null)}
+            >
+              <i className="ti ti-x" />
+            </button>
+          </>
+        ) : company && company.image ? (
+          <img
+            src={company.image}
+            className="preview w-100 h-100 object-fit-cover"
+          />
+        ) : (
+          <span
+            className="flex items-center justify-center w-full h-full text-gray-400"
+            style={{ fontSize: "3rem" }}
+          >
+            <CiImageOn />
+          </span>
+        )}
+      </div>
+
+      <div className="profile-upload-content">
+        <label className="profile-upload-btn">
+          <i className="ti ti-file-broken" /> Upload File
+          <input
+            type="file"
+            accept="image/*"
+            className="input-img"
+            onChange={handleLogoChange}
+          />
+        </label>
+        <p>JPG, GIF or PNG. Max size of 800 Kb</p>
+      </div>
+    </div>
+  </div>
+</div>
+
                 <div className="col-md-6">
                   <div className="mb-3">
                     <label className="col-form-label">
