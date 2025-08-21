@@ -901,6 +901,8 @@ const AddQuotationModal = ({ order, setOrder }) => {
                 setTermsItems={setTermsItems}
                 optionalItem={optionalItem}
                 setOptionalItem={setOptionalItem}
+                othersItem={othersItem}
+                setOthersItem={setOthersItem}
                 updatedItems={updatedItems}
                 setUpdatedItems={setUpdatedItems}
               />

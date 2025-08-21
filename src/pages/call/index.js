@@ -484,7 +484,7 @@ const LeadList = () => {
                           setSelectedCategory(category)
                         }}
                       />
-                      <ViewIconsToggle view={view} setView={setView} />
+                      {/* <ViewIconsToggle view={view} setView={setView} /> */}
                     </div>
                   </div>
 
