@@ -7,11 +7,12 @@ import {
 import { fetchUsers } from "../../../../redux/manage-user";
 import moment from "moment";
 import Select from "react-select";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ImageWithBasePath from "../../imageWithBasePath";
 import { ascendingandDecending, sortBy } from "../../selectoption/selectoption";
 import NoDataFound from "../../NotFound/NotFount";
 import ImageWithDatabase from "../../ImageFromDatabase";
+import ActivitiesModal from "../../../../pages/Activities/modal/ActivitiesModal";
 
 export const ActivityDetailOfUser = ({
   deal_id = null,
@@ -27,12 +28,13 @@ export const ActivityDetailOfUser = ({
   const [clickedIndex,setClickedIndex] = useState()
   const [loadType,setLoadType] = useState()
   const dispatch = useDispatch();
+  const {id:lead_id}=useParams()
   // useEffect(async() => {
  
   // },[dispatch])
   useEffect(() => {
     dispatch(fetchUsers());
-    (deal_id || contact_id || company_id || vendor_id || owner_id || project_id) && dispatch(fetchGroupedActivities({
+    (lead_id||deal_id || contact_id || company_id || vendor_id || owner_id || project_id) && dispatch(fetchGroupedActivities({
         search: "",
         deal_id,
         contact_id,
@@ -41,6 +43,7 @@ export const ActivityDetailOfUser = ({
         owner_id,
         project_id,
         orderBy,
+        lead_id,
         sortBy: sortById,
       }));
   }, [dispatch, isAssignTo,vendor_id,owner_id,project_id, orderBy,deal_id,company_id,contact_id, sortById]);
@@ -91,7 +94,7 @@ export const ActivityDetailOfUser = ({
         <div className="card">
           <div className="card-header d-flex align-items-center justify-content-between flex-wrap row-gap-3">
             <h4 className="fw-semibold">Activities</h4>
-            <div className="d-flex gap-2">
+            <div className="d-flex gap-2 align-items-center">
               <div className="form-sort mt-0">
                 <i className="ti ti-sort-ascending-2" />
                 <Select
@@ -116,6 +119,11 @@ export const ActivityDetailOfUser = ({
                   onChange={(e) => {setOrderBy(e.value);setLoadType("Sort")}}
                 />
               </div>
+<Link className="btn text-white btn-primary" to="#"  data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvas_add_activities">
+<i className="ti text-white ti-plus me-1"></i>
+Create
+</Link>
             </div>
           </div>
           <div className="position-relative">
@@ -522,6 +530,7 @@ export const ActivityDetailOfUser = ({
           </div>
        
         </div>
+        <ActivitiesModal leadId={lead_id} setActivity={()=>{}} activity={null}/>
       </div>
     </>
   );
