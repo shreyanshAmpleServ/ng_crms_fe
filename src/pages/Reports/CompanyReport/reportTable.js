@@ -128,11 +128,11 @@ data,
     return datas;
   }, [searchText, selectedDateRange, data, columns, sortOrder]);
 
-   useEffect(() => {
-      setFilteredData?.(filteredData);
-    }, [filteredData]);
+  //  useEffect(() => {
+  //     setFilteredData(filteredData);
+  //   }, [filteredData]);
 
-  console.log("filteredData", filteredData);
+  // console.log("filteredData", filteredData);
   return (
     <>
       <div className="card-body">

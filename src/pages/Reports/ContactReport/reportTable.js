@@ -79,7 +79,8 @@ export const DataTable = ({
       {
         title: "Location",
         dataIndex: "contact_Country",
-        render: (text,record) => (<div>{record.contact_State?.name + ", "+record.contact_Country?.name}</div>),
+        render: (text,record) => (        <div>{`${record?.city ? record?.city + ", " : ""} ${record.contact_State?.name ? record.contact_State?.name + ", " : ""} ${record.contact_Country?.name ? record.contact_Country?.name : " - "}`}</div>
+        ),
         sorter: (a, b) => a.country.length - b.country.length,
       },
       // {
@@ -196,11 +197,11 @@ export const DataTable = ({
     return datas;
   }, [searchText, selectedDateRange, data, columns, sortOrder]);
 
-   useEffect(() => {
-      setFilteredData?.(filteredData);
-    }, [filteredData]);
+  //  useEffect(() => {
+  //     setFilteredData(filteredData);
+  //   }, [filteredData]);
     
-  console.log("filteredData", filteredData);
+  // console.log("filteredData", filteredData);
   return (
     <>
       <div className="card-body">

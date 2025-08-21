@@ -124,14 +124,6 @@ export default function SendMailForm({
     }
   };
 
-  const getPriorityBadge = (priority) => {
-    const badges = {
-      high: 'bg-danger text-white',
-      normal: 'bg-secondary text-white',
-      low: 'bg-info text-white'
-    };
-    return badges[priority] || badges.normal;
-  };
 
   // Reply Mode UI
   if (isNewMail === false) {
@@ -144,8 +136,8 @@ export default function SendMailForm({
       }}>
         <div className="card shadow-lg border-0 rounded-lg overflow-hidden">
           {/* Header */}
-          <div className="card-header bg-success-gradient" style={{
-            background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)'
+          <div className="card-header p-2 bg-gray-50 text-black" style={{
+            background: 'linear-gradient(135deg,rgba(60, 203, 93, 0.2) 0%,rgba(92, 237, 193, 0.05) 100%)'
           }}>
             <div className="d-flex justify-content-between align-items-center">
               <div className="d-flex align-items-center">
@@ -154,7 +146,7 @@ export default function SendMailForm({
                   className="me-2 cursor-pointer"
                   style={{ cursor: 'pointer', fontSize: '18px' }}
                 />
-                <span className="fw-semibold text-white">Reply</span>
+                <span className="fw-semibold h4 ">Reply</span>
               </div>
               <button
                 type="button"
@@ -196,7 +188,7 @@ export default function SendMailForm({
             <div className="mb-3 p-2 rounded" style={{ backgroundColor: 'white', border: '1px solid #e9ecef' }}>
               <div className="d-flex align-items-center">
                 <small className="text-muted me-2 fw-medium">To:</small>
-                <div className="fw-medium text-primary">{vendor?.email}</div>
+                <div className="fw-medium text-dark">{vendor?.email}</div>
               </div>
             </div>
 
@@ -211,7 +203,7 @@ export default function SendMailForm({
               />
               <button
                 type="button"
-                className="btn btn-outline-primary btn-sm d-flex align-items-center"
+                className="btn btn-outline-secondary btn-sm d-flex align-items-center"
                 onClick={handleIconClick}
                 style={{ borderRadius: '20px' }}
               >
@@ -280,10 +272,10 @@ export default function SendMailForm({
 
   // New Mail Mode UI
   return (
-    <div className="container-fluid p-0">
-      <div className="card border-0 shadow-lg rounded-lg overflow-hidden mx-auto" style={{ maxWidth: '800px' }}>
+    <div className="container-fluid p-2">
+      <div className="card border-0 shadow-lg rounded-lg overflow-hidden mx-auto" >
         {/* Header */}
-        <div className="card-header bg-soft-dark border-0 py-3" style={{
+        <div className="card-header bg-gray-50 border-0 py-3" style={{
           // background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white'
         }}>

@@ -10,7 +10,7 @@ import { GrDocumentPdf } from "react-icons/gr";
 
 import { FaReply } from "react-icons/fa6";
 import { MdOutlineFileDownload } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Skeleton } from "antd";
 
 export default function GmailSection({
   id,
@@ -83,7 +83,14 @@ export default function GmailSection({
     return str.replace(/-/g, "+").replace(/_/g, "/");
   }
   if (loading)
-    return <p onClick={openGmailAuthPopup}>🔄 Checking Gmail status...</p>;
+    return <p onClick={openGmailAuthPopup}><div className="p-3">
+  <div className="placeholder-glow mt-3">
+    {/* <Skeleton paragraph={{ rows: 4 }} /> */}
+    <Skeleton  className="placeholder rounded col-12 mb-2" style={{ height: "30px" }} />
+    <Skeleton  className="placeholder rounded col-12 mb-2" style={{ height: "30px" }} />
+    <Skeleton  className="placeholder rounded col-12 mb-2" style={{ height: "30px" }} />
+  </div>
+</div></p>;
   if (error) return <p>❌ Error: {error}</p>;
 
   console.log("msg Id", threadId);
@@ -94,7 +101,7 @@ export default function GmailSection({
         // <p>✅ Gmail Connected.</p>
         <></>
       ) : (
-        <p onClick={openGmailAuthPopup}>🔌 Connecting to Gmail...</p>
+        <p onClick={openGmailAuthPopup}>🔌 Connect to Gmail</p>
       )}
       <div className="accordion" id="emailAccordion">
         {gmailMessage?.data?.map((item, idx) => (

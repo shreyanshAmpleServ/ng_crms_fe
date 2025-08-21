@@ -145,8 +145,8 @@ const LeadList = () => {
     },
 
     {
-  title: "Assignee",
-  dataIndex: "DealContacts",
+  title: "Owner",
+  dataIndex: "lead_owner_name",
   render: (text) => (
     <div className="text-wrap" style={{ maxWidth: "10rem" }}>
       {text}
@@ -154,6 +154,16 @@ const LeadList = () => {
   ),
   sorter: (a, b) => a.DealContacts?.localeCompare(b.DealContacts),
 },
+//     {
+//   title: "Assignee",
+//   dataIndex: "DealContacts",
+//   render: (text) => (
+//     <div className="text-wrap" style={{ maxWidth: "10rem" }}>
+//       {text}
+//     </div>
+//   ),
+//   sorter: (a, b) => a.DealContacts?.localeCompare(b.DealContacts),
+// },
     {
       title: "Created Date",
       dataIndex: "createdate",

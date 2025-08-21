@@ -9,8 +9,7 @@ export const SidebarData = [
     label: "CRM",
     submenuOpen: true,
     showSubRoute: false,
-        icon: FaAddressBook,
-
+    icon: FaAddressBook,
     submenuHdr: "crm",
     submenuItems: [
       {
@@ -205,16 +204,19 @@ export const SidebarData = [
           {
             label: "Deal Reports",
             link: route.dealReport,
+        icon: "ti ti-file-invoice",
             showSubRoute: false,
           },
           {
             label: "Contact Reports",
             link: route.contactReport,
+        icon: "ti ti-file-invoice",
             showSubRoute: false,
           },
           {
             label: "Company Reports",
-            link: route.companyReport,
+        icon: "ti ti-file-invoice",
+        link: route.companyReport,
             showSubRoute: false,
           },
           {
@@ -224,7 +226,8 @@ export const SidebarData = [
           },
           {
             label: "Task Reports",
-            link: route.taskReport,
+        icon: "ti ti-file-invoice",
+        link: route.taskReport,
             showSubRoute: false,
           },
         ],
@@ -334,6 +337,7 @@ export const SidebarData = [
           },
         ],
       },
+   
       {
         label: "Meeting Types",
         link: route.meetingType,

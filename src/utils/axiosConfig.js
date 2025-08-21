@@ -44,7 +44,7 @@ apiClient.interceptors.response.use(
       window.location.pathname !== "/crms/login"
     ) {
       // localStorage.removeItem("crmspermissions");
-      // window.location.href = "https://mowara.dcclogsuite.com/";
+      window.location.href = "https://mowara.dcclogsuite.com/";
 
     }
     return Promise.reject(error);

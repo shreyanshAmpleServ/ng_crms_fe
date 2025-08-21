@@ -147,9 +147,9 @@ export const DataTable = ({
     return datas;
   }, [searchText, selectedDateRange, data, columns, sortOrder]);
 
-    useEffect(() => {
-      setFilteredData?.(filteredData);
-    }, [filteredData]);
+    // useEffect(() => {
+    //   setFilteredData?.(filteredData);
+    // }, [filteredData]);
     
   return (
     <>

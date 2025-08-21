@@ -60,7 +60,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-  const [isNewMail, setIsNewMail] = useState(false);
+  const [isNewMail, setIsNewMail] = useState();
   const [threadId, setThreadId] = useState();
   const [msgId, setMsgId] = useState();
 
@@ -473,7 +473,8 @@ const AddQuotationModal = ({ order, setOrder }) => {
              Back to Form
               </>
             ) : (<>
-              <i className="ti ti-activity"></i>
+                           <i style={{fontSize:"22px",fontWeight:800}} className="ti ti-arrow-narrow-left  "></i>
+
              Back to  Activity
               </>
             )}
@@ -526,11 +527,11 @@ const AddQuotationModal = ({ order, setOrder }) => {
             {/* Form Section */}
             <div
               ref={firstDivRef}
-              className={`transition-all duration-300 ${
+              className={`transition-all duration-300 animate__animated animate__slideInLeft ${
               order && showActivities ? "d-none " : "col-md-12"
               }`}
               style={{
-                transition: "all 0.3s ease-in-out",
+                transition: "slideInLeft 0.3s ease-in-out",
               }}
             >
               <div className={  order && showActivities ? " col-md-2" : " row col-md-12"}>
@@ -1162,6 +1163,16 @@ const AddQuotationModal = ({ order, setOrder }) => {
             opacity: 1;
           }
         }
+        @keyframes slideInLeft {
+          from {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
         
         @keyframes slideOutRight {
           from {
@@ -1184,6 +1195,10 @@ const AddQuotationModal = ({ order, setOrder }) => {
         
         .animate__slideInRight {
           animation: slideInRight 0.3s ease-in-out;
+        }
+        
+        .animate__slideInLeft {
+          animation: slideInLeft 0.3s ease-in-out;
         }
         
         .btn:hover {

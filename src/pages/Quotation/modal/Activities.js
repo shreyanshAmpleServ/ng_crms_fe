@@ -128,7 +128,7 @@ export const AllActivities = ({
                 />
               </div>
 
-              {!isNewMail && (
+              {(isNewMail === false) && (
                 <div className="sticky-mail-form">
                   <SendMailForm
                     attachments={attachments}
