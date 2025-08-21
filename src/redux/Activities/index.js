@@ -76,6 +76,7 @@ export const fetchGroupedActivities = createAsyncThunk(
       if (data?.company_id) params.company_id = data.company_id;
       if (data?.project_id) params.project_id = data.project_id;
       if (data?.vendor_id) params.vendor_id = data.vendor_id;
+      if (data?.lead_id) params.lead_id = data.lead_id;
       if (data?.orderBy) params.orderBy = data.orderBy;
       if (data?.sortBy) params.sortBy = data.sortBy;
       if (data?.search) params.search = data.search;
