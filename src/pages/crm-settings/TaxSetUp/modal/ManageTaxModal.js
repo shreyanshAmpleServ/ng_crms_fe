@@ -326,9 +326,8 @@ const ManageTaxModal = ({ tax, setTax }) => {
                           : null
                       }
                       format="DD-MM-YYYY"
-                      onChange={(date, dateString) =>
-                        field.onChange(dateString)
-                      }
+                                      onChange={(date) => field.onChange(date)}
+
                     />
                   )}
                 />
