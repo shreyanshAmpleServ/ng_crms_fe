@@ -32,6 +32,7 @@ import {
 } from "../../../components/common/selectoption/selectoption";
 import { fetchLeads } from "../../../redux/leads";
 import { createCampaign, updateCampaign } from "../../../redux/campaign";
+import moment from "moment";
 
 const ActivitiesModal = ({ setCampaign, campaign }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -138,9 +139,14 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       ...data,
       contact_ids: data.contact_ids?.map((contacts) => contacts.value),
       // lead_id: data.lead_id?.map((contact) => contact.value),
-      start_date: new Date(),
-      end_date: new Date(),
+    start_date: data.start_date
+    ? moment(data.start_date).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z"
+    : null,
+  end_date: data.end_date
+    ? moment(data.end_date).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z"
+    : null,
     };
+    console.log("DAtas ; ", data , finalData)
     const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
     try {
       campaign
@@ -303,15 +309,9 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                         <DatePicker
                           {...field}
                           className="form-control"
-                          value={
-                            field.value
-                              ? dayjs(field.value, "DD-MM-YYYY")
-                              : null
-                          }
-                          onChange={(date, dateString) => {
-                            field.onChange(dateString);
-                          }}
-                          format="DD-MM-YYYY"
+                               value={field.value ? dayjs(field.value) : null}
+                                format="DD-MM-YYYY"
+                                onChange={(date) => field.onChange(date ? date.toDate() : null)}
                         />
                       )}
                     />
@@ -338,15 +338,9 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                         <DatePicker
                           {...field}
                           className="form-control"
-                          value={
-                            field.value
-                              ? dayjs(field.value, "DD-MM-YYYY")
-                              : null
-                          }
-                          onChange={(date, dateString) => {
-                            field.onChange(dateString);
-                          }}
-                          format="DD-MM-YYYY"
+                           value={field.value ? dayjs(field.value) : null}
+                                format="DD-MM-YYYY"
+                                onChange={(date) => field.onChange(date ? date.toDate() : null)}
                         />
                       )}
                     />

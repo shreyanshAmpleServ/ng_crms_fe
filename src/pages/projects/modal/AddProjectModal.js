@@ -5,6 +5,7 @@ import { addProject } from "../../../redux/projects";
 import { DatePicker } from "antd";
 import Select from "react-select";
 import dayjs from "dayjs";
+import moment from "moment";
 
 import { arrProjectTiming } from "../../../components/common/selectoption/selectoption";
 
@@ -37,8 +38,12 @@ const AddProjectModal = () => {
       ...data,
       projectTiming: data.projectTiming?.value || null,
       amount: parseFloat(data.amount) || null,
-      startDate: data.startDate ? dayjs(data.startDate).toISOString() : null,
-      dueDate: data.dueDate ? dayjs(data.dueDate).toISOString() : null,
+      startDate: data.startDate
+        ? dayjs(data.startDate).startOf("day").toISOString()
+        : null,
+      dueDate: data.dueDate
+        ? dayjs(data.dueDate).startOf("day").toISOString()
+        : null,
     };
 
     try {
@@ -49,7 +54,7 @@ const AddProjectModal = () => {
       closeButton.click();
     }
   };
-useEffect(() => {
+  useEffect(() => {
     const offcanvasElement = document.getElementById("offcanvas_add_project");
     if (offcanvasElement) {
       const handleModalClose = () => {
@@ -144,7 +149,6 @@ useEffect(() => {
               )}
             </div>
 
-            
             <div className="col-md-6">
               <div className="mb-3">
                 <label className="col-form-label">
@@ -168,9 +172,9 @@ useEffect(() => {
                           : null
                       }
                       format="DD-MM-YYYY"
-                      onChange={(date, dateString) =>
-                        field.onChange(dateString)
-                      }
+                      onChange={(date) =>
+                        field.onChange(date ? date.toDate() : null)
+                      } // ✅ Date object
                     />
                   )}
                 />
@@ -206,9 +210,9 @@ useEffect(() => {
                           : null
                       }
                       format="DD-MM-YYYY"
-                      onChange={(date, dateString) =>
-                        field.onChange(dateString)
-                      }
+                      onChange={(date) =>
+                        field.onChange(date ? date.toDate() : null)
+                      } // ✅ Date object
                     />
                   )}
                 />
@@ -225,7 +229,7 @@ useEffect(() => {
               <label>Description</label>
               <textarea
                 className="form-control"
-                 placeholder="Enter Description"
+                placeholder="Enter Description"
                 rows={3}
                 {...register("description")}
               />
@@ -238,7 +242,6 @@ useEffect(() => {
                   <input
                     type="radio"
                     value="Y"
-                   
                     {...register("is_active")}
                     defaultChecked
                   />{" "}
