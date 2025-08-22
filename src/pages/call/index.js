@@ -54,7 +54,7 @@ const LeadList = () => {
 
   const columns = [
      {
-            title: "Sr.No.",  
+            title: "Sr. No.",  
              width: 50,
             render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
             
@@ -349,7 +349,7 @@ const LeadList = () => {
 
   const body = filteredData.map((row, index) =>
     tableColumns.map(col => {
-      if (col.title === "Sr.No.") {
+      if (col.title === "Sr. No.") {
         return (
           (paginationData?.currentPage - 1) * paginationData?.pageSize +
           index +

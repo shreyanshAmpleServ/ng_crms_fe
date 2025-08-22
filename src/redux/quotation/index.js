@@ -102,6 +102,37 @@ export const sendComments = createAsyncThunk(
     }
   },
 );
+export const uploadSignature = createAsyncThunk(
+  "quotations/uploadSignature",
+  async ({id,token,data}, thunkAPI) => {
+    console.log("Token : ",token)
+    const apiClient1 = axios.create({
+      baseURL: process.env.REACT_APP_API_BASE_URL || "233", // Set your API base URL
+      withCredentials: true,
+    });
+    try {
+      const response = await apiClient1.post(`/v1/signature-upload/${id}`,data, {
+        headers:{
+          Authorization:`Bearer ${token}`}
+       }
+     );
+     return response.data; // Returns the order details
+    //   const response = await toast.promise(
+    //     apiClient.post("/v1/send-reply", orderData),
+    //     {
+    //         loading: "Quotation creating...",
+    //         success: (res) => res.data.message || "Quotation created successfully!",
+    //         error: "Failed to create quotation",
+    //     }
+    // );
+    } catch (error) {
+      toast.error(error.response?.data || "Failed to create comment");
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to create comment",
+      );
+    }
+  },
+);
 // Fetch All quotations
 export const fetchquotations = createAsyncThunk(
   "quotations/fetchquotations",
@@ -379,6 +410,20 @@ const quotationSlice = createSlice({
         state.success = action.payload.message;
       })
       .addCase(sendComments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(uploadSignature.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadSignature.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.quotations = [action.payload.data, ...state.quotations];
+        // state.comments = {...state.comments , data: [ action.payload.data ,...state?.comments?.data]};
+        state.success = action.payload.message;
+      })
+      .addCase(uploadSignature.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })

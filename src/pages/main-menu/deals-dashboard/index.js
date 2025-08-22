@@ -643,7 +643,7 @@ const DealsDashboard = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
                       <h3 className="text-primary mb-1">
-                        {activityStats.calls}
+                        {dashboard?.activity?.totalCall}
                       </h3>
                       <p className="text-muted mb-0">Total Calls</p>
                     </div>
@@ -660,7 +660,7 @@ const DealsDashboard = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
                       <h3 className="text-info mb-1">
-                        {activityStats.total}
+                        {dashboard?.activity?.totalMeeting}
                       </h3>
                       <p className="text-muted mb-0">Total Meetings</p>
                     </div>
@@ -678,7 +678,7 @@ const DealsDashboard = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
                       <h3 className="text-warning mb-1">
-                        {activityStats.emails}
+                        {dashboard?.activity?.totalEmail}
                       </h3>
                       <p className="text-muted mb-0">Total Emails</p>
                     </div>
@@ -695,7 +695,7 @@ const DealsDashboard = () => {
                 <div className="card-body">
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
-                      <h3 className="text-danger mb-1">{activityStats.tasks}</h3>
+                      <h3 className="text-danger mb-1">{dashboard?.activity?.totalTask}</h3>
                       <p className="text-muted mb-0">Total Tasks</p>
                     </div>
                     <div className="avatar avatar-lg bg-danger rounded">
@@ -715,7 +715,7 @@ const DealsDashboard = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
                       <h3 className="text-success mb-1">
-                        {callStats.completed}
+                        {dashboard?.activity?.completedCall}
                       </h3>
                       <p className="text-muted mb-0">Completed Calls</p>
                     </div>
@@ -733,7 +733,7 @@ const DealsDashboard = () => {
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
                       <h3 className="text-warning mb-1">
-                        {callStats.scheduled}
+                        {dashboard?.activity?.completedMeeting}
                       </h3>
                       <p className="text-muted mb-0">Completed Meetings</p>
                     </div>
@@ -750,7 +750,7 @@ const DealsDashboard = () => {
                 <div className="card-body">
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
-                      <h3 className="text-danger mb-1">{callStats.missed}</h3>
+                      <h3 className="text-danger mb-1">{dashboard?.activity?.completedEmail}</h3>
                       <p className="text-muted mb-0">Completed Emails</p>
                     </div>
                     <div className="avatar avatar-lg bg-danger rounded">
@@ -766,7 +766,7 @@ const DealsDashboard = () => {
                 <div className="card-body">
                   <div className="d-flex align-items-center justify-content-between">
                     <div>
-                      <h3 className="text-secondary mb-1">{callStats.total}</h3>
+                      <h3 className="text-secondary mb-1">{dashboard?.activity?.completedTask}</h3>
                       <p className="text-muted mb-0">Completed Tasks</p>
                     </div>
                     <div className="avatar avatar-lg bg-secondary rounded">
