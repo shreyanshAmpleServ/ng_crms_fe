@@ -213,8 +213,11 @@ const ActivitiesModal = ({ setActivity, activity,leadId=undefined }) => {
     type_id: selectedType,
     lead_id:leadId || watch("lead_id")||undefined,
 
-    due_date: dayjs(data.due_date, "DD-MM-YYYY").toISOString(),
+    // due_date: dayjs(data.due_date, "DD-MM-YYYY").toISOString(),
         due_time: dayjs(data.due_time, "HH:mm:ss").toISOString(),
+         due_date: data.due_date
+    ? dayjs(data.due_date).startOf("day").toISOString()
+    : null,
 
   };
   const closeButton = document.querySelector('[data-bs-dismiss="offcanvas"]');
@@ -385,9 +388,8 @@ const ActivitiesModal = ({ setActivity, activity,leadId=undefined }) => {
                               : null
                           }
                           format="DD-MM-YYYY"
-                          onChange={(date, dateString) =>
-                            field.onChange(dateString)
-                          }
+                                onChange={(date) => field.onChange(date ? date.toDate() : null)} // ✅ Date object
+
                         />
                       )}
                     />

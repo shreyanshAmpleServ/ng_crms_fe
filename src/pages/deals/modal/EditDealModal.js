@@ -451,7 +451,7 @@ const EditDealModal = ({ deal }) => {
                   selected={dueDate}
                   value={dueDate ? dayjs(dueDate , "DD-MM-YYYY") : null }
                   onChange={(date) => setDueDate(date)}
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="DD-MM-YYYY"
                 />
               </div>
             </div>
@@ -466,7 +466,7 @@ const EditDealModal = ({ deal }) => {
                   selected={expectedCloseDate}
                                     value={expectedCloseDate ? dayjs(expectedCloseDate , "DD-MM-YYYY") : null }
                   onChange={(date) => setExpectedCloseDate(date)}
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="DD-MM-YYYY"
                 />
               </div>
             </div>

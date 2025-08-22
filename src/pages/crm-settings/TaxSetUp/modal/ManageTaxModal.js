@@ -60,6 +60,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
       });
     }
   }, [tax]);
+  const validFrom = watch("validFrom");
 
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_tax_setup");
@@ -79,11 +80,12 @@ const ManageTaxModal = ({ tax, setTax }) => {
     //     formData.append(key, data[key]);
     //   }
     // });
+    
     const formData = {
       ...data,
-      validFrom: data?.validFrom?.toISOString(),
-      validTo: data?.validTo?.toISOString(),
-      effect_date: data?.effect_date.toISOString(),
+      validFrom: new Date(data?.validFrom).toISOString(),
+      validTo: new Date(data?.validTo).toISOString(),
+      effect_date: new Date(data?.effect_date).toISOString(),
     };
 
     try {
@@ -352,82 +354,60 @@ const ManageTaxModal = ({ tax, setTax }) => {
             </div>
             {/*Valid From */}
            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                  Valid From <span className="text-danger">*</span>
-                </label>
-                <Controller
-                  name="validFrom"
-                  control={control}
-                  rules={{ required: "Valid From is required!" }}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...field}
-                      className="form-control"
-                      value={
-                        field.value
-                          ? dayjs(field.value, [
-                              "DD-MM-YYYY",
-                              "YYYY-MM-DD",
-                              dayjs.ISO_8601,
-                            ])
-                          : null
-                      }
-                      format="DD-MM-YYYY"
-                      onChange={(date, dateString) =>
-                        field.onChange(dateString)
-                      }
-                    />
-                  )}
-                />
+        <div className="mb-3">
+          <label className="col-form-label">
+            Valid From <span className="text-danger">*</span>
+          </label>
+          <Controller
+            name="validFrom"
+            control={control}
+            rules={{ required: "Valid From is required!" }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                className="form-control"
+                value={field.value ? dayjs(field.value) : null}
+                format="DD-MM-YYYY"
+                onChange={(date) => field.onChange(date)}
+              />
+            )}
+          />
+          {errors.validFrom && (
+            <small className="text-danger">{errors.validFrom.message}</small>
+          )}
+        </div>
+      </div>
 
-                {errors.validFrom && (
-                  <small className="text-danger">
-                    {errors.validFrom.message}
-                  </small>
-                )}
-              </div>
-            </div>
+      {/* Valid To */}
+      <div className="col-md-6">
+        <div className="mb-3">
+          <label className="col-form-label">
+            Valid To <span className="text-danger">*</span>
+          </label>
+          <Controller
+            name="validTo"
+            control={control}
+            rules={{
+              required: "Valid To is required!",
+              validate: (value) =>
+                !validFrom || !value || dayjs(value).isAfter(dayjs(validFrom)) || "Valid To must be after Valid From",
+            }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                className="form-control"
+                value={field.value ? dayjs(field.value) : null}
+                format="DD-MM-YYYY"
+                onChange={(date) => field.onChange(date)}
+              />
+            )}
+          />
+          {errors.validTo && (
+            <small className="text-danger">{errors.validTo.message}</small>
+          )}
+        </div>
+      </div>
 
-            {/* Valid To */}
-           
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="col-form-label">
-                   Valid To <span className="text-danger">*</span>
-                </label>
-                <Controller
-                  name="validTo"
-                  control={control}
-                  rules={{ required: "Valid To is required!" }}
-                  render={({ field }) => (
-                    <DatePicker
-                      {...field}
-                      className="form-control"
-                      value={
-                        field.value
-                          ? dayjs(field.value, [
-                              "DD-MM-YYYY",
-                              "YYYY-MM-DD",
-                              dayjs.ISO_8601,
-                            ])
-                          : null
-                      }
-                      format="DD-MM-YYYY"
-                      onChange={(date, dateString) =>
-                        field.onChange(dateString)
-                      }
-                    />
-                  )}
-                />
-
-                {errors. validTo && (
-                  <small className="text-danger">
-                    {errors. validTo.message}
-                  </small>
-                )}
-              </div>
-            </div>
             {/* Status */}
             <div className="col-md-6">
               <div className="mb-0">

@@ -237,6 +237,7 @@ const DealList = () => {
       dispatch(deleteDeal(selecectDeal.id)); // Dispatch the delete action
       // navigate(`/crms`); // Navigate to the specified route
       setShowDeleteModal(false); // Close the modal
+      setSelectedDeal(null);
     }
   };
 
@@ -493,7 +494,7 @@ const exportToPDF = useCallback(() => {
           </div>
         </div>
       </div>
-      <AddDealModal />
+      <AddDealModal  />
       <EditDealModal deal={selecectDeal} />
       {/* Include the Delete deal Modal */}
 

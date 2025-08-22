@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { DatePicker } from "antd";
-import { useForm } from "react-hook-form";
+import { useForm , Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { priceModelOptions } from "../../../components/common/selectoption/selectoption";
 import { addPriceBook, updatePriceBook } from "../../../redux/priceBook";
 import ManageOrderItemModal from "./ManagePriceDetailsModal";
 import dayjs from "dayjs";
-import { Controller } from "react-hook-form";
 
 const initialItem = [
   {
@@ -54,8 +53,8 @@ const AddInvoiceModal = ({ order, setOrder }) => {
       model: "",
       is_active: "Y",
       description: "",
-      effectivate_from: dayjs(new Date()).format("DD-MM-YYYY"),
-      effectivate_to: dayjs(new Date()).format("DD-MM-YYYY"),
+      effectivate_from: new Date(),
+      effectivate_to: new Date(),
     },
   });
 
@@ -66,9 +65,8 @@ const AddInvoiceModal = ({ order, setOrder }) => {
         model: order?.model || "",
         is_active: order?.is_active || "Y",
         description: order?.description || "",
-        effectivate_from: dayjs(new Date(order?.effectivate_from)) ||dayjs(new Date()).format("DD-MM-YYYY"),
-        effectivate_to: dayjs(new Date(order?.effectivate_to)) ||dayjs(new Date()).format("DD-MM-YYYY") 
-        
+        effectivate_from: new Date(order?.effectivate_from) || new Date(),
+        effectivate_to: new Date(order?.effectivate_to) || new Date(),
       });
       setItemNumber(
         order?.price_book_details?.map((item) => ({
@@ -84,11 +82,12 @@ const AddInvoiceModal = ({ order, setOrder }) => {
         model: "",
         is_active: "Y",
         description: "",
-        effectivate_from: dayjs(new Date()).format("DD-MM-YYYY"),
-        effectivate_to: dayjs(new Date()).format("DD-MM-YYYY"),
+        effectivate_from: new Date(),
+        effectivate_to: new Date(),
       });
     }
   }, [order]);
+  const effectivate_from = watch("effectivate_from");
 
   const onSubmit = async (data) => {
     const closeButton = document.getElementById("close_add_edit_order");
@@ -220,61 +219,61 @@ const AddInvoiceModal = ({ order, setOrder }) => {
               </div>
 
               {/* Effective From  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Effective From<span className="text-danger">*</span>
-                  </label>
-                  <div className="icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                     <Controller
-                            name="effectivate_from"
-                            control={control}
-                            render={({ field }) => (
-                              <DatePicker
-                                {...field}
-                                className="form-control"
-                                value={field.value ? dayjs(field.value , "DD-MM-YYYY") : null}
-                                onChange={(date, dateString) => {
-                                  field.onChange(dateString);
-                                }}
-                                format="DD-MM-YYYY"
-                              />
-                            )}
-                          />
-                  </div>
-                </div>
-              </div>
-              {/* Effective To  */}
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="col-form-label">
-                    Effective To<span className="text-danger">*</span>
-                  </label>
-                  <div className="icon-form">
-                    <span className="form-icon">
-                      <i className="ti ti-calendar-check" />
-                    </span>
-                    <Controller
-                            name="effectivate_to"
-                            control={control}
-                            render={({ field }) => (
-                              <DatePicker
-                                {...field}
-                                className="form-control"
-                                value={field.value ? dayjs(field.value , "DD-MM-YYYY") : null}
-                                onChange={(date, dateString) => {
-                                  field.onChange(dateString);
-                                }}
-                                format="DD-MM-YYYY"
-                              />
-                            )}
-                          />
-                  </div>
-                </div>
-              </div>
+              
+ <div className="col-md-6">
+        <div className="mb-3">
+          <label className="col-form-label">
+           Effective From<span className="text-danger">*</span>
+          </label>
+          <Controller
+            name="effectivate_from"
+            control={control}
+            rules={{ required: "Valid From is required!" }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                className="form-control"
+                value={field.value ? dayjs(field.value) : null}
+                format="DD-MM-YYYY"
+                onChange={(date) => field.onChange(date)}
+              />
+            )}
+          />
+          {errors.effectivate_from && (
+            <small className="text-danger">{errors.effectivate_from.message}</small>
+          )}
+        </div>
+      </div>
+
+      {/* Valid To */}
+      <div className="col-md-6">
+        <div className="mb-3">
+          <label className="col-form-label">
+          Effective To <span className="text-danger">*</span>
+          </label>
+          <Controller
+            name="effectivate_to"
+            control={control}
+            rules={{
+              required: "Valid To is required!",
+              validate: (value) =>
+                !effectivate_from || !value || dayjs(value).isAfter(dayjs(effectivate_from)) || "Valid To must be after Valid From",
+            }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                className="form-control"
+                value={field.value ? dayjs(field.value) : null}
+                format="DD-MM-YYYY"
+                onChange={(date) => field.onChange(date)}
+              />
+            )}
+          />
+          {errors.effectivate_to && (
+            <small className="text-danger">{errors.effectivate_to.message}</small>
+          )}
+        </div>
+      </div>
 
               {/* Order Items  */}
               <ManageOrderItemModal

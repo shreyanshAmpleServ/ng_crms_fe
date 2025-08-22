@@ -47,14 +47,15 @@ const EditProjectModal = ({ project }) => {
     };
 
     try {
-      await dispatch(updateProject({ id: project.id, projectData: payload })).unwrap();
+      await dispatch(
+        updateProject({ id: project.id, projectData: payload })
+      ).unwrap();
       closeButton.click();
       reset();
     } catch (err) {
       closeButton.click();
     }
   };
-  
 
   return (
     <div
@@ -77,17 +78,23 @@ const EditProjectModal = ({ project }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
             <div className="col-md-12 mb-3">
-              <label>Project Name<span className="text-danger">*</span></label>
+              <label>
+                Project Name<span className="text-danger">*</span>
+              </label>
               <input
                 type="text"
                 className="form-control"
                 {...register("name", { required: "Project name is required!" })}
               />
-              {errors.name && <small className="text-danger">{errors.name.message}</small>}
+              {errors.name && (
+                <small className="text-danger">{errors.name.message}</small>
+              )}
             </div>
 
             <div className="col-md-6 mb-3">
-              <label>Project Timing<span className="text-danger">*</span></label>
+              <label>
+                Project Timing<span className="text-danger">*</span>
+              </label>
               <Controller
                 name="projectTiming"
                 control={control}
@@ -97,126 +104,145 @@ const EditProjectModal = ({ project }) => {
                     {...field}
                     options={arrProjectTiming}
                     placeholder="Select..."
-
                     classNamePrefix="react-select"
                   />
                 )}
               />
               {errors.projectTiming && (
-                <small className="text-danger">{errors.projectTiming.message}</small>
+                <small className="text-danger">
+                  {errors.projectTiming.message}
+                </small>
               )}
             </div>
 
             <div className="col-md-6 mb-3">
-              <label>Budget <span className="text-danger">*</span></label>
+              <label>
+                Budget <span className="text-danger">*</span>
+              </label>
               <input
                 type="number"
                 step="0.01"
                 className="form-control"
                 {...register("amount", { required: "Budget is required!" })}
               />
-              {errors.amount && <small className="text-danger">{errors.amount.message}</small>}
+              {errors.amount && (
+                <small className="text-danger">{errors.amount.message}</small>
+              )}
             </div>
 
             <div className="col-md-6">
-                         <div className="mb-3">
-                           <label className="col-form-label">
-                             Start Date <span className="text-danger">*</span>
-                           </label>
-                           <Controller
-                             name="startDate"
-                             control={control}
-                             rules={{ required: "Start date is required!" }}
-                             render={({ field }) => (
-                               <DatePicker
-                                 {...field}
-                                 className="form-control"
-                                 value={
-                                   field.value
-                                     ? dayjs(field.value, [
-                                         "DD-MM-YYYY",
-                                         "YYYY-MM-DD",
-                                         dayjs.ISO_8601,
-                                       ])
-                                     : null
-                                 }
-                                 format="DD-MM-YYYY"
-                                 onChange={(date, dateString) =>
-                                   field.onChange(dateString)
-                                 }
-                               />
-                             )}
-                           />
-           
-                           {errors.startDate && (
-                             <small className="text-danger">
-                               {errors.startDate.message}
-                             </small>
-                           )}
-                         </div>
-                       </div>
-           
-                       <div className="col-md-6">
-                         <div className="mb-3">
-                           <label className="col-form-label">
-                             Due Date <span className="text-danger">*</span>
-                           </label>
-                           <Controller
-                             name="dueDate"
-                             control={control}
-                             rules={{ required: "Due date is required!" }}
-                             render={({ field }) => (
-                               <DatePicker
-                                 {...field}
-                                 className="form-control"
-                                 value={
-                                   field.value
-                                     ? dayjs(field.value, [
-                                         "DD-MM-YYYY",
-                                         "YYYY-MM-DD",
-                                         dayjs.ISO_8601,
-                                       ])
-                                     : null
-                                 }
-                                 format="DD-MM-YYYY"
-                                 onChange={(date, dateString) =>
-                                   field.onChange(dateString)
-                                 }
-                               />
-                             )}
-                           />
-           
-                           {errors.dueDate && (
-                             <small className="text-danger">
-                               {errors.dueDate.message}
-                             </small>
-                           )}
-                         </div>
-                       </div>
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Start Date <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="startDate"
+                  control={control}
+                  rules={{ required: "Start date is required!" }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      className="form-control"
+                      value={
+                        field.value
+                          ? dayjs(field.value, [
+                              "DD-MM-YYYY",
+                              "YYYY-MM-DD",
+                              dayjs.ISO_8601,
+                            ])
+                          : null
+                      }
+                      format="DD-MM-YYYY"
+                      onChange={(date) =>
+                        field.onChange(date ? date.toDate() : null)
+                      } // ✅ Date object
+                    />
+                  )}
+                />
+
+                {errors.startDate && (
+                  <small className="text-danger">
+                    {errors.startDate.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="col-form-label">
+                  Due Date <span className="text-danger">*</span>
+                </label>
+                <Controller
+                  name="dueDate"
+                  control={control}
+                  rules={{ required: "Due date is required!" }}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      className="form-control"
+                      value={
+                        field.value
+                          ? dayjs(field.value, [
+                              "DD-MM-YYYY",
+                              "YYYY-MM-DD",
+                              dayjs.ISO_8601,
+                            ])
+                          : null
+                      }
+                      format="DD-MM-YYYY"
+                      onChange={(date) =>
+                        field.onChange(date ? date.toDate() : null)
+                      } // ✅ Date object
+                    />
+                  )}
+                />
+
+                {errors.dueDate && (
+                  <small className="text-danger">
+                    {errors.dueDate.message}
+                  </small>
+                )}
+              </div>
+            </div>
 
             <div className="col-md-12 mb-3">
               <label>Description</label>
-              <textarea className="form-control" rows={3} {...register("description")} />
+              <textarea
+                className="form-control"
+                rows={3}
+                {...register("description")}
+              />
             </div>
 
             <div className="col-md-12 mb-3">
               <label>Status</label>
               <div>
                 <label>
-                  <input type="radio" value="Y" {...register("is_active")} /> Active
+                  <input type="radio" value="Y" {...register("is_active")} />{" "}
+                  Active
                 </label>
                 <label className="ms-3">
-                  <input type="radio" value="N" {...register("is_active")} /> Inactive
+                  <input type="radio" value="N" {...register("is_active")} />{" "}
+                  Inactive
                 </label>
               </div>
             </div>
           </div>
 
           <div className="text-end">
-            <button type="button" className="btn btn-light me-2" data-bs-dismiss="offcanvas">
+            <button
+              type="button"
+              className="btn btn-light me-2"
+              data-bs-dismiss="offcanvas"
+            >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+            >
               {loading ? "Updating..." : "Update"}
             </button>
           </div>

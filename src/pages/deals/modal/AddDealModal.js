@@ -1,5 +1,5 @@
 import { DatePicker } from "antd";
-import React, { useState } from "react";
+import React, { useState,useMemo  } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
@@ -51,10 +51,15 @@ const AddDealModel = () => {
       ?.map((i) => (i?.is_active === "Y" ? i : null))
       .filter(Boolean) || [];
 
-  const contactlist = contacts?.data?.map((contact) => ({
-    value: contact.id,
-    label: `${contact.firstName.trim()} ${contact.lastName.trim()}`,
-  }));
+const contactlist = useMemo(
+    () =>
+      contacts?.data?.map((contact) => ({
+        value: contact.id,
+        label: `${contact.firstName.trim()} ${contact.lastName.trim()}`,
+      })),
+    [contacts], // Only recompute when contacts change
+  );
+
   const pipelineList = pipelines?.map((pipeline) => ({
     value: pipeline.id,
     label: pipeline.name,
@@ -371,48 +376,34 @@ const AddDealModel = () => {
                 )}
               </div>
             </div>
-           <div className="col-md-6">
-        <div className="mb-3">
-          <label className="col-form-label">
-            Contact <span className="text-danger">*</span>
-          </label>
-  <Controller
-  name="contactIds"
-  control={control}
-  rules={{ required: "Contact is required !" }}
-  defaultValue={[]}
-  render={({ field }) => (   // <-- yaha se field milta hai
-    <Select
-      {...field}
-      options={contactlist || []}
-      isMulti
-      className="select2"
-      classNamePrefix="react-select"
-      placeholder="Select Contacts..."
-      value={(contactlist || []).filter(option =>
-        (field.value || []).includes(option.value)
-      )}
-      onChange={(selected) => {
-        field.onChange(selected.map(option => option.value));
-      }}
-      styles={{
-        valueContainer: (provided) => ({
-          ...provided,
-          height: '40px',
-          overflowY: 'auto'
-        })
-      }}
-    />
-  )}
+        <div className="col-md-6">
+  <div className="mb-3">
+    <label className="col-form-label">
+      Contact <span className="text-danger">*</span>
+    </label>
+
+    <Controller
+      name="contactIds"
+      control={control}
+      rules={{ required: "Contact is required !" }}
+      defaultValue={[]} // Initial empty array
+      render={({ field }) => (
+        <Select
+  {...field}
+  options={contactlist}
+  isMulti
+  className="select2"
+  classNamePrefix="react-select"
+  placeholder="Choose contacts"
 />
+      )}
+    />
 
-
-
-          {errors.contactIds && (
-            <small className="text-danger">{errors.contactIds.message}</small>
-          )}
-        </div>
-      </div>
+    {errors.contactIds && (
+      <small className="text-danger">{errors.contactIds.message}</small>
+    )}
+  </div>
+</div>
 
             {/* Dates */}
             <div className="col-md-6">
