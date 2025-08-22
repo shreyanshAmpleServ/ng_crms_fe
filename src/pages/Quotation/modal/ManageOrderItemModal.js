@@ -253,7 +253,7 @@ const ManageOrderItemModal = ({updatedItems ,setUpdatedItems, itemNumber, setIte
         </div>
       </div>
       <div className="table-responsive w-full overflow-x-auto">
-        <table  className="table table-view   mb-0">
+        <table  className="table table-view  mb-0" style={{width:"100px"}}>
           <thead>
             <tr>
               <th>Item</th>

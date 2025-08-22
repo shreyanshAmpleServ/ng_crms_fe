@@ -22,7 +22,7 @@ import {
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import moment from "moment"
+import moment from "moment";
 const initialItem = [
   {
     parent_id: null,
@@ -87,7 +87,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
       cont_person: "",
       address: "",
       currency: null,
-      due_date: dayjs(new Date()).format("DD-MM-YYYY") ,
+      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -121,7 +121,9 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
         cont_person: order?.cont_person || "",
         address: order?.address || "",
         currency: order?.currency || null,
-        due_date: dayjs(new Date(order?.due_date)) ||  dayjs(new Date()).format("DD-MM-YYYY") ,
+        due_date:
+          dayjs(new Date(order?.due_date)) ||
+          dayjs(new Date()).format("DD-MM-YYYY"),
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -216,7 +218,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
     value: emnt.id,
     label: emnt.name,
   }));
-  
+
   useEffect(() => {
     let total_bef_tax = 0;
     let tax_total = 0;
@@ -264,17 +266,19 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
     const closeButton = document.getElementById("close_add_edit_order");
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] != "due_date" && data[key] !== undefined) {
+      if (
+        data[key] !== null &&
+        data[key] != "due_date" &&
+        data[key] !== undefined
+      ) {
         let value = data[key];
-        if (
-          (key === "due_date" )
-        ) {
-          value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
+        if (key === "due_date") {
+          value =
+            moment(data.due_date)
+              .startOf("day")
+              .format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
         }
-        if (
-          ( key === "apr_date") &&
-          value instanceof Date
-        ) {
+        if (key === "apr_date" && value instanceof Date) {
           value = dayjs(data.apr_date).toISOString();
         }
         formData.append(key, value);
@@ -529,46 +533,40 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
                 </div>
               </div>
               {/* Due Date  */}
-             
 
- <div className="col-md-6">
-  <div className="mb-3">
-    <label className="col-form-label">
-      Due Date <span className="text-danger">*</span>
-    </label>
-    <div className="mb-3 icon-form">
-      <span className="form-icon z-1">
-        <i className="ti ti-calendar-check" />
-      </span>
-      <Controller
-        name="due_date"
-         control={control}
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="col-form-label">
+                    Due Date <span className="text-danger">*</span>
+                  </label>
+                  <div className="mb-3 icon-form">
+                    <span className="form-icon z-1">
+                      <i className="ti ti-calendar-check" />
+                    </span>
+                    <Controller
+                      name="due_date"
+                      control={control}
                       rules={{ required: "Start date is required !" }} // Make the field required
                       render={({ field }) => (
                         <DatePicker
                           {...field}
                           className="form-control"
-                          value={
-                            field.value
-                              ? dayjs(field.value, "DD-MM-YYYY")
-                              : null
-                          }
+                          value={field.value ? dayjs(field.value) : null}
                           format="DD-MM-YYYY"
-                          onChange={(date, dateString) => {
-                            field.onChange(dateString);
-                          }}
+                          onChange={(date) =>
+                            field.onChange(date ? date.toDate() : null)
+                          }
                         />
-        )}
-      />
-      {errors.due_date && (
-        <small className="text-danger">
-          {errors.due_date.message}
-        </small>
-      )}
-    </div>
-  </div>
-</div>
-
+                      )}
+                    />
+                    {errors.due_date && (
+                      <small className="text-danger">
+                        {errors.due_date.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               {/* Status */}
               <div className="col-md-6">
@@ -600,7 +598,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
               <div className="subtotal-div mb-3">
                 <ul className="mb-3">
                   <li>
-                    <h5>Total Befor  Tax</h5>
+                    <h5>Total Befor Tax</h5>
                     <input
                       name="total_bef_tax"
                       type="text"

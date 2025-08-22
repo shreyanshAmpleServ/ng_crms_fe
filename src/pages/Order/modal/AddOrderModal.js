@@ -19,6 +19,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
 import { AllActivities } from "./Activities";
 import PreviewPdf from "./AttachmentPdf";
+import moment from "moment";
 const initialItem = [
   {
     parent_id: null,
@@ -93,7 +94,7 @@ const AddProductModal = ({ order, setOrder }) => {
       cont_person: "",
       address: "",
       currency: null,
-      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      due_date:  new Date(),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -129,7 +130,7 @@ const AddProductModal = ({ order, setOrder }) => {
         currency: order?.currency || null,
         due_date:
           dayjs(new Date(order?.due_date)) ||
-          dayjs(new Date()).format("DD-MM-YYYY"),
+           new Date(),
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -176,7 +177,7 @@ const AddProductModal = ({ order, setOrder }) => {
         cont_person: "",
         address: "",
         currency: null,
-        due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+        due_date:  new Date(),
         total_bef_tax: 0,
         disc_prcnt: 0,
         tax_total: 0,
@@ -279,7 +280,8 @@ const AddProductModal = ({ order, setOrder }) => {
       ) {
         let value = data[key];
         if (key === "due_date") {
-          value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
+          value =  moment(data.due_date).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z"
+          // value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
         }
         if (key === "apr_date" && value instanceof Date) {
           value = dayjs(data.apr_date).toISOString();
@@ -423,7 +425,7 @@ const AddProductModal = ({ order, setOrder }) => {
             <div className="row">
               <div
                 ref={firstDivRef}
-                className={`row ${order ? "col-md-6" : "col-md-12"}`}
+                className={`row ${order ? "col-md-12" : "col-md-12"}`}
               >
                 {/* Vendor  */}
                 <div className=" col-md-6 mb-3">
@@ -621,15 +623,18 @@ const AddProductModal = ({ order, setOrder }) => {
                           <DatePicker
                             {...field}
                             className="form-control"
-                            value={
-                              field.value
-                                ? dayjs(field.value, "DD-MM-YYYY")
-                                : null
-                            }
-                            format="DD-MM-YYYY"
-                            onChange={(date, dateString) => {
-                              field.onChange(dateString);
-                            }}
+                            // value={
+                            //   field.value
+                            //     ? dayjs(field.value, "DD-MM-YYYY")
+                            //     : null
+                            // }
+                            // format="DD-MM-YYYY"
+                            // onChange={(date, dateString) => {
+                            //   field.onChange(dateString);
+                                    value={field.value ? dayjs(field.value) : null}
+                                                         format="DD-MM-YYYY"
+                                                         onChange={(date) => field.onChange(date ? date.toDate() : null)}
+                           
                           />
                         )}
                       />
@@ -832,7 +837,7 @@ const AddProductModal = ({ order, setOrder }) => {
               {order && (
                 <div
                   style={{ height: height }}
-                  className="col-md-6 border   border-top-0"
+                  className="col-md-6 d-none border   border-top-0"
                 >
                   <div
                     style={{ fontSize: "15px" }}

@@ -182,7 +182,7 @@ const Quotation = () => {
             >
               <i className="ti ti-eye text-secondary"></i> Preview
             </Link> */}
-             <Link
+             {/* <Link
               className="dropdown-item edit-popup"
               to="#"
               data-bs-toggle="offcanvas"
@@ -191,7 +191,7 @@ const Quotation = () => {
               // onClick={() => setSelectedOrder(record)}
             >
               <i className="ti ti-eye text-secondary"></i> Quotation
-            </Link>
+            </Link> */}
              <Link
               className="dropdown-item edit-popup"
               to="#"

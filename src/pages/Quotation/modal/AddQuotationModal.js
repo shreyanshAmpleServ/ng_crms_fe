@@ -22,6 +22,7 @@ import { fetchProducts } from "../../../redux/products";
 import { AllActivities } from "./Activities";
 import PreviewPdf from "./AttachmentPdf";
 import CRMSLogo from "../../../components/common/header/logo";
+import moment from "moment";
 
 const initialItem = [
   {
@@ -113,7 +114,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
       cont_person: "",
       address: "",
       currency: null,
-      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      due_date: new Date(),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -150,7 +151,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
         currency: order?.currency || null,
         due_date:
           dayjs(new Date(order?.due_date)) ||
-          dayjs(new Date()).format("DD-MM-YYYY"),
+          new Date(),
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -205,7 +206,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
         cont_person: "",
         address: "",
         currency: null,
-        due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+        due_date: new Date(),
         total_bef_tax: 0,
         disc_prcnt: 0,
         tax_total: 0,
@@ -329,7 +330,8 @@ const AddQuotationModal = ({ order, setOrder }) => {
       ) {
         let value = data[key];
         if (key === "due_date") {
-          value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
+          value = moment(data.due_date).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z"
+          // value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
         }
         if (key === "apr_date" && value instanceof Date) {
           value = dayjs(data.apr_date).toISOString();
@@ -337,6 +339,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
         formData.append(key, value);
       }
     });
+    console.log("(Duuuuuu : ",data.due_date, formData.get("due_date"))
     formData.append("orderItemsData", JSON.stringify(itemNumber));
     formData.append("terms", JSON.stringify(termsItems));
     formData.append("optional_items", JSON.stringify(optionalItem));
@@ -850,15 +853,18 @@ const AddQuotationModal = ({ order, setOrder }) => {
                         <DatePicker
                           {...field}
                           className="form-control"
-                          value={
-                            field.value
-                              ? dayjs(field.value, "DD-MM-YYYY")
-                              : null
-                          }
-                          format="DD-MM-YYYY"
-                          onChange={(date, dateString) => {
-                            field.onChange(dateString);
-                          }}
+                          // value={
+                          //   field.value
+                          //     ? dayjs(field.value, "DD-MM-YYYY")
+                          //     : null
+                          // }
+                          // format="DD-MM-YYYY"
+                          // onChange={(date, dateString) => {
+                          //   field.onChange(date);
+                          // }}
+                            value={field.value ? dayjs(field.value) : null}
+                           format="DD-MM-YYYY"
+                           onChange={(date) => field.onChange(date ? date.toDate() : null)}
                         />
                       )}
                     />
@@ -1141,7 +1147,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
         {/* Preview PDF Overlay */}
         {prevPdf && (
           <div
-            style={{ zIndex: 2 }}
+            style={{ zIndex: 2,width:"98%" }}
             className="position-absolute w-full top-0 bg-white"
           >
             <PreviewPdf

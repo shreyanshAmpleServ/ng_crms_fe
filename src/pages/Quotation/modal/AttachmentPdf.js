@@ -94,7 +94,7 @@ const PreviewPdf = ({ id, setAttachments,setPrevPdf }) => {
 
     <p style="font-family: Arial, sans-serif; font-size: 14px;">       Please find attached quotation <strong>${quotationDetail?.quotation_code}</strong> for your review.</p>
         <br />
-           <p>You can also <a href="${process.env.REACT_WEB_URL}/crms/quotation-pdf/${btoa(quotationDetail?.id?.toString())}" target="_blank" style="color:#007bff;text-decoration:underline;">click here to view it online</a> and reply to confirm your order.</p> <br />
+           <p>You can also <a href="${process.env.REACT_WEB_URL || "https://mowara.dcclogsuite.com"}/crms/quotation-pdf/${btoa(quotationDetail?.id?.toString())}" target="_blank" style="color:#007bff;text-decoration:underline;">click here to view it online</a> and reply to confirm your order.</p> <br />
         
        <p style="font-family: Arial, sans-serif; font-size: 14px;">Best regards,<br/>
 

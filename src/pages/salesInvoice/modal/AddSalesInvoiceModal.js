@@ -17,6 +17,7 @@ import {
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import moment from "moment";
 const initialItem = [
   {
     parent_id: null,
@@ -81,7 +82,7 @@ const AddSalesInvoiceModal = ({ order, setOrder }) => {
       cont_person: "",
       address: "",
       currency: null,
-      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      due_date: new Date(),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -115,7 +116,7 @@ const AddSalesInvoiceModal = ({ order, setOrder }) => {
         cont_person: order?.cont_person || "",
         address: order?.address || "",
         currency: order?.currency || null,
-        due_date: dayjs(new Date(order?.due_date)) ||  dayjs(new Date()).format("DD-MM-YYYY") ,
+        due_date: dayjs(new Date(order?.due_date)) ||  new Date() ,
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -162,7 +163,7 @@ const AddSalesInvoiceModal = ({ order, setOrder }) => {
         cont_person: "",
         address: "",
         currency: null,
-        due_date:  dayjs(new Date()).format("DD-MM-YYYY"),
+        due_date:  new Date(),
         total_bef_tax: 0,
         disc_prcnt: 0,
         tax_total: 0,
@@ -263,7 +264,7 @@ const AddSalesInvoiceModal = ({ order, setOrder }) => {
            if (
              (key === "due_date" )
            ) {
-             value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
+             value =  moment(data.due_date).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
            }
            if (
              ( key === "apr_date") &&
@@ -576,15 +577,18 @@ const AddSalesInvoiceModal = ({ order, setOrder }) => {
                                      <DatePicker
                                        {...field}
                                        className="form-control"
-                                       value={
-                                         field.value
-                                           ? dayjs(field.value, "DD-MM-YYYY")
-                                           : null
-                                       }
-                                       format="DD-MM-YYYY"
-                                       onChange={(date, dateString) => {
-                                         field.onChange(dateString);
-                                       }}
+                                      //  value={
+                                      //    field.value
+                                      //      ? dayjs(field.value, "DD-MM-YYYY")
+                                      //      : null
+                                      //  }
+                                      //  format="DD-MM-YYYY"
+                                      //  onChange={(date, dateString) => {
+                                      //    field.onChange(dateString);
+                                      //  }}
+                                      value={field.value ? dayjs(field.value) : null}
+                                                                 format="DD-MM-YYYY"
+                                                                 onChange={(date) => field.onChange(date ? date.toDate() : null)}
                                      />
                      )}
                    />
