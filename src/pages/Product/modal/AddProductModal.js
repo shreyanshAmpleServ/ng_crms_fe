@@ -626,7 +626,7 @@ const AddProductModal = ({ product, setProduct }) => {
                 <label className="col-form-label">On Hand</label>
                 <input
                   type="number"
-                  placeholder=" Enter ON Hand"
+                  placeholder=" Enter On Hand"
                   className="form-control"
                   {...register("onhand")}
                 />

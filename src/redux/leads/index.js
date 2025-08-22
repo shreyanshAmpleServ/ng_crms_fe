@@ -49,7 +49,7 @@ export const createLead = createAsyncThunk(
         apiClient.post("/v1/leads", leadData),
         {
           loading: "Lead adding...",
-          success: (res) => res.data.message || "Lead added successfully!",
+          success: (res) => res.data.message || "Lead add successfully!",
           error: "Failed to add lead",
         }
       );
