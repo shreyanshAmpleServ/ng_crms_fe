@@ -588,6 +588,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
         .quotation-number {
           color: #0d6efd;
           font-weight: 700;
+          font-size:2rem;
           margin-left: 0.5rem;
         }
 
@@ -885,6 +886,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
           box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
           min-width: 150px;
           justify-content: center;
+          height:50px;
         }
 
         .send-button:hover:not(:disabled) {
