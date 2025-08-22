@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 import toast from "react-hot-toast"; // ✅ Added
 
-// Fetch All Lost Reasons
+// Fetch All Lead Statss
 export const fetchLostReasons = createAsyncThunk(
   "lostReasons/fetchLostReasons",
   async (data, thunkAPI) => {
@@ -13,13 +13,13 @@ export const fetchLostReasons = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch lost reasons"
+        error.response?.data || "Failed to fetch Lead Statss"
       );
     }
   }
 );
 
-// Add a Lost Reason
+// Add a Lead Stats
 export const addLostReason = createAsyncThunk(
   "lostReasons/addLostReason",
   async (lostReasonData, thunkAPI) => {
@@ -28,13 +28,13 @@ export const addLostReason = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add lost reason"
+        error.response?.data || "Failed to add Lead Stats"
       );
     }
   }
 );
 
-// Update a Lost Reason
+// Update a Lead Stats
 export const updateLostReason = createAsyncThunk(
   "lostReasons/updateLostReason",
   async ({ id, lostReasonData }, thunkAPI) => {
@@ -49,13 +49,13 @@ export const updateLostReason = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update lost reason"
+        error.response?.data || "Failed to update Lead Stats"
       );
     }
   }
 );
 
-// Delete a Lost Reason
+// Delete a Lead Stats
 export const deleteLostReason = createAsyncThunk(
   "lostReasons/deleteLostReason",
   async (id, thunkAPI) => {
@@ -63,17 +63,17 @@ export const deleteLostReason = createAsyncThunk(
       const response = await apiClient.delete(`/v1/lost-reasons/${id}`);
       return {
         data: { id },
-        message: response.data.message || "Lost reason deleted successfully",
+        message: response.data.message || "Lead Stats deleted successfully",
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete lost reason"
+        error.response?.data || "Failed to delete Lead Stats"
       );
     }
   }
 );
 
-// Fetch a Single Lost Reason by ID
+// Fetch a Single Lead Stats by ID
 export const fetchLostReasonById = createAsyncThunk(
   "lostReasons/fetchLostReasonById",
   async (id, thunkAPI) => {
@@ -82,7 +82,7 @@ export const fetchLostReasonById = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch lost reason"
+        error.response?.data || "Failed to fetch Lead Stats"
       );
     }
   }
@@ -116,7 +116,7 @@ const lostReasonsSlice = createSlice({
       .addCase(fetchLostReasons.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to fetch lost reasons");
+        toast.error(action.payload.message || "Failed to fetch Lead Statss");
       })
 
       .addCase(addLostReason.pending, (state) => {
@@ -127,12 +127,12 @@ const lostReasonsSlice = createSlice({
         state.loading = false;
         state.lostReasons = [action.payload.data, ...state.lostReasons];
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Lost reason added successfully");
+        toast.success( "Lead Status added successfully");
       })
       .addCase(addLostReason.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to add lost reason");
+        toast.error(action.payload.message || "Failed to add Lead Stats");
       })
 
       .addCase(updateLostReason.pending, (state) => {
@@ -150,12 +150,12 @@ const lostReasonsSlice = createSlice({
           state.lostReasons = [action.payload.data, ...state.lostReasons];
         }
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Lost reason updated successfully");
+        toast.success( "Lead Status updated successfully");
       })
       .addCase(updateLostReason.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to update lost reason");
+        toast.error(action.payload.message || "Failed to update Lead Stats");
       })
 
       .addCase(deleteLostReason.pending, (state) => {
@@ -168,12 +168,12 @@ const lostReasonsSlice = createSlice({
           (reason) => reason.id !== action.payload.data.id
         );
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Lost reason deleted successfully");
+        toast.success(action.payload.message || "Lead Stats deleted successfully");
       })
       .addCase(deleteLostReason.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to delete lost reason");
+        toast.error(action.payload.message || "Failed to delete Lead Stats");
       })
 
       .addCase(fetchLostReasonById.pending, (state) => {
@@ -187,7 +187,7 @@ const lostReasonsSlice = createSlice({
       .addCase(fetchLostReasonById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to fetch lost reason");
+        toast.error(action.payload.message || "Failed to fetch Lead Stats");
       });
   },
 });
