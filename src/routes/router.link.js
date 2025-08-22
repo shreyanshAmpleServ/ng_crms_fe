@@ -188,12 +188,7 @@ export const privateRoutes = [
     route: Route,
     title: "Projects",
   },
-  {
-    path: route.quoteTemplate,
-    element: <QuoteTemplate />,
-    route: Route,
-    title: "Quotation Template",
-  },
+
   {
     path: route.quotation,
     element: <Quotation />,
@@ -241,6 +236,12 @@ export const privateRoutes = [
     element: <Product />,
     route: Route,
     title: "Products",
+  },
+  {
+    path: route.quoteTemplate,
+    element: <QuoteTemplate />,
+    route: Route,
+    title: "Quotation Template",
   },
   {
     path: route.priceBook,

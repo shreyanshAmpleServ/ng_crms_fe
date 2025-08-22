@@ -48,7 +48,8 @@ const Product = () => {
 
   const columns = [
     {
-      title: "Sr.No.",      
+      title: "Sr. No.",
+      dataIndex:"Sr. No.",      
       width: 50,
       render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
   },
@@ -227,14 +228,20 @@ const exportToPDF = useCallback(() => {
   doc.text("Exported Products", 14, 10);
 
   // Table Head
-  const tableHead = [
-    columns.map(col => col.title !== "Actions" ? col.title : "")
-  ];
+  // const tableHead = [
+  //   columns.map(col => col.title !== "Actions" ? col.title : "")
+  // ];
+  const tableColumns = columns.filter(col => col.title !== "Actions");
 
-  // Table Body
-  const tableBody = filteredData.map(row =>
-    columns.map(col => {
+  const tableHead = [tableColumns.map(col => col.title)];
+
+  const tableBody = filteredData.map((row ,index)=>
+    tableColumns.map(col => {
       switch (col.dataIndex) {
+        case "Sr. No.":
+          return (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1 || "";
         case "manufacturer":
           return row.manufacturer?.name || "";
         case "vendor":

@@ -194,7 +194,7 @@ const leadSlice = createSlice({
         state.loading = false;
         state.leads = {
           ...state.leads,
-          data: [...state.leads.data, action.payload.data],
+          data: [ action.payload.data,...state.leads.data],
         };
         state.success = action.payload.message;
       })

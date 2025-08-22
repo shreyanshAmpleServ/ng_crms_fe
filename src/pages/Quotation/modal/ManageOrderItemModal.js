@@ -10,7 +10,7 @@ import DefaultEditor from "react-simple-wysiwyg";
 import ReactQuill from "react-quill";
 
 
-const ManageOrderItemModal = ({updatedItems ,setUpdatedItems, itemNumber, setItemNumber , productList,termsItems,setTermsItems , optionalItem, setOptionalItem}) => {
+const ManageOrderItemModal = ({updatedItems ,setUpdatedItems, itemNumber, setItemNumber , productList,termsItems,setTermsItems , optionalItem, setOptionalItem, othersItem,setOthersItem}) => {
     const [activeTab, setActiveTab] = useState("product");
   const dispatch = useDispatch();
   const formatNumber = (num) => {
@@ -121,6 +121,37 @@ const ManageOrderItemModal = ({updatedItems ,setUpdatedItems, itemNumber, setIte
   const deleteOptionalRow = (index) => {
     setOptionalItem((prev) => prev.filter((_, i) => i !== index));
   };
+    // Other Handlers (same as before)
+    const addOtherItem = () => {
+      setOthersItem((prev) => [...prev, { label: "", descriptions: [""] }]);
+    };
+  
+    const updateOtherLabel = (index, value) => {
+      const updated = [...othersItem];
+      updated[index].category_name = value;
+      setOthersItem(updated);
+    };
+  
+    const updateOtherDescription = (itemIdx, descIdx, value) => {
+      const updated = [...othersItem];
+      updated[itemIdx].crms_template_items[descIdx] = value;
+      setOthersItem(updated);
+    };
+  
+    const addOtherDescriptionField = (itemIdx) => {
+      const updated = [...othersItem];
+      updated[itemIdx].descriptions.push("");
+      setOthersItem(updated);
+    };
+    const removeOtherItems = (index) => {
+      setOthersItem((prev) => prev.filter((_, i) => i !== index));
+    };
+  
+    const removeOtherDescription = (itemIdx, descIdx) => {
+      const updated = [...othersItem];
+      updated[itemIdx].descriptions.splice(descIdx, 1);
+      setOthersItem(updated);
+    };
   const { loading } = useSelector((state) => state.products);
 
   const { control } = useForm();
@@ -178,8 +209,9 @@ const ManageOrderItemModal = ({updatedItems ,setUpdatedItems, itemNumber, setIte
     "Line Products": "product",
     // "Optional Products": "optional",
     "terms & Conditions": "terms & Conditions",
+    "others" : "others"
   };
-  // console.log("TERms ",termsItems)
+  console.log("TERms ",othersItem)
   return (<>
     <div>
          <ul
@@ -671,6 +703,65 @@ const ManageOrderItemModal = ({updatedItems ,setUpdatedItems, itemNumber, setIte
   }}
 />
     </div>}
+    {activeTab === "others" && (
+        <div>
+          {othersItem?.map((item, itemIdx) => (
+            <div key={itemIdx} className="card position-relative p-3  mb-3 pt-5">
+                <div
+                      className=" text-danger border rounded-circle d-flex border-danger bg-danger justify-content-between  d-absolute top-0 mt-2"
+                      style={{right:4  , position:'absolute'}}
+                      onClick={() => removeOtherItems(itemIdx)}
+                    >
+                      <i className="ti ti-circle-x" style={{fontSize:"24px" , margin:"auto"}} />
+                    </div>
+              <div className="mb-2 d-flex justify-content-between">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Template Category"
+                  value={item.category_name}
+                  onChange={(e) => updateOtherLabel(itemIdx, e.target.value)}
+                />
+              </div>
+              {item.crms_template_items?.map((desc, descIdx) => (
+                <div key={descIdx} className="mb-2  align-items-center d-flex">
+                  <textarea
+                    className="form-control"
+                    placeholder={`Description ${descIdx + 1}`}
+                    value={desc.description}
+                    onChange={(e) =>
+                      updateOtherDescription(itemIdx, descIdx, e.target.value)
+                    }
+                  />
+                  {item.description?.length > 1 && (
+                    <button
+                      type="button"
+                      className="btn btn-sm h-25 btn-outline-danger ms-2"
+                      onClick={() => removeOtherDescription(itemIdx, descIdx)}
+                    >
+                      <i className="ti ti-trash" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              {/* <button
+                type="button"
+                className="btn btn-sm btn-outline-primary"
+                onClick={() => addOtherDescriptionField(itemIdx)}
+              >
+                + Add Description
+              </button> */}
+            </div>
+          ))}
+          {/* <button
+            type="button"
+            onClick={addOtherItem}
+            className="btn btn-success-light"
+          >
+            + Add Other Item
+          </button> */}
+        </div>
+      )}
     </div>
    {optionalItem?.length > 0 &&  <div className="accordion mt-2 mb-2" id="optionalProductAccordion">
   <div className="accordion-item">

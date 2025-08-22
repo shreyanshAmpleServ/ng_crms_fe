@@ -6,31 +6,31 @@ import CollapseHeader from "../../components/common/collapse-header"; // Updated
 import Table from "../../components/common/dataTable/index"; // Updated path
 import FlashMessage from "../../components/common/modals/FlashMessage";
 import { clearMessages, deleteLead, fetchLeads, fetchLeadStatuses } from "../../redux/leads"; // Ensuring the redux slice is for leads
-import { all_routes } from "../../routes/all_routes";
 import AddLeadsModal from "./modal/AddLeadsModal";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import moment from "moment";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
+import UnauthorizedImage from "../../components/common/UnAuthorized.js";
 import SearchBar from "../../components/datatable//SearchBar";
 import DateRangePickerComponent from "../../components/datatable/DateRangePickerComponent"; // Updated path
 import ExportData from "../../components/datatable/ExportData";
-import SortDropdown from "../../components/datatable/SortDropDown";
 import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
+import ActivitiesModal from "../Activities/modal/ActivitiesModal.js";
+import AddCompanyModal from "../companies/modal/AddCompanyModal.js";
 import DeleteAlert from "./alert/DeleteAlert";
+import LeadsKanban from "./LeadsKanban.js";
 import EditLeadsModal from "./modal/EditLeadsModal";
 import FilterComponent from "./modal/FilterComponent";
-import UnauthorizedImage from "../../components/common/UnAuthorized.js";
-import { Helmet } from "react-helmet-async";
-import LeadsKanban from "./LeadsKanban.js";
-import AddCompanyModal from "../companies/modal/AddCompanyModal.js";
 
 const LeadList = () => {
   const navigate = useNavigate();
   const [view, setView] = useState("list"); 
   const dispatch = useDispatch();
+  const [leadId,setLeadId]=useState(undefined)
   
   const [showFlashModal, setShowFlashModal] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
@@ -56,7 +56,7 @@ const LeadList = () => {
 
   const columns = [
   {
-            title: "Sr.No.",  
+            title: "Sr. No.",  
              width: 50,
             render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
             
@@ -64,10 +64,10 @@ const LeadList = () => {
     {
   title: "Title",
   dataIndex: "title",
-  render: (text) => (
-    <div className="text-wrap" style={{ maxWidth: "10rem" }}>
-      {text || "-"}
-    </div>
+  render: (text,record,index) => (
+   <Link className="text-wrap" style={{maxWidth:"10rem"}} to={`/crms/leads/${record.id}`} key={index}>
+          {`${text|| "N/A"}`}
+        </Link>
   ),
   sorter: (a, b) => {
     const titleA = a.title || "";
@@ -203,6 +203,15 @@ const LeadList = () => {
             </Link>}
           {isView &&  <Link className="dropdown-item" to={`/crms/leads/${record?.id}`}>
               <i className="ti ti-eye text-blue-light"></i> Preview
+            </Link> }
+            {isUpdate && <Link
+              className="dropdown-item edit-popup"
+              to="#"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvas_add_activities"
+              onClick={()=>setLeadId(record?.id)}
+            >
+              <i className="ti ti-plus text-blue"></i> Create Activity
             </Link>}
           </div>
         </div>
@@ -212,6 +221,9 @@ const LeadList = () => {
   const { leads,leadStatuses, loading, error, success } = useSelector(
     (state) => state.leads,
   );
+
+  console.log(leadId);
+  
 
   // Show FlashMessage when success or error changes
   // React.useEffect(() => {
@@ -235,6 +247,8 @@ const LeadList = () => {
       dispatch(deleteLead(selectedLead.id));
       navigate(`/crms/leads`);
       setShowDeleteModal(false);
+    setSelectedLead(null);
+
     }
   };
    useEffect(() => {
@@ -322,7 +336,7 @@ React.useEffect(()=>{
 
   const body = filteredData.map((row, index) =>
     tableColumns.map(col => {
-      if (col.title === "Sr.No.") {
+      if (col.title === "Sr. No.") {
         return index + 1; // optional: include pagination logic if needed
       }
 
@@ -501,7 +515,8 @@ React.useEffect(()=>{
       </div>
       <AddLeadsModal setSelectedLead={setSelectedLead} selectedLead={selectedLead} />
       <AddCompanyModal type="modal"/>
-      <EditLeadsModal lead={selectedLead} />
+      <EditLeadsModal lead={selectedLead}  />
+      <ActivitiesModal activity={null} setActivity={()=>{}} leadId={leadId}/>
       <DeleteAlert
       label="Lead"
         showModal={showDeleteModal}

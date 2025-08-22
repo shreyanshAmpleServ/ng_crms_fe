@@ -9,30 +9,35 @@ import Select from "react-select";
 import { TimePicker } from "antd";
 import DefaultEditor from "react-simple-wysiwyg";
 // import type { Dayjs } from "dayjs";
+import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { DatePicker } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import ImageWithBasePath from "../../../components/common/imageWithBasePath";
+import { StatusOptions } from "../../../components/common/selectoption/selectoption";
 import {
   addActivities,
   deleteActivities,
   fetchActivityTypes,
+  fetchGroupedActivities,
   updateActivities,
 } from "../../../redux/Activities";
 import { fetchCompanies } from "../../../redux/companies";
 import { fetchContacts } from "../../../redux/contacts/contactSlice";
 import { fetchDeals } from "../../../redux/deals";
+import { fetchLeads } from "../../../redux/leads";
 import { fetchUsers } from "../../../redux/manage-user";
 import { fetchProjects } from "../../../redux/projects";
-import { StatusOptions } from "../../../components/common/selectoption/selectoption";
 
-const ActivitiesModal = ({ setActivity, activity }) => {
+const ActivitiesModal = ({ setActivity, activity,leadId=undefined }) => {
   const [searchValue, setSearchValue] = useState("");
   const [searchProjectValue, setSearchProjectValue] = useState("");
   const [selectedType, setSelectedType] = useState();
   const dispatch = useDispatch();
   dayjs.extend(customParseFormat);
+
+  console.log(leadId);
+  
 
   const options = [
     {
@@ -85,6 +90,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       priority: null,
       description: "",
       deal_id: null,
+      lead_id: leadId||null,
       contact_id: null,
       company_id: null,
       project_id: null,
@@ -108,7 +114,8 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       owner_name: activity?.owner_name || "",
       is_reminder: activity?.is_reminder || "N",
       description: activity?.description || "",
-      deal_id: activity?.deal_id || null,
+      deal_id:leadId|| activity?.deal_id || null,
+      lead_id: activity?.lead_id || null,
       contact_id: activity?.contact_id || null,
       company_id: activity?.company_id || null,
       project_id: activity?.project_id || null,
@@ -131,6 +138,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
       is_reminder: "N",
       description: "",
       deal_id: null,
+      lead_id: leadId || null,
       priority: 0,
       contact_id: null,
       project_id: null,
@@ -154,12 +162,14 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   React.useEffect(() => {
     dispatch(fetchCompanies());
     dispatch(fetchDeals());
+    dispatch(fetchLeads());
     dispatch(fetchActivityTypes());
     dispatch(fetchUsers());
   }, [dispatch]);
 
   const { companies } = useSelector((state) => state.companies);
   const { deals } = useSelector((state) => state.deals);
+  const { leads } = useSelector((state) => state.leads);
   const { contacts } = useSelector((state) => state.contacts);
     const { projects } = useSelector((state) => state.projects);
 
@@ -167,6 +177,9 @@ const ActivitiesModal = ({ setActivity, activity }) => {
 
   const { users } = useSelector((state) => state.users);
   const activityTypes = useSelector((state) => state.activities.activityTypes);
+
+
+  
   const options1 = [
     // { value: "", label: "Select" },
     { value: "M", label: "Minutes" },
@@ -198,6 +211,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
   const finalData = {
     ...data,
     type_id: selectedType,
+    lead_id:leadId || watch("lead_id")||undefined,
 
     // due_date: dayjs(data.due_date, "DD-MM-YYYY").toISOString(),
         due_time: dayjs(data.due_time, "HH:mm:ss").toISOString(),
@@ -215,7 +229,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
     } else {
       await dispatch(addActivities(finalData)).unwrap();
     }
-
+    await dispatch(fetchGroupedActivities({lead_id:leadId })  ); // Fetch updated activities
     closeButton?.click();
     reset(activity);
     setActivity(null);
@@ -667,6 +681,50 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                                             required: "Description is required !",
                                         })} /> */}
                   </div>
+
+                  {!leadId &&  <div className="mb-3">
+                    <div className="d-flex align-items-center justify-content-between">
+                      <label className="col-form-label">Leads</label>
+                    </div>
+                    <Controller
+                      name="lead_id"
+                      control={control}
+                      // rules={{ required: "Deal is required !" }} // Validation rule
+                      render={({ field }) => {
+                        const selectedLead = leads?.data?.find(
+                          (deal) => deal.id === field.value
+                        );
+                        return (
+                          <Select
+                            {...field}
+                            className="select"
+                            options={leads?.data?.map((i) => ({
+                              label: i?.title,
+                              value: i?.id,
+                            }))}
+                            classNamePrefix="react-select"
+                            value={
+                              selectedLead
+                                ? {
+                                    label: selectedLead.title,
+                                    value: selectedLead.id,
+                                  }
+                                : null
+                            } // Ensure correct default value
+                            onChange={(selectedOption) =>
+                              field.onChange(selectedOption.value)
+                            } // Store only value
+                          />
+                        );
+                      }}
+                    />
+                    {/* {errors.deal_id && (
+                      <small className="text-danger">
+                        {errors.deal_id.message}
+                      </small>
+                    )} */}
+                  </div>}
+                 
                   <div className="mb-3">
                     <div className="d-flex align-items-center justify-content-between">
                       <label className="col-form-label">Deals</label>
@@ -726,7 +784,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                             {...field}
                             className="select"
                             options={contacts?.data?.map((i) => ({
-                              label: `${i?.firstName} ${i?.lastName} ${i?.jobTitle ? `(${i?.jobTitle})` : ""}`,
+                              label: `${i?.firstName} ${i?.lastName} i?.jobTitle (${i?.jobTitle})`,
                               value: i?.id,
                             }))}
                             isSearchable
@@ -735,7 +793,7 @@ const ActivitiesModal = ({ setActivity, activity }) => {
                             value={
                               selectedValue
                                 ? {
-                                    label: `${selectedValue.firstName} ${selectedValue.lastName} ${selectedValue.jobTitle ? `(${selectedValue.jobTitle})` : ""}`,
+                                    label: `${selectedValue.firstName} ${selectedValue.lastName} (${selectedValue.jobTitle})`,
                                     value: selectedValue.id,
                                   }
                                 : null

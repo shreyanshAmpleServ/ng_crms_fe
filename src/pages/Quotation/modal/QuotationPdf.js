@@ -7,6 +7,7 @@ import {
   fetchQuotationById,
   fetchQuotationpPublicById,
   sendComments,
+  uploadSignature,
 } from "../../../redux/quotation";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -15,6 +16,7 @@ import Loader from "../../../components/common/loader";
 import { IoSend } from "react-icons/io5";
 import { generateToken } from "../../../utils/publicToken";
 import PublicDocumentComments from "./QuotationPdfComment";
+import DigitalSignature from "./signature";
 
 const initialItem = [
   {
@@ -44,6 +46,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [optionalItem, setOptionalItem] = useState([]);
+    const [savedSignature, setSavedSignature] = useState(null);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -170,6 +173,25 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
     },
     [comment, isSubmitting, dispatch, newId, token, order?.quotation_vendor]
   );
+  const uploadSigns =async(file)=>{
+    
+    try {
+      const formData = new FormData();
+      formData.append("customer_sign", file);
+      // formData.append("id", newId); 
+        await dispatch(
+          uploadSignature({
+            id: newId,
+            token,
+            data: formData
+          })
+        );
+    } catch (error) {
+      console.error("Error sending comment:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   // Fixed handleCommentChange to prevent defocus
   const handleCommentChange = useCallback((e) => {
@@ -413,7 +435,6 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                   Write the key points you want to modify
                 </div>
                 <PublicDocumentComments id={newId} order={order} />
-
                 {/* Comment Form */}
                 <form onSubmit={handleSubmit} className="comment-form mx-auto">
                   <div className="comment-input-wrapper">
@@ -435,6 +456,8 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                   </div>
 
                   <div className="form-actions">
+ <DigitalSignature details={order} savedSignature={savedSignature} setSavedSignature={setSavedSignature} onSave={uploadSigns}/>
+
                     <button
                       type="submit"
                       className="send-button"
@@ -842,7 +865,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
 
         .form-actions {
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-between;
           gap: 0.75rem;
         }
 
@@ -922,7 +945,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
           }
 
           .form-actions {
-            justify-content: stretch;
+            // justify-content: stretch;
           }
 
           .items-table {

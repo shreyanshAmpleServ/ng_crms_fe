@@ -301,7 +301,7 @@ const exportToPDF = useCallback(() => {
 
   const body = filteredData.map((row, index) =>
     tableColumns.map(col => {
-      if (col.title === "Sr.No.") {
+      if (col.title === "Sr. No.") {
         return (
           (paginationData?.currentPage - 1) * paginationData?.pageSize +
           index +
