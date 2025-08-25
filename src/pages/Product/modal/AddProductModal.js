@@ -138,7 +138,7 @@ const AddProductModal = ({ product, setProduct }) => {
     value: emnt.id,
     label: emnt.name,
   }));
-  const CurrencyList = currencies.map((emnt) => ({
+  const CurrencyList = currencies?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
