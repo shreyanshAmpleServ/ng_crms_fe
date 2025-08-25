@@ -38,7 +38,7 @@ const AddDealModel = () => {
   const { currencies } = useSelector((state) => state.currency);
 
   const currencyLists =
-    currencies
+    currencies?.data
       ?.map((i) =>
         i?.is_active === "Y" ? { label: i?.code, value: i?.code } : null
       )
