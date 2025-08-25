@@ -257,7 +257,7 @@ const LeadsDetail = () => {
               </div>
               {/* /Deals Sidebar */}
               {/* Deals Details */}
-              <Actvities type="Leads" name={`${leadDetail?.first_name} ${leadDetail?.last_name}`} id={id} obj={leadDetail} leadStatus={lostReasons} />
+              <Actvities type="Leads" name={`${leadDetail?.first_name} ${leadDetail?.last_name}`} id={id} obj={leadDetail} leadStatus={lostReasons.data} />
               {/* /Deals Details */}
             </div>
           </div>

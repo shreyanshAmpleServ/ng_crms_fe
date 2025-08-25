@@ -36,13 +36,13 @@ const ContactDetails = () => {
 
   useEffect(() => {
     dispatch(fetchContactById(id));
-    dispatch(fetchLostReasons({is_active:"Y"}));
+    // dispatch(fetchLostReasons({is_active:"Y"}));
   }, [id, dispatch]);
 
 
   // Get the contact details from Redux store
   const { contactDetail, loading } = useSelector((state) => state.contacts);
-  const { lostReasons: contactStatus } = useSelector((state) => state.lostReasons);
+  // const { lostReasons: contactStatus } = useSelector((state) => state.lostReasons);
 
   const route = all_routes;
 

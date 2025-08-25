@@ -35,15 +35,15 @@ const EditLeadModal = ({ lead  }) => {
     dispatch(fetchSources());
     dispatch(fetchUsers());
   }, [dispatch]);
-  const lostReasonsList = lostReasons.map((emnt) => ({
+  const lostReasonsList = lostReasons?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
-  const sourceList = sources.map((emnt) => ({
+  const sourceList = sources?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
-  const industriesList = industries.map((emnt) => ({
+  const industriesList = industries?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
