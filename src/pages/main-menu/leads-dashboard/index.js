@@ -31,7 +31,7 @@ const LeadsDashboard = () => {
     endDate: moment(),
   });
    const { lostReasons } = useSelector((state) => state.lostReasons);
-    const lostReasonsList = lostReasons.map((emnt) => ({
+    const lostReasonsList = lostReasons?.data?.map((emnt) => ({
       value: emnt.id,
       label: emnt.name,
     }));
@@ -150,7 +150,7 @@ const LeadsDashboard = () => {
   }, [dashboardData]);
 
 //   Lead By source 
-let labels = leadDashboard?.leadSources?.map((item) => item?.source) || [];
+let labels = leadDashboard?.leadlostReasons?.data?.map((item) => item?.source) || [];
 const donutOptions = {
   chart: {
     type: "donut",
@@ -169,7 +169,7 @@ const donutOptions = {
 };
 
 const donutSeries =
-  leadDashboard?.leadSources?.map((item) => item?.count) || [];
+  leadDashboard?.leadlostReasons?.data?.map((item) => item?.count) || [];
 
   //  Leads By Stage
   const LeadsBySatge = useRef(null);

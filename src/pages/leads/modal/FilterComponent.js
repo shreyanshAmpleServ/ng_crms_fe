@@ -27,7 +27,7 @@ const FilterComponent = ({ applyFilters }) => {
     },[])
 const { lostReasons } = useSelector((state) => state.lostReasons);
 
-const status = lostReasons?.map((i)=>({label:i?.name,value:i?.id}))
+const status = lostReasons?.data?.map((i)=>({label:i?.name,value:i?.id}))
 
   const handleFilter = () => {
     const filters = {

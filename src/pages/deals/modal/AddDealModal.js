@@ -64,7 +64,7 @@ const contactlist = useMemo(
     value: pipeline.id,
     label: pipeline.name,
   }));
-  const sourceList = sources.map((emnt) => ({
+  const sourceList = sources?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));

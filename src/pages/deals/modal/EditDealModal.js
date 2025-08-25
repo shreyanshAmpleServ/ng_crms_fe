@@ -46,7 +46,7 @@ const EditDealModal = ({ deal }) => {
 
     const { sources } = useSelector((state) => state.sources);
   
-  const sourceList = sources.map((emnt) => ({
+  const sourceList = sources?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));

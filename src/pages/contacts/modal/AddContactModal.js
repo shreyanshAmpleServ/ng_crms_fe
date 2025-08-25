@@ -761,7 +761,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               <Select
                                 {...field}
                                 className="select"
-                                options={sources?.map((i) => ({
+                                options={sources?.data?.map((i) => ({
                                   label: i?.name,
                                   value: i?.id,
                                 }))}
@@ -798,7 +798,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                               <Select
                                 {...field}
                                 className="select"
-                                options={industries?.map((i) => ({
+                                options={industries?.data?.map((i) => ({
                                   label: i?.name,
                                   value: i?.id,
                                 }))}
