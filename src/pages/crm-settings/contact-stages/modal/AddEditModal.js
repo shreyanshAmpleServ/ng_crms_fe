@@ -7,7 +7,7 @@ import {
 } from "../../../../redux/contact-stages"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
-const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
+const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose }) => {
   const { loading } = useSelector((state) => state.contactStages);
 
   const {
@@ -59,7 +59,7 @@ const onSubmit = (data) => {
         })
       );
     }
-
+    setInitialData()
     clearForm();
 
     // Close the modal
@@ -72,9 +72,13 @@ const onSubmit = (data) => {
   // Clear form when modal closes
   useEffect(() => {
     const modalEl = document.getElementById("add_edit_contact_stage_modal");
+    const handleModalClose = () => {
+      clearForm();
+      setInitialData()
+    };
     if (modalEl) {
-      modalEl.addEventListener("hidden.bs.modal", clearForm);
-      return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+      modalEl.addEventListener("hidden.bs.modal", handleModalClose);
+      return () => modalEl.removeEventListener("hidden.bs.modal", handleModalClose);
     }
   }, []);
 

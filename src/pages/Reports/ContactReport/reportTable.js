@@ -205,7 +205,7 @@ export const DataTable = ({
   return (
     <>
       <div className="card-body">
-        <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+        <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
           <div className="d-flex align-items-center flex-wrap row-gap-2">
             {/* <SortDropdown sortOrder={sortOrder} setSortOrder={setSortOrder} /> */}
             <DateRangePickerComponent

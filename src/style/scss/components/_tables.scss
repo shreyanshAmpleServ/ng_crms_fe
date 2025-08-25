@@ -83,7 +83,7 @@ caption {
   }
   thead tr th {
     font-weight: $font-weight-semibold;
-    font-size: 15px;
+    font-size: 13px;
   }
   &.table-sm > :not(caption) > * > * {
     padding: 0.3rem;
@@ -671,7 +671,7 @@ table {
       tr{
           td{
               color: $gray-700;
-              font-size: $font-size-14; 
+              font-size: $font-size-12; 
               .product-img{
                   img{
                       border: 0;
@@ -693,7 +693,7 @@ table {
               }
               a {
                   color: $title-color;
-                  font-size: $font-size-14;
+                  font-size: $font-size-12;
                   font-weight: $font-weight-normal;
                   line-height: normal;
                   &.product-img{

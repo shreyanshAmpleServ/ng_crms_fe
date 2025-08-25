@@ -119,8 +119,14 @@ const AddInvoiceModal = ({ order, setOrder }) => {
 
       closeButton.click();
       reset();
-      setItemNumber(initialItem);
-      
+      setItemNumber( [
+  {
+    parent_id: null,
+    from_price: 0,
+    to_price: 0,
+    discount_per: 0,
+  },
+]);
     } catch (error) {
       closeButton.click();
     }
@@ -131,8 +137,15 @@ const AddInvoiceModal = ({ order, setOrder }) => {
     );
     if (offcanvasElement) {
       const handleModalClose = () => {
-        setOrder();
-        setItemNumber(initialItem);
+        setOrder(null);
+        setItemNumber( [
+  {
+    parent_id: null,
+    from_price: 0,
+    to_price: 0,
+    discount_per: 0,
+  },
+]);
         reset();
       };
       offcanvasElement.addEventListener(
@@ -285,12 +298,21 @@ const AddInvoiceModal = ({ order, setOrder }) => {
               {/* Description */}
               <div className="col-md-12 mb-3">
                 <div className="mb-0">
-                  <label className="col-form-label">Description</label>
+                  <label className="col-form-label">Description  <span className="text-danger">(max 255 characters)</span></label>
                   <textarea
                     className="form-control"
-                    rows={4}
-                    {...register("description")}
+                    rows={5}
+                    {...register("description", {
+                      validate: (value) => {
+                        const wordCount = value.trim().split(/\s+/).length;
+                        return wordCount <= 200 || "Description must not exceed 200 words.";
+                      }})}
                   />
+                  {errors.description && (
+                    <small className="text-danger">
+                      {errors.description.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

@@ -46,8 +46,10 @@
 }    
 .accordion-body {
     padding: 0.75rem 1rem;
-    font-size: 0.8125rem;
-    color: $text-muted;
+    font-size: $font-size-12;
+    color: #6F6F6F !important;
+    font-weight: 400;
+    // color: $text-muted;
 }
 .accordion-item {
     color: $text-color;

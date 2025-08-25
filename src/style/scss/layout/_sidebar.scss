@@ -166,11 +166,11 @@
                             -webkit-box-align: center;
                             -ms-flex-align: center;
                             font-weight: $font-weight-normal;
-                            font-size: $font-size-14;
+                            font-size: $font-size-10;
                             color: $gray-400;
                             position: relative;
                             width: 100%;
-                            @include margin-padding(null, 8px);
+                            @include margin-padding(null, 5px);
                             i {
                                 color: $gray-900;
                                 font-size: $font-size-16;
@@ -183,7 +183,7 @@
                                 justify-content: center;
                             }
                             span {
-                                font-size: $font-size-15;
+                                font-size: $font-size-13;
                                 font-weight: $font-weight-medium;
                                 white-space: nowrap;
                                 color: $gray-900;
@@ -263,7 +263,7 @@
                         li {
                             a {
                                 padding-left: 44px;
-                                font-size: $font-size-base;
+                                font-size: $font-size-12;
                                 background: transparent;
                                 position: relative;
                                 &:after{

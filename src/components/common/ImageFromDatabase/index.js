@@ -21,7 +21,7 @@ const ImageWithDatabase = ({
 
   return (<>
    {src ?  <img
-      className={`border bg-gray-100 img-fluid ${className}`}
+      className={`border rounded bg-gray-100 img-fluid ${className}`}
       src={src}
       height={height}
       alt={alt}

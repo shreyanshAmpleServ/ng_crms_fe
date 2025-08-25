@@ -84,6 +84,7 @@ const loading = false
     }
   }, [order]);
  
+  console.log("itemNumber ", itemNumber)
 
   const onSubmit = async (data) => {
     // if (itemNumber?.length) {
@@ -102,7 +103,6 @@ const loading = false
     // const productAndOptionalItems = itemNumber?.filter(
     //   (value) => value?.type === "product" || value?.type === "optional"
     // );
-    
     const isEmpty = itemNumber.some((value) => !value?.item_id);
     if (isEmpty) {
       toast.error("Product or Optional item is not selected!");

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addSource, updateSource } from "../../../../redux/source"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
-const AddEditModal = ({ mode = "add", initialData = null,onClose  }) => {
+const AddEditModal = ({ mode = "add",setInitialData, initialData = null,onClose  }) => {
   const { loading } = useSelector((state) => state.sources);
 
   const {
@@ -55,7 +55,7 @@ const AddEditModal = ({ mode = "add", initialData = null,onClose  }) => {
         })
       );
     }
-
+    setInitialData()
     clearForm();
 
     // Close the modal
@@ -68,9 +68,13 @@ const AddEditModal = ({ mode = "add", initialData = null,onClose  }) => {
   // Clear form when modal closes
   useEffect(() => {
     const modalEl = document.getElementById("add_edit_source_modal");
+    const handleModalClose = () => {
+      clearForm();
+      setInitialData()
+    };
     if (modalEl) {
-      modalEl.addEventListener("hidden.bs.modal", clearForm);
-      return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+      modalEl.addEventListener("hidden.bs.modal", handleModalClose);
+      return () => modalEl.removeEventListener("hidden.bs.modal", handleModalClose);
     }
   }, []);
 

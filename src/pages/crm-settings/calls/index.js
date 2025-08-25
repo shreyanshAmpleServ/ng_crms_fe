@@ -43,6 +43,7 @@ const CallStatusList = () => {
     {
       title: "Name",
       dataIndex: "name",
+      width:150,
       render: (text, record) => (
         <div>{record.name}</div>
       ),
@@ -51,8 +52,12 @@ const CallStatusList = () => {
     {
       title: "Description",
       dataIndex: "description",
+      width:500,
       render: (text, record) => (
-        <div className="text-wrap" >{record.description || " -- "}</div>
+        <div style={{ whiteSpace: "wrap", wordBreak: "break-word" }}>
+        {text || " -- "}
+      </div>
+        // <div className="text-wrap" style={{maxWidth:"22rem"}} >{record.description || " -- "}</div>
       ),
       sorter: (a, b) => a.description.localeCompare(b.description),
     },
@@ -235,7 +240,7 @@ const CallStatusList = () => {
                 </div>
               </div>
               <div className="card-body">
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
                     {/* <SortDropdown
                       sortOrder={sortOrder}

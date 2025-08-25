@@ -107,6 +107,14 @@ const activityTypes = useSelector((state) => state.activities.activityTypes);
     {
       title: "Title",
       dataIndex: "title",
+      // width:200,
+      render: (text) => (
+        <div style={{
+          maxWidth: "10rem",      // Maximum width the column can grow
+          whiteSpace: "normal",   // Allow wrapping
+          wordBreak: "break-all",
+        }}>{text || " - -"}</div>
+      ),
       sorter: (a, b) => a.title.length - b.title.length,
     },
     {

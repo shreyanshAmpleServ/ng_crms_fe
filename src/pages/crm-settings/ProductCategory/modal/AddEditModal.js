@@ -7,7 +7,7 @@ import {
   updateProductCategory,
 } from "../../../../redux/productCategory";
 
-const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
+const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose }) => {
   const { loading } = useSelector((state) => state.productCategories);
 
   const {
@@ -57,6 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
     }
 
     clearForm();
+    setInitialData()
 
     // Close modal
     const closeButton = document.getElementById(
@@ -68,9 +69,13 @@ const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
   // Auto clear when modal closes
   useEffect(() => {
     const modalEl = document.getElementById("add_edit_product_category_modal");
+    const handleModalClose = () => {
+      clearForm();
+      setInitialData()
+    };
     if (modalEl) {
-      modalEl.addEventListener("hidden.bs.modal", clearForm);
-      return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+      modalEl.addEventListener("hidden.bs.modal", handleModalClose);
+      return () => modalEl.removeEventListener("hidden.bs.modal", handleModalClose);
     }
   }, []);
 

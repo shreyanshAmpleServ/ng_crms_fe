@@ -14,34 +14,44 @@ import { Helmet } from "react-helmet-async";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { clearMessages, deleteManufacturer, fetchManufacturer } from "../../../redux/manufacturer";
+import {
+  clearMessages,
+  deleteManufacturer,
+  fetchManufacturer,
+} from "../../../redux/manufacturer";
 
 const ManufacturerList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
-  const [paginationData , setPaginationData] = useState()
+  const [paginationData, setPaginationData] = useState();
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
-  const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Manufacturer")?.[0]?.permissions
- const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Manufacturer"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("user")
+    ? atob(localStorage.getItem("user")).includes("admin")
+    : null;
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "Sr. No.",      width: 50,
-      render: (text,record,index) =>(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1  ,
+      title: "Sr. No.",
+      width: 50,
+      render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1,
       // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+    },
     {
       title: "Manufacturer Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <Link to={`#`}>{record.name}</Link>
-      ),
+      render: (text, record) => <Link to={`#`}>{record.name}</Link>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
 
@@ -71,43 +81,51 @@ const ManufacturerList = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-   ...((isUpdate || isDelete) ?[ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_manufacturer_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_manufacturer_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const { manufacturers, loading, error, success } = useSelector(
@@ -115,25 +133,31 @@ const ManufacturerList = () => {
   );
 
   React.useEffect(() => {
-    dispatch(fetchManufacturer({search:searchText}));
-  }, [dispatch , searchText]);
-      React.useEffect(()=>{
-          setPaginationData({
-            currentPage:manufacturers?.currentPage,
-            totalPage:manufacturers?.totalPages,
-            totalCount:manufacturers?.totalCount,
-            pageSize : manufacturers?.size
-          })
-        },[manufacturers])
-      
-        const handlePageChange = ({ currentPage, pageSize }) => {
-          setPaginationData((prev) => ({
-            ...prev,
-            currentPage,
-            pageSize
-          }));
-          dispatch(fetchManufacturer({search:searchText , page: currentPage, size: pageSize })); 
-        };
+    dispatch(fetchManufacturer({ search: searchText }));
+  }, [dispatch, searchText]);
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: manufacturers?.currentPage,
+      totalPage: manufacturers?.totalPages,
+      totalCount: manufacturers?.totalCount,
+      pageSize: manufacturers?.size,
+    });
+  }, [manufacturers]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchManufacturer({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -141,7 +165,7 @@ const ManufacturerList = () => {
 
   const filteredData = useMemo(() => {
     let data = manufacturers?.data || [];
-  
+
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
         moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
@@ -173,7 +197,10 @@ const ManufacturerList = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC CRMS - Manufacturer</title>
-        <meta name="Manufacturers" content="This is Manufacturers page of DCC CRMS." />
+        <meta
+          name="Manufacturers"
+          content="This is Manufacturers page of DCC CRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -218,17 +245,19 @@ const ManufacturerList = () => {
                     handleSearch={handleSearch}
                     label="Search Manufacturer"
                   />
-                {isCreate &&  <div className="col-sm-8">
-                    <AddButton
-                      label="Add"
-                      id="add_edit_manufacturer_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add"
+                        id="add_edit_manufacturer_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
                     {/* <SortDropdown
                       sortOrder={sortOrder}
@@ -244,7 +273,7 @@ const ManufacturerList = () => {
                     loading={loading}
                     isView={isView}
                     paginationData={paginationData}
-                    onPageChange={handlePageChange} 
+                    onPageChange={handlePageChange}
                   />
                  
                 </div>

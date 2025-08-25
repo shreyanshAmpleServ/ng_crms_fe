@@ -130,9 +130,8 @@ const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
 
               {/* Call Type Description */}
               <div className="mb-3">
-                <label className="col-form-label">
-                  Description (max 255 characters)
-                </label>
+              <label className="col-form-label">Description  <span className="text-danger">(max 255 characters)</span></label>
+
                 <textarea
                   type="text"
                   placeholder="Enter Description"
