@@ -226,13 +226,28 @@ const AddProjectModal = () => {
             </div>
 
             <div className="col-md-12 mb-3">
-              <label>Description</label>
+              <label className="col-form-label">
+                Description <span className="text-danger">(max 255 characters)</span>
+              </label>
               <textarea
                 className="form-control"
                 placeholder="Enter Description"
-                rows={3}
-                {...register("description")}
+                rows={5}
+                {...register("description", {
+                  validate: (value) => {
+                    const wordCount = value.trim().split(/\s+/).length;
+                    return (
+                      wordCount <= 200 ||
+                      "Description must not exceed 200 words."
+                    );
+                  },
+                })}
               />
+              {errors.description && (
+                <small className="text-danger">
+                  {errors.description.message}
+                </small>
+              )}
             </div>
 
             <div className="col-md-12 mb-3">

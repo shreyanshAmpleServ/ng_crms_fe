@@ -60,8 +60,13 @@ const CompanyList = () => {
     {
       title: "Company Name",
       dataIndex: "name",
+      width:200,
       render: (text, record) => (
-        <Link to={`/crms/companies/${record.id}`}>{record.name}</Link>
+        <Link   style={{
+          maxWidth: "3rem",      // Maximum width the column can grow
+          whiteSpace: "normal",   // Allow wrapping
+          wordBreak: "break-word",
+        }} to={`/crms/companies/${record.id}`}>{record.name}</Link>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -377,7 +382,7 @@ React.useEffect(()=>{
 
               <div className="card-body">
                 {/* Filter */}
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
                     {/* <SortDropdown
                       sortOrder={sortOrder}

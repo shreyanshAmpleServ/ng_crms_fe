@@ -665,19 +665,22 @@ const onSubmit = async (data) => {
             {/* Description */}
             <div className="col-md-12">
               <div className="mb-0">
-                <label className="col-form-label">
-                  Description
-                  {/*  <span className="text-danger">*</span> */}
-                </label>
+              <label className="col-form-label">Description  <span className="text-danger">(max 255 characters)</span></label>
                 <textarea
                   className="form-control"
                   placeholder="Enter Description"
                   rows={5}
-                  {...register(
-                    "description"
-                    // { required: "Description is required !",}
+                    {...register("description", {
+                      validate: (value) => {
+                        const wordCount = value.trim().split(/\s+/).length;
+                        return wordCount <= 200 || "Description must not exceed 200 words.";
+                      }})}
+                  />
+                  {errors.description && (
+                    <small className="text-danger">
+                      {errors.description.message}
+                    </small>
                   )}
-                />
               </div>
             </div>
           </div>

@@ -230,7 +230,7 @@ const CountriesList = () => {
                                 </div>
                             </div>
                             <div className="card-body">
-                                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                                     <div className="d-flex align-items-center flex-wrap row-gap-2">
                                         {/* <SortDropdown
                                             sortOrder={sortOrder}
@@ -253,7 +253,7 @@ const CountriesList = () => {
                 </div>
             </div>
 
-            <AddEditModal mode={mode} initialData={selectedCountry} />
+            <AddEditModal mode={mode} setInitialData={setSelectedCountry} initialData={selectedCountry} />
             <DeleteAlert
                 label="Country"
                 showModal={showDeleteModal}

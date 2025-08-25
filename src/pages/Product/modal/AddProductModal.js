@@ -674,12 +674,21 @@ const AddProductModal = ({ product, setProduct }) => {
             {/* Description */}
             <div className="col-md-12">
               <div className="mb-0">
-                <label className="col-form-label">Description</label>
+                <label className="col-form-label">Description  <span className="text-danger">(max 255 characters)</span></label>
                 <textarea
                   className="form-control"
                   rows={5}
-                  {...register("description")}
+                  {...register("description", {
+                    validate: (value) => {
+                      const wordCount = value.trim().split(/\s+/).length;
+                      return wordCount <= 200 || "Description must not exceed 200 words.";
+                    }})}
                 />
+                {errors.description && (
+                  <small className="text-danger">
+                    {errors.description.message}
+                  </small>
+                )}
               </div>
             </div>
           </div>

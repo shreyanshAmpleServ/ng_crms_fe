@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCountry, updateCountry } from "../../../../redux/country"; // Adjust as per your redux actions
 import { Link } from "react-router-dom";
 
-const AddEditModal = ({ mode = "add", initialData = null ,onClose}) => {
+const AddEditModal = ({ mode = "add",setInitialData, initialData = null ,onClose}) => {
   const { loading } = useSelector((state) => state.countries || {});
 
   const {
@@ -68,16 +68,20 @@ const AddEditModal = ({ mode = "add", initialData = null ,onClose}) => {
         })
       );
     }
-
+    setInitialData()
       reset(); // Clear the form
       if (closeButton) closeButton.click();
     };
     // Clear form when modal closes
         useEffect(() => {
           const modalEl = document.getElementById("add_edit_country_modal");
+          const handleModalClose = () => {
+            clearForm();
+            setInitialData()
+          };
           if (modalEl) {
-            modalEl.addEventListener("hidden.bs.modal", clearForm);
-            return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+            modalEl.addEventListener("hidden.bs.modal", handleModalClose);
+            return () => modalEl.removeEventListener("hidden.bs.modal", handleModalClose);
           }
         }, [])
 

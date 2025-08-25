@@ -130,7 +130,7 @@ const Header = () => {
     <ImageWithDatabase
       src={logo_path}
       alt="Logo"
-      className="bg-light"
+      className="bg-white"
     />
   </Link>
 

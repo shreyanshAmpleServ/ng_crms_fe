@@ -38,7 +38,9 @@ const SourceList = () => {
     {
       title: "Sr. No.",   
          width: 50,
-      render: (text,record,index) =>index+1 ,
+      render: (text,record,index) =>   (paginationData?.currentPage - 1) * paginationData?.pageSize +
+      index +
+      1, 
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
@@ -225,7 +227,7 @@ const SourceList = () => {
                 </div>
               </div>
               <div className="card-body">
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
                     {/* <SortDropdown
                       sortOrder={sortOrder}
@@ -248,7 +250,7 @@ const SourceList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedSource} />
+      <AddEditModal mode={mode} setInitialData={setSelectedSource} initialData={selectedSource} />
       <DeleteAlert
         label="Source"
         showModal={showDeleteModal}

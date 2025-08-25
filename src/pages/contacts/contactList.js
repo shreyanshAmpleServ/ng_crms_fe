@@ -71,6 +71,7 @@ const ContactList = () => {
     {
       title: "Name",
       dataIndex: "name",
+      width:150,
       render: (text, record, index) => (
         <Link to={`/crms/contacts/${record?.id}`} className="" key={index}>
           {`${record.firstName} ${record.lastName}`}
@@ -95,8 +96,13 @@ const ContactList = () => {
     {
       title: "Location",
       dataIndex: "contact_Country",
+    
       render: (text, record) => (
-        <div>{`${record?.city ? record?.city + ", " : ""} ${record.contact_State?.name ? record.contact_State?.name + ", " : ""} ${record.contact_Country?.name ? record.contact_Country?.name : " - "}`}</div>
+        <div   style={{
+          maxWidth: "10rem",      // Maximum width the column can grow
+          whiteSpace: "normal",   // Allow wrapping
+          wordBreak: "break-word",
+        }}>{`${record?.city ? record?.city + ", " : ""} ${record.contact_State?.name ? record.contact_State?.name + ", " : ""} ${record.contact_Country?.name ? record.contact_Country?.name : " - "}`}</div>
       ),
       // sorter: (a, b) => a.country.length - b.country.length,
     },
@@ -551,7 +557,7 @@ const ContactList = () => {
 
                 <div className="card-body">
                   {/* Filter */}
-                  <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                  <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                     <div className="d-flex align-items-center flex-wrap row-gap-2">
                       {/* <SortDropdown
                         sortOrder={sortOrder}

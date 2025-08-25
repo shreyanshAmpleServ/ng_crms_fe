@@ -9,6 +9,7 @@
     color: inherit;
     .card-body {
         padding: 1rem;
+        padding-top: .6rem;
     }
     .card-title {
         font-size: $font-size-18;
@@ -19,7 +20,7 @@
         border-color: $light-900;
         position: relative;
         background: transparent;
-        padding: 1rem;
+        padding: .6rem;
         .card-title {
             margin-bottom: 0rem;
         }

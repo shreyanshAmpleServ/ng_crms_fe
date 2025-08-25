@@ -9,7 +9,7 @@ import {
   updateMappedState,
 } from "../../../../redux/mappedState";
 
-const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
+const AddEditModal = ({ mode = "add",setInitialData, initialData = null,onClose }) => {
   const { loading } = useSelector((state) => state.states);
 
   const {
@@ -83,6 +83,7 @@ const onSubmit = (data) => {
       })
     );
   }
+  setInitialData()
 
   // Clear form and close modal
   clearForm();
@@ -93,9 +94,13 @@ const onSubmit = (data) => {
 // Auto clear when modal closes
 useEffect(() => {
   const modalEl = document.getElementById("add_edit_state_modal");
+  const handleModalClose = () => {
+    clearForm();
+    setInitialData()
+  };
   if (modalEl) {
-    modalEl.addEventListener("hidden.bs.modal", clearForm);
-    return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+    modalEl.addEventListener("hidden.bs.modal", handleModalClose);
+    return () => modalEl.removeEventListener("hidden.bs.modal", handleModalClose);
   }
 }, []);
 

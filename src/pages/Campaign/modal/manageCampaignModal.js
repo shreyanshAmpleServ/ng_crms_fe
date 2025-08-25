@@ -645,7 +645,7 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="col-form-label">Description</label>
+                  <label className="col-form-label">Description  <span className="text-danger">(max 255 characters)</span></label>
                   <Controller
                     name="description"
                     control={control}

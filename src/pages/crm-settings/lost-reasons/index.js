@@ -25,7 +25,9 @@ import { Helmet } from "react-helmet-async";
 const LostReasonsList = () => {
   const [mode, setMode] = useState("add"); 
   const dispatch = useDispatch();
-
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const [paginationData, setPaginationData] = useState();
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Lead Status")?.[0]?.permissions
  const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
@@ -37,12 +39,20 @@ const LostReasonsList = () => {
   const columns = [
     {
       title: "Sr. No.",      width: 50,
-      render: (text,record,index) =>index+1 ,
+      render: (text,record,index) =>   (paginationData?.currentPage - 1) * paginationData?.pageSize +
+      index +
+      1,
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
       title: "Lead Status",
       dataIndex: "name",
+      render: (text) =>text,
+      sorter: (a, b) => a.name.localeCompare(b.name),
+    },
+    {
+      title: "Lead Order",
+      dataIndex: "order",
       render: (text) =>text,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -118,28 +128,50 @@ const LostReasonsList = () => {
   );
 
   React.useEffect(() => {
-    dispatch(fetchLostReasons());
-  }, [dispatch]);
+    dispatch(fetchLostReasons({ search: searchText }));
+  }, [dispatch,searchText]);
+    React.useEffect(() => {
+      setPaginationData({
+        currentPage: lostReasons?.currentPage,
+        totalPage: lostReasons?.totalPages,
+        totalCount: lostReasons?.totalCount,
+        pageSize: lostReasons?.size,
+      });
+    }, [lostReasons]);
+  
+    const handlePageChange = ({ currentPage, pageSize }) => {
+      setPaginationData((prev) => ({
+        ...prev,
+        currentPage,
+        pageSize,
+      }));
+      dispatch(
+        fetchLostReasons({
+          search: searchText,
+          page: currentPage,
+          size: pageSize,
+        })
+      );
+    };
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = lostReasons;
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
-      );
-    }
+    let data = lostReasons?.data || [];
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase()),
+    //     ),
+    //   );
+    // }
     if (sortOrder === "ascending") {
       data = [...data].sort((a, b) =>
         moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
@@ -199,7 +231,7 @@ const LostReasonsList = () => {
                   <h4 className="page-title">
                     Lead Status
                     <span className="count-title">
-                      {lostReasons?.length || 0}
+                      {lostReasons?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -228,7 +260,7 @@ const LostReasonsList = () => {
                 </div>
               </div>
               <div className="card-body">
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
                     {/* <SortDropdown
                       sortOrder={sortOrder}
@@ -243,6 +275,8 @@ const LostReasonsList = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>
@@ -251,7 +285,7 @@ const LostReasonsList = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedLostReason} />
+      <AddEditModal mode={mode} setInitialData={setSelectedLostReason} initialData={selectedLostReason} />
       <DeleteAlert
         label="Lost Reason"
         showModal={showDeleteModal}

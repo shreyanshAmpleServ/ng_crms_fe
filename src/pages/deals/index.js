@@ -53,7 +53,7 @@ const DealList = () => {
   
   const columns = [
     {
-      title: "S.No.",      
+      title: "Sr. No.",      
       width: 50,
       render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
       // sorter: (a, b) => a.code.localeCompare(b.name),
@@ -61,6 +61,7 @@ const DealList = () => {
     {
       title: "Name",
       dataIndex: "dealName",
+      width:180,
       render: (text, record, index) => (
         <Link to={`/crms/deals/${record.id}`} key={index}>
           {record.dealName}
@@ -278,7 +279,7 @@ const DealList = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, "contacts.xlsx");
+    XLSX.writeFile(workbook, "Opportunity.xlsx");
   }, [filteredData]);
 
   // Export to PDF
@@ -288,7 +289,7 @@ const exportToPDF = useCallback(() => {
   const pageWidth = doc.internal.pageSize.getWidth();
 
   // 🎨 Title center me
-  const title = "Exported Deals";
+  const title = "Exported Opportunity";
   doc.setFontSize(16);
   const textWidth = doc.getTextWidth(title);
   const x = (pageWidth - textWidth) / 2;
@@ -362,14 +363,14 @@ const exportToPDF = useCallback(() => {
     },
   });
 
-  doc.save("Deals.pdf");
+  doc.save("Opportunity.pdf");
 }, [filteredData, columns, paginationData]);
 
   return (
     <div>
       <Helmet>
         <title>DCC CRMS - Opportunity</title>
-        <meta name="Deals" content="This is Opportunity page of DCC CRMS." />
+        <meta name="Opportunity" content="This is Opportunity page of DCC CRMS." />
       </Helmet>
       <div className="page-wrapper">
         <div className="content">
@@ -436,7 +437,7 @@ const exportToPDF = useCallback(() => {
 
                 <div className="card-body">
                   {/* card header */}
-                  <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                  <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                     {/* Sort & Filterby Date Range */}
                     <div className="d-flex align-items-center flex-wrap row-gap-2">
                       {/* <SortDropdown
@@ -503,7 +504,7 @@ const exportToPDF = useCallback(() => {
         showModal={showDeleteModal}
         setShowModal={setShowDeleteModal}
         onDelete={deleteData}
-        label="deal"
+        label="opportunity"
       />
     </div>
   );

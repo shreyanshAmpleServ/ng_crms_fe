@@ -785,13 +785,22 @@ const AddSalesInvoiceModal = ({ order, setOrder }) => {
               {/* Description */}
               <div className="col-md-12 mb-3">
                 <div className="mb-0">
-                  <label className="col-form-label">Remarks</label>
+                <label className="col-form-label">Remarks <span className="text-danger">(max 255 characters)</span></label>
                   <textarea
                     className="form-control"
                     placeholder="Enter Remarks"
-                    rows={4}
-                    {...register("remarks")}
+                    rows={5}
+                    {...register("remarks", {
+                      validate: (value) => {
+                        const wordCount = value.trim().split(/\s+/).length;
+                        return wordCount <= 200 || "Remarks must not exceed 200 words.";
+                      }})}
                   />
+                  {errors.remarks && (
+                    <small className="text-danger">
+                      {errors.remarks.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

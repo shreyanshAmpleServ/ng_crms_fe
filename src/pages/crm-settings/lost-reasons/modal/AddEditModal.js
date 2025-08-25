@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 const AddEditModal = ({
   mode = "add",
   initialData = null,
+  setInitialData,
   sourcePage = null,
 }) => {
   const { loading } = useSelector((state) => state.lostReasons);
@@ -84,7 +85,8 @@ const AddEditModal = ({
       }
     }
 
-    clearForm();
+    // clearForm();
+    setInitialData(null)
 
     if (closeButton) closeButton.click();
   };
@@ -92,13 +94,17 @@ const AddEditModal = ({
   // ✅ Modal close hone pe bhi form clear
   useEffect(() => {
     const modalEl = document.getElementById("add_edit_lost_reason_modal");
+    const handleModalClose = () => {
+      clearForm();
+      setInitialData()
+    };
     if (modalEl) {
-      modalEl.addEventListener("hidden.bs.modal", clearForm);
-      return () => modalEl.removeEventListener("hidden.bs.modal", clearForm);
+      modalEl.addEventListener("hidden.bs.modal", handleModalClose);
+      return () => modalEl.removeEventListener("hidden.bs.modal", handleModalClose);
     }
   }, []);
 
-  
+  console.log("Lead status : ", initialData)
 
   return (
     <div className="modal fade" id="add_edit_lost_reason_modal" role="dialog">

@@ -19,7 +19,6 @@ const ManageOrderItemModal = ({
   const dispatch = useDispatch();
   const { control } = useForm();
   const [activeTab, setActiveTab] = useState("product");
-
   // // Separate state for Other and Terms
   // const [otherItems, setOtherItems] = useState([{ label: "", descriptions: [""] }]);
   // const [termsItems, setTermsItems] = useState();
@@ -189,6 +188,7 @@ const ManageOrderItemModal = ({
                         <td>
                           <input
                             type="number"
+                              className="form-control"
                             value={i.quantity}
                             onChange={(e) =>
                               updateItem(index, "quantity", e.target.value)

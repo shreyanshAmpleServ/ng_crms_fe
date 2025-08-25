@@ -305,7 +305,25 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
       closeButton.click();
       dispatch(fetchPurchaseOrderCode());
       reset();
-      setItemNumber(initialItem);
+      setItemNumber([
+  {
+    parent_id: null,
+    item_id: null,
+    item_name: "",
+    quantity: 1,
+    delivered_qty: 0,
+    unit_price: 0,
+    currency: null,
+    rate: 0,
+    disc_prcnt: 0,
+    disc_amount: 0,
+    tax_id: null,
+    tax_per: 0.0,
+    line_tax: 0,
+    total_bef_disc: 0,
+    total_amount: 0,
+  },
+]);
     } catch (error) {
       closeButton.click();
     }
@@ -317,7 +335,25 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
     if (offcanvasElement) {
       const handleModalClose = () => {
         setOrder();
-        setItemNumber(initialItem);
+        setItemNumber([
+  {
+    parent_id: null,
+    item_id: null,
+    item_name: "",
+    quantity: 1,
+    delivered_qty: 0,
+    unit_price: 0,
+    currency: null,
+    rate: 0,
+    disc_prcnt: 0,
+    disc_amount: 0,
+    tax_id: null,
+    tax_per: 0.0,
+    line_tax: 0,
+    total_bef_disc: 0,
+    total_amount: 0,
+  },
+]);
         reset();
       };
       offcanvasElement.addEventListener(
@@ -747,12 +783,21 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
               {/* Description */}
               <div className="col-md-12 mb-3">
                 <div className="mb-0">
-                  <label className="col-form-label">Remarks</label>
+                <label className="col-form-label">Remarks <span className="text-danger">(max 255 characters)</span></label>
                   <textarea
                     className="form-control"
-                    rows={4}
-                    {...register("remarks")}
+                    rows={5}
+                    {...register("remarks", {
+                      validate: (value) => {
+                        const wordCount = value.trim().split(/\s+/).length;
+                        return wordCount <= 200 || "Remarks must not exceed 200 words.";
+                      }})}
                   />
+                  {errors.remarks && (
+                    <small className="text-danger">
+                      {errors.remarks.message}
+                    </small>
+                  )}
                 </div>
               </div>
             </div>

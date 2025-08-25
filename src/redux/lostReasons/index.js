@@ -9,6 +9,9 @@ export const fetchLostReasons = createAsyncThunk(
     try {
       const params = {};
       if (data?.is_active) params.is_active = data.is_active;
+      if (data?.search) params.search = data.search;
+      if (data?.page) params.page = data.page;
+      if (data?.size) params.size = data.size;
       const response = await apiClient.get("/v1/lost-reasons", { params });
       return response.data;
     } catch (error) {
@@ -125,7 +128,10 @@ const lostReasonsSlice = createSlice({
       })
       .addCase(addLostReason.fulfilled, (state, action) => {
         state.loading = false;
-        state.lostReasons = [action.payload.data, ...state.lostReasons];
+        state.lostReasons = {
+          ...state.lostReasons,
+          data: [action.payload.data, ...state.lostReasons.data]
+      };
         state.success = action.payload.message;
         toast.success( "Lead Status added successfully");
       })
@@ -141,14 +147,17 @@ const lostReasonsSlice = createSlice({
       })
       .addCase(updateLostReason.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.lostReasons?.findIndex(
-          (reason) => reason.id === action.payload.data.id
-        );
-        if (index !== -1) {
-          state.lostReasons[index] = action.payload.data;
-        } else {
-          state.lostReasons = [action.payload.data, ...state.lostReasons];
-        }
+        const index = state.lostReasons?.data?.findIndex(
+          (data) => data.id === action.payload.data.id
+      );
+      if (index !== -1) {
+          state.lostReasons.data[index] = action.payload.data;
+      } else {
+          state.lostReasons = {
+              ...state.lostReasons,
+              data: [...state.lostReasons, action.payload.data]
+          };
+      }
         state.success = action.payload.message;
         toast.success( "Lead Status updated successfully");
       })
@@ -164,9 +173,10 @@ const lostReasonsSlice = createSlice({
       })
       .addCase(deleteLostReason.fulfilled, (state, action) => {
         state.loading = false;
-        state.lostReasons = state.lostReasons.filter(
-          (reason) => reason.id !== action.payload.data.id
-        );
+        const filterData = state.lostReasons.data.filter(
+          (data) => data.id !== action.payload.data.id
+      );
+      state.lostReasons = { ...state.lostReasons, data: filterData };
         state.success = action.payload.message;
         toast.success(action.payload.message || "Lead Stats deleted successfully");
       })

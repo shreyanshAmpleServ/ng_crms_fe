@@ -222,7 +222,7 @@ const ProductCategory = () => {
                 </div>
               </div>
               <div className="card-body">
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
+                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
                   <div className="d-flex align-items-center flex-wrap row-gap-2">
                     {/* <SortDropdown
                       sortOrder={sortOrder}
@@ -245,7 +245,7 @@ const ProductCategory = () => {
         </div>
       </div>
 
-      <AddEditModal mode={mode} initialData={selectedIndustry} />
+      <AddEditModal mode={mode} setInitialData={setSelectedIndustry} initialData={selectedIndustry} />
       <DeleteAlert
         label="Product Category"
         showModal={showDeleteModal}

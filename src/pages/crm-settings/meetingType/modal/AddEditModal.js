@@ -7,7 +7,7 @@ import {
   updateMeetingType,
 } from "../../../../redux/meetingType";
 
-const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
+const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose }) => {
   const { loading } = useSelector((state) => state.meetingTypes); // ✅ Adjust to your slice
 
   const {
@@ -58,6 +58,7 @@ const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
         })
       );
     }
+    setInitialData()
 
     clearForm();
 
@@ -71,10 +72,14 @@ const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
   // Auto clear form when modal closes
   useEffect(() => {
     const modalEl = document.getElementById("add_edit_meeting_type_modal");
+    const handleModalClose = () => {
+      clearForm();
+      setInitialData()
+    };
     if (modalEl) {
-      modalEl.addEventListener("hidden.bs.modal", clearForm);
+      modalEl.addEventListener("hidden.bs.modal", handleModalClose);
       return () =>
-        modalEl.removeEventListener("hidden.bs.modal", clearForm);
+        modalEl.removeEventListener("hidden.bs.modal", handleModalClose);
     }
   }, []);
 
@@ -136,9 +141,7 @@ const AddEditModal = ({ mode = "add", initialData = null, onClose }) => {
 
               {/* Description */}
               <div className="mb-3">
-                <label className="col-form-label">
-                  Description (max 255 characters)
-                </label>
+              <label className="col-form-label">Description  <span className="text-danger">(max 255 characters)</span></label>
                 <textarea
                   placeholder="Enter Description"
                   rows="4"
