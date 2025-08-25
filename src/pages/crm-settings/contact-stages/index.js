@@ -23,7 +23,8 @@ import AddButton from "../../../components/datatable/AddButton";
 
 const ContactStagesList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
-
+     const [paginationData, setPaginationData] = useState();
+  
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Contact Stage")?.[0]?.permissions
  const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
@@ -36,7 +37,7 @@ const ContactStagesList = () => {
   const columns = [
     {
       title: "Sr. No.",      width: 50,
-      render: (text,record,index) =>index+1 ,
+       render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
@@ -122,6 +123,31 @@ const ContactStagesList = () => {
     dispatch(fetchContactStages());
   }, [dispatch]);
 
+
+   React.useEffect(() => {
+        setPaginationData({
+          currentPage: contactStages?.currentPage,
+          totalPage: contactStages?.totalPages,
+          totalCount: contactStages?.totalCount,
+          pageSize: contactStages?.size,
+        });
+      }, [contactStages]);
+    
+      const handlePageChange = ({ currentPage, pageSize }) => {
+        setPaginationData((prev) => ({
+          ...prev,
+          currentPage,
+          pageSize,
+        }));
+        dispatch(
+          fetchContactStages({
+            search: searchText,
+            page: currentPage,
+            size: pageSize,
+          })
+        );
+      };
+
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
 
@@ -130,7 +156,7 @@ const ContactStagesList = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = contactStages;
+    let data = contactStages?.data || [];
     if (searchText) {
       data = data.filter((item) =>
         columns.some((col) =>
@@ -236,6 +262,8 @@ const ContactStagesList = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                     paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>
