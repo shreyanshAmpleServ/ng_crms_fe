@@ -5,9 +5,14 @@ import toast from "react-hot-toast"; // ✅ Added
 // Fetch All Sources
 export const fetchSources = createAsyncThunk(
   "sources/fetchSources",
-  async (_, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      const response = await apiClient.get("/v1/sources");
+      const params = {};
+      if (data?.is_active) params.is_active = data.is_active;
+      if (data?.search) params.search = data.search;
+      if (data?.page) params.page = data.page;
+      if (data?.size) params.size = data.size;
+      const response = await apiClient.get("/v1/sources",{params});
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -89,7 +94,7 @@ export const fetchSourceById = createAsyncThunk(
 const sourcesSlice = createSlice({
   name: "sources",
   initialState: {
-    sources: [],
+    sources: {},
     sourceDetail: null,
     loading: false,
     error: false,
@@ -123,7 +128,17 @@ const sourcesSlice = createSlice({
       })
       .addCase(addSource.fulfilled, (state, action) => {
         state.loading = false;
-        state.sources = [action.payload.data, ...state.sources];
+        const index = state.sources?.data?.findIndex(
+          (data) => data.id === action.payload.data.id
+      );
+      if (index !== -1) {
+          state.sources.data[index] = action.payload.data;
+      } else {
+          state.sources = {
+              ...state.sources,
+              data: [...state.sources, action.payload.data]
+          };
+      }
         state.success = action.payload.message;
         toast.success(action.payload.message || "Source added successfully");
       })
@@ -139,7 +154,7 @@ const sourcesSlice = createSlice({
       })
       .addCase(updateSource.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.sources?.findIndex(
+        const index = state.sources.findIndex(
           (source) => source.id === action.payload.data.id
         );
         if (index !== -1) {
@@ -162,9 +177,10 @@ const sourcesSlice = createSlice({
       })
       .addCase(deleteSource.fulfilled, (state, action) => {
         state.loading = false;
-        state.sources = state.sources.filter(
-          (source) => source.id !== action.payload.data.id
-        );
+        const filterData = state.sources.data.filter(
+          (data) => data.id !== action.payload.data.id
+      );
+      state.sources = { ...state.sources, data: filterData };
         state.success = action.payload.message;
         toast.success(action.payload.message || "Source deleted successfully");
       })

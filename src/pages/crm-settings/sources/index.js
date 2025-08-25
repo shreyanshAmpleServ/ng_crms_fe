@@ -25,7 +25,9 @@ import { Helmet } from "react-helmet-async";
 const SourceList = () => {
   const [mode, setMode] = useState("add"); 
   const dispatch = useDispatch();
-
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const [paginationData, setPaginationData] = useState();
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Sources")?.[0]?.permissions
  const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
@@ -121,37 +123,58 @@ const SourceList = () => {
   );
 
   React.useEffect(() => {
-    dispatch(fetchSources());
-  }, [dispatch]);
-
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+    dispatch(fetchSources({ search: searchText }));
+  }, [dispatch,searchText]);
+    React.useEffect(() => {
+        setPaginationData({
+          currentPage: sources?.currentPage,
+          totalPage: sources?.totalPages,
+          totalCount: sources?.totalCount,
+          pageSize: sources?.size,
+        });
+      }, [sources]);
+    
+      const handlePageChange = ({ currentPage, pageSize }) => {
+        setPaginationData((prev) => ({
+          ...prev,
+          currentPage,
+          pageSize,
+        }));
+        dispatch(
+          fetchSources({
+            search: searchText,
+            page: currentPage,
+            size: pageSize,
+          })
+        );
+      };
+  
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = sources;
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
-      );
-    }
+    let data = sources?.data || [];
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase()),
+    //     ),
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+    //   );
+    // }
     return data;
   }, [searchText, sources, columns, sortOrder]);
 
@@ -165,7 +188,7 @@ const SourceList = () => {
   const deleteData = () => {
     if (selectedSource) {
       dispatch(deleteSource(selectedSource.id));
-      navigate(`/crms/sources`);
+      // navigate(`/crms/sources`);
       setShowDeleteModal(false);
     }
   };
@@ -199,7 +222,7 @@ const SourceList = () => {
                 <div className="col-8">
                   <h4 className="page-title">
                     Sources
-                    <span className="count-title">{sources?.length || 0}</span>
+                    <span className="count-title">{sources?.totalCount || 0}</span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -242,6 +265,8 @@ const SourceList = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

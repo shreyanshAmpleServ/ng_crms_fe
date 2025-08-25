@@ -173,15 +173,15 @@ const LostReasonsList = () => {
     //     ),
     //   );
     // }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
-      );
-    }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+    //   );
+    // }
     return data;
   }, [searchText, lostReasons, columns, sortOrder]);
 
