@@ -128,6 +128,7 @@ const lostReasonsSlice = createSlice({
       })
       .addCase(addLostReason.fulfilled, (state, action) => {
         state.loading = false;
+        
         state.lostReasons = {
           ...state.lostReasons,
           data: [action.payload.data, ...state.lostReasons.data]

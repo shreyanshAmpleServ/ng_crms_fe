@@ -57,7 +57,7 @@ const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
          dispatch(
             updateCallType({
            id: initialData.id,
-           callStatusData: {
+           callTypeData: {
              name: data.name,
              description: data.description,
              is_active: data.is_active,

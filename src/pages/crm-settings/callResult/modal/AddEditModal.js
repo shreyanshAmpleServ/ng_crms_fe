@@ -56,7 +56,7 @@ const AddEditModal = ({ mode = "add", initialData = null,onClose }) => {
           dispatch(
              updateCallResult({
             id: initialData.id,
-            callStatusData: {
+            callResultData: {
               name: data.name,
               description: data.description,
               is_active: data.is_active,
