@@ -117,7 +117,7 @@ const currenciesSlice = createSlice({
       })
       .addCase(fetchCurrencies.fulfilled, (state, action) => {
         state.loading = false;
-        state.currencies = action.payload || { data: [] };
+        state.currencies = action.payload.data || { data: [] };
       })
       .addCase(fetchCurrencies.rejected, (state, action) => {
         state.loading = false;

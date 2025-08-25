@@ -38,7 +38,7 @@ const EditDealModal = ({ deal }) => {
   const [stages, setStages] = useState([]); // Local state for stages
   const { currencies } = useSelector( (state) => state.currency);
     
-  const currencyLists = currencies?.map(i => i?.is_active === "Y" ? ({label:i?.code,value:i?.code}) : null).filter(Boolean) || [];
+  const currencyLists = currencies?.data?.map(i => i?.is_active === "Y" ? ({label:i?.code,value:i?.code}) : null).filter(Boolean) || [];
    
   const {   pipelines : pipelineLists } = useSelector((state) => state.pipelines);
  
