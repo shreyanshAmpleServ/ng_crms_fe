@@ -61,6 +61,12 @@ const QuoteTemplate = () => {
 
   const columns = [
      {
+            title: "Sr. No.",  
+             width: 50,
+            render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
+            
+        },
+     {
       title: "Template Name",
       dataIndex: "template_name",
       render: (text) => (
@@ -223,8 +229,15 @@ const QuoteTemplate = () => {
     doc.text("Exported QuoteTemplate", 14, 10);
     doc.autoTable({
       head: [columns.map((col) => col.title !== "Actions" ?  col.title : "")],
-      body: filteredData?.map((row) =>
+      body: filteredData?.map((row,index) =>
         columns.map((col) => {
+          if (col.title === "Sr. No.") {
+        return (
+          (paginationData?.currentPage - 1) * paginationData?.pageSize +
+          index +
+          1
+        );
+      }
           if (col.dataIndex === "quotation_vendor") {
             return row.quotation_vendor?.name || ""; 
           }

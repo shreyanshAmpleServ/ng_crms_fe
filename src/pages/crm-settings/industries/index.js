@@ -24,6 +24,7 @@ import { Helmet } from "react-helmet-async";
 
 const IndustryList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
+   const [paginationData, setPaginationData] = useState();
  
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Industry")?.[0]?.permissions
@@ -37,7 +38,7 @@ const IndustryList = () => {
   const columns = [
     {
       title: "Sr. No.",      width: 50,
-      render: (text,record,index) =>index+1 ,
+       render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
@@ -121,6 +122,30 @@ const IndustryList = () => {
     dispatch(fetchIndustries());
   }, [dispatch]);
 
+  React.useEffect(() => {
+      setPaginationData({
+        currentPage: industries?.currentPage,
+        totalPage: industries?.totalPages,
+        totalCount: industries?.totalCount,
+        pageSize: industries?.size,
+      });
+    }, [industries]);
+  
+    const handlePageChange = ({ currentPage, pageSize }) => {
+      setPaginationData((prev) => ({
+        ...prev,
+        currentPage,
+        pageSize,
+      }));
+      dispatch(
+        fetchIndustries({
+          search: searchText,
+          page: currentPage,
+          size: pageSize,
+        })
+      );
+    };
+
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
 
@@ -129,7 +154,7 @@ const IndustryList = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = industries;
+    let data = industries?.data ||[];
     if (searchText) {
       data = data.filter((item) =>
         columns.some((col) =>
@@ -241,6 +266,8 @@ const IndustryList = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                      paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

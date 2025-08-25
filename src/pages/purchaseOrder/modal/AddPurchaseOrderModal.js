@@ -541,12 +541,12 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
                   </label>
                   <div className="mb-3 icon-form">
                     <span className="form-icon z-1">
-                      <i className="ti ti-calendar-check" />
+                      <i className="ti ti-calendar-check"/>
                     </span>
                     <Controller
                       name="due_date"
                       control={control}
-                      rules={{ required: "Start date is required !" }} // Make the field required
+                      rules={{ required: "Start date is required !"}}  
                       render={({ field }) => (
                         <DatePicker
                           {...field}

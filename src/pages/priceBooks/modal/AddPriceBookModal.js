@@ -120,6 +120,7 @@ const AddInvoiceModal = ({ order, setOrder }) => {
       closeButton.click();
       reset();
       setItemNumber(initialItem);
+      
     } catch (error) {
       closeButton.click();
     }

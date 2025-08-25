@@ -246,6 +246,7 @@ const ManufacturerList = () => {
                     paginationData={paginationData}
                     onPageChange={handlePageChange} 
                   />
+                 
                 </div>
               </div>
             </div>

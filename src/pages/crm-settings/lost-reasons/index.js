@@ -24,6 +24,7 @@ import { Helmet } from "react-helmet-async";
 
 const LostReasonsList = () => {
   const [mode, setMode] = useState("add"); 
+  
   const dispatch = useDispatch();
 
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))

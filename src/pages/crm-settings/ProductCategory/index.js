@@ -14,33 +14,41 @@ import { useNavigate } from "react-router-dom";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { deleteProductCategory, fetchProductCategory ,clearMessages} from "../../../redux/productCategory";
+import {
+  deleteProductCategory,
+  fetchProductCategory,
+  clearMessages,
+} from "../../../redux/productCategory";
 import { Helmet } from "react-helmet-async";
 
 const ProductCategory = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
-  const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Product Category")?.[0]?.permissions
- const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const [paginationData, setPaginationData] = useState();
+
+  const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Product Category"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("user")
+    ? atob(localStorage.getItem("user")).includes("admin")
+    : null;
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "Sr. No.",      width: 50,
-      render: (text,record,index) =>index+1 ,
+      title: "Sr. No.",
+      width: 50,
+       render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
       // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+    },
     {
       title: "Category Name",
       dataIndex: "name",
-      render: (text, record) => (
-        <Link to={`#`}>{record.name}</Link>
-      ),
+      render: (text, record) => <Link to={`#`}>{record.name}</Link>,
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
 
@@ -70,43 +78,51 @@ const ProductCategory = () => {
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-   ...((isUpdate || isDelete) ?[ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_product_category_modal"
-              onClick={() => {
-                setSelectedIndustry(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-           {isDelete && <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteIndustry(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_product_category_modal"
+                      onClick={() => {
+                        setSelectedIndustry(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteIndustry(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const { productCategories, loading, error, success } = useSelector(
@@ -116,7 +132,29 @@ const ProductCategory = () => {
   React.useEffect(() => {
     dispatch(fetchProductCategory());
   }, [dispatch]);
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: productCategories?.currentPage,
+      totalPage: productCategories?.totalPages,
+      totalCount: productCategories?.totalCount,
+      pageSize: productCategories?.size,
+    });
+  }, [productCategories]);
 
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchProductCategory({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
 
@@ -125,7 +163,7 @@ const ProductCategory = () => {
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = productCategories;
+    let data = productCategories?.data || [];
     if (searchText) {
       data = data.filter((item) =>
         columns.some((col) =>
@@ -158,7 +196,7 @@ const ProductCategory = () => {
   const deleteData = () => {
     if (selectedIndustry) {
       dispatch(deleteProductCategory(selectedIndustry.id));
-     
+
       setShowDeleteModal(false);
     }
   };
@@ -167,7 +205,10 @@ const ProductCategory = () => {
     <div className="page-wrapper">
       <Helmet>
         <title>DCC CRMS - Product category</title>
-        <meta name="Product categories" content="This is Product categories page of DCC CRMS." />
+        <meta
+          name="Product categories"
+          content="This is Product categories page of DCC CRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -193,7 +234,7 @@ const ProductCategory = () => {
                   <h4 className="page-title">
                     Product Category
                     <span className="count-title">
-                      {productCategories?.length || 0}
+                      {productCategories?.totalCount || 0}
                     </span>
                   </h4>
                 </div>
@@ -212,13 +253,15 @@ const ProductCategory = () => {
                     handleSearch={handleSearch}
                     label="Search Category"
                   />
-                {isCreate &&  <div className="col-sm-8">
-                    <AddButton
-                      label="Add"
-                      id="add_edit_product_category_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add"
+                        id="add_edit_product_category_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -237,6 +280,8 @@ const ProductCategory = () => {
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>
