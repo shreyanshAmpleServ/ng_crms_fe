@@ -120,7 +120,7 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose
                     errors.name ? "is-invalid" : ""
                   }`}
                   {...register("name", {
-                    required: "Category name is required!",
+                    required: "Category Name is required!",
                     minLength: {
                       value: 3,
                       message:

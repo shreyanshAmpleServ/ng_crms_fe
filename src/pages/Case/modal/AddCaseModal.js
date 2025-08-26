@@ -358,7 +358,7 @@ const onSubmit = async (data) => {
                   placeholder="Enter  Case Status"
                   className="form-control"
                   {...register("case_status", {
-                    required: "Case status is required !",
+                    required: "Case Status is required !",
                   })}
                 />
               </div>
@@ -379,7 +379,7 @@ const onSubmit = async (data) => {
                   placeholder="Enter  Case Type"
                   className="form-control"
                   {...register("case_type", {
-                    required: "Case type is required !",
+                    required: "Case Type is required !",
                   })}
                 />
                 {errors.case_type && (
@@ -400,7 +400,7 @@ const onSubmit = async (data) => {
                   placeholder="Enter Case Priority"
                   className="form-control"
                   {...register("case_priority", {
-                    required: "Case priority is required !",
+                    required: "Case Priority is required !",
                   })}
                 />
                 {errors.case_priority && (
@@ -421,7 +421,7 @@ const onSubmit = async (data) => {
                   placeholder="Enter  Case Origin"
                   className="form-control"
                   {...register("case_origin", {
-                    required: "Case origin is required !",
+                    required: "Case Origin is required !",
                   })}
                 />
                 {errors.case_origin && (

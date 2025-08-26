@@ -18,7 +18,11 @@ import { Helmet } from "react-helmet-async";
 
 const TaxSetUpList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
-
+  const [paginationData, setPaginationData] = useState();
+  const [selectedTax, setSelectedTax] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
   const allPermissions = permissions?.filter(
     (i) => i?.module_name === "Tax Setup"
@@ -37,8 +41,10 @@ const TaxSetUpList = () => {
       title: "Sr. No.",
 align: "center",
       width: 50,
-      render: (text, record, index) => index + 1,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
+render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1,      // sorter: (a, b) => a.code.localeCompare(b.name),
     },
     {
       title: "Tax Name",
@@ -157,37 +163,58 @@ align: "center",
   const { taxs, loading, error, success } = useSelector((state) => state.taxs);
 
   React.useEffect(() => {
-    dispatch(fetchTaxSetup());
-  }, [dispatch]);
+    dispatch(fetchTaxSetup({ search: searchText }));
+  }, [dispatch,searchText]);
+React.useEffect(() => {
+    setPaginationData({
+      currentPage: taxs?.currentPage,
+      totalPage: taxs?.totalPages,
+      totalCount: taxs?.totalCount,
+      pageSize: taxs?.size,
+    });
+  }, [taxs]);
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchTaxSetup({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
+
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = taxs;
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-      );
-    }
+    let data = taxs?.data || [];
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase())
+    //     )
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+    //   );
+    // }
     return data;
   }, [searchText, taxs, columns, sortOrder]);
 
@@ -196,8 +223,7 @@ align: "center",
     setShowDeleteModal(true);
   };
 
-  const [selectedTax, setSelectedTax] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  
   const deleteData = () => {
     if (selectedTax) {
       dispatch(deleteTaxSetup(selectedTax.id));
@@ -272,6 +298,8 @@ align: "center",
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                    paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

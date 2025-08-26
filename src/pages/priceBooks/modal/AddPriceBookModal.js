@@ -193,7 +193,7 @@ const AddInvoiceModal = ({ order, setOrder }) => {
                     placeholder="Enter Name"
                     className="form-control"
                     {...register("name", {
-                      required: "Contact person to is required !",
+                      required: "Name to is required !",
                     })}
                   />
                   {errors.name && (

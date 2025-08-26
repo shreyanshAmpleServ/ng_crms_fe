@@ -2,22 +2,28 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 import toast from "react-hot-toast"; // ✅ Import toast
 
-// Fetch All Meeting Statuses
+// ✅ Fetch All Meeting Types (with filters & pagination)
 export const fetchMeetingTypes = createAsyncThunk(
   "meetingTypes/fetchMeetingTypes",
-  async (_, thunkAPI) => {
+  async (datas, thunkAPI) => {
     try {
-      const response = await apiClient.get("/v1/meeting-types");
+      const params = {};
+      if (datas?.page) params.page = datas.page;
+      if (datas?.size) params.size = datas.size;
+      if (datas?.search) params.search = datas.search;
+      if (datas?.is_active !== undefined) params.is_active = datas.is_active;
+
+      const response = await apiClient.get("/v1/meeting-types", { params });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch meeting types"
+        error.response?.data || { message: "Failed to fetch meeting types" }
       );
     }
   }
 );
 
-// Add a Meeting Type
+// ✅ Add a Meeting Type
 export const addMeetingType = createAsyncThunk(
   "meetingTypes/addMeetingType",
   async (meetingTypeData, thunkAPI) => {
@@ -26,13 +32,13 @@ export const addMeetingType = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add meeting type"
+        error.response?.data || { message: "Failed to add meeting type" }
       );
     }
   }
 );
 
-// Update a Meeting Type
+// ✅ Update a Meeting Type
 export const updateMeetingType = createAsyncThunk(
   "meetingTypes/updateMeetingType",
   async ({ id, meetingTypeData }, thunkAPI) => {
@@ -47,13 +53,13 @@ export const updateMeetingType = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update meeting type"
+        error.response?.data || { message: "Failed to update meeting type" }
       );
     }
   }
 );
 
-// Delete a Meeting Type
+// ✅ Delete a Meeting Type
 export const deleteMeetingType = createAsyncThunk(
   "meetingTypes/deleteMeetingType",
   async (id, thunkAPI) => {
@@ -65,7 +71,7 @@ export const deleteMeetingType = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete meeting type"
+        error.response?.data || { message: "Failed to delete meeting type" }
       );
     }
   }
@@ -74,7 +80,8 @@ export const deleteMeetingType = createAsyncThunk(
 const meetingTypesSlice = createSlice({
   name: "meetingTypes",
   initialState: {
-    meetingTypes: [],
+    meetingTypes: {},
+    pagination: null, // ✅ pagination meta store karne ke liye
     loading: false,
     error: null,
     success: null,
@@ -87,14 +94,15 @@ const meetingTypesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch
+      // ✅ Fetch
       .addCase(fetchMeetingTypes.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchMeetingTypes.fulfilled, (state, action) => {
         state.loading = false;
-        state.meetingTypes = action.payload.data;
+        state.meetingTypes = action.payload.data || [];
+        state.pagination = action.payload.meta || null; // ✅ save meta info if available
       })
       .addCase(fetchMeetingTypes.rejected, (state, action) => {
         state.loading = false;
@@ -102,15 +110,18 @@ const meetingTypesSlice = createSlice({
         toast.error(action.payload.message || "Failed to fetch meeting types");
       })
 
-      // Add
+      // ✅ Add
       .addCase(addMeetingType.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(addMeetingType.fulfilled, (state, action) => {
         state.loading = false;
-        state.meetingTypes = [action.payload.data, ...state.meetingTypes];
-        state.success = action.payload.message;
+                state.meetingTypes = {
+                    ...state.meetingTypes,
+                    data: [action.payload.data, ...state.meetingTypes.data]
+                };
+                state.success = action.payload.message;
         toast.success(action.payload.message || "Meeting type added successfully");
       })
       .addCase(addMeetingType.rejected, (state, action) => {
@@ -119,22 +130,25 @@ const meetingTypesSlice = createSlice({
         toast.error(action.payload.message || "Failed to add meeting type");
       })
 
-      // Update
+      // ✅ Update
       .addCase(updateMeetingType.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateMeetingType.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.meetingTypes?.findIndex(
-          (status) => status.id === action.payload.data.id
-        );
-        if (index !== -1) {
-          state.meetingTypes[index] = action.payload.data;
-        } else {
-          state.meetingTypes = [action.payload.data, ...state.meetingTypes];
-        }
-        state.success = action.payload.message;
+                const index = state.meetingTypes?.data?.findIndex(
+                    (data) => data.id === action.payload.data.id
+                );
+                if (index !== -1) {
+                    state.meetingTypes.data[index] = action.payload.data;
+                } else {
+                    state.meetingTypes = {
+                        ...state.meetingTypes,
+                        data: [...state.meetingTypes, action.payload.data]
+                    };
+                }
+                state.success = action.payload.message;
         toast.success(action.payload.message || "Meeting type updated successfully");
       })
       .addCase(updateMeetingType.rejected, (state, action) => {
@@ -143,17 +157,18 @@ const meetingTypesSlice = createSlice({
         toast.error(action.payload.message || "Failed to update meeting type");
       })
 
-      // Delete
+      // ✅ Delete
       .addCase(deleteMeetingType.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteMeetingType.fulfilled, (state, action) => {
-        state.loading = false;
-        state.meetingTypes = state.meetingTypes.filter(
-          (status) => status.id !== action.payload.data.id
-        );
-        state.success = action.payload.message;
+       state.loading = false;
+                const filterData = state.meetingTypes.data.filter(
+                    (data) => data.id !== action.payload.data.id
+                );
+                state.meetingTypes = { ...state.meetingTypes, data: filterData };
+                state.success = action.payload.message;
         toast.success(action.payload.message || "Meeting type deleted successfully");
       })
       .addCase(deleteMeetingType.rejected, (state, action) => {

@@ -23,7 +23,9 @@ import { Helmet } from "react-helmet-async";
 
 const CallResultList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
-  
+    const [paginationData, setPaginationData] = useState();
+   const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Call Result")?.[0]?.permissions
 const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user"))?.includes("admin") : null
@@ -37,14 +39,16 @@ const isDelete = isAdmin ? true : allPermissions?.delete
     {
       title: "Sr. No.",
 align: "center",      width: 50,
-      render: (text,record,index) =>index+1 ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
+ render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1      // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
       title: "Name",
       dataIndex: "name",
       render: (text, record) => (
-        <div>{record.name}</div>
+        <div style={{width:"10rem"}} className="text-wrap">{record.name || " -- "}</div>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -127,38 +131,61 @@ align: "center",      width: 50,
     (state) => state.callResults,
   );
 
-  React.useEffect(() => {
-    dispatch(fetchCallResults());
-  }, [dispatch]);
+ ;
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+   React.useEffect(() => {
+      dispatch(fetchCallResults({ search: searchText }));
+    }, [dispatch,searchText]);
+     React.useEffect(() => {
+        setPaginationData({
+          currentPage: callResults?.currentPage,
+          totalPage: callResults?.totalPages,
+          totalCount: callResults?.totalCount,
+          pageSize: callResults?.size,
+        });
+      }, [callResults]);
+    
+      const handlePageChange = ({ currentPage, pageSize }) => {
+        setPaginationData((prev) => ({
+          ...prev,
+          currentPage,
+          pageSize,
+        }));
+        dispatch(
+          fetchCallResults({
+            search: searchText,
+            page: currentPage,
+            size: pageSize,
+          })
+        );
+      };
+ 
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = callResults;
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
-      );
-    }
+    let data = callResults?.data || [];
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase()),
+    //     ),
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+    //   );
+    // }
     return data;
   }, [searchText, callResults, columns, sortOrder]);
 
@@ -249,6 +276,8 @@ align: "center",      width: 50,
                     columns={columns}
                     loading={loading}
                     isView = {isView}
+                       paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

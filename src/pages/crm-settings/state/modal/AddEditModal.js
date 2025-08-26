@@ -31,7 +31,7 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null,onClose 
   const { countries } = useSelector(
     (state) => state.countries // Changed to 'countries'
   );
-  const CountriesList = countries.map((emnt) => ({
+  const CountriesList = countries?.data?.map((emnt) => ({
     value: emnt.id,
     label: "(" + emnt.code + ") " + emnt.name,
   }));

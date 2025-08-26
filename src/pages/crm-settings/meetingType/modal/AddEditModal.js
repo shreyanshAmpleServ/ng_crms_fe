@@ -119,12 +119,12 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter Meeting Type Name"
+                  placeholder="Enter Meeting Type"
                   className={`form-control ${
                     errors.name ? "is-invalid" : ""
                   }`}
                   {...register("name", {
-                    required: "Name is required!",
+                    required: "Meeting Type is required!",
                     minLength: {
                       value: 3,
                       message:

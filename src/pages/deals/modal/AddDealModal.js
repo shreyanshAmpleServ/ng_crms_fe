@@ -195,7 +195,7 @@ const contactlist = useMemo(
                   placeholder="Enter Name"
                   className="form-control"
                   {...register("dealName", {
-                    required: "Opportunity name is required !",
+                    required: "Opportunity Name is required !",
                   })}
                 />
                 {errors.dealName && (
@@ -288,7 +288,7 @@ const contactlist = useMemo(
                   placeholder="0.0"
                   className="form-control"
                   {...register("dealValue", {
-                    required: "Deal value is required !",
+                    required: "Deal Value is required !",
                   })}
                 />
                 {errors.dealValue && (
@@ -361,7 +361,7 @@ const contactlist = useMemo(
                   placeholder="0"
                   className="form-control"
                   {...register("periodValue", {
-                    required: "Period value is required !",
+                    required: "Period Value is required !",
                   })}
                 />
                 {errors.periodValue && (

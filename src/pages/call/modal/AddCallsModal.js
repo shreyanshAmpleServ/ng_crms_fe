@@ -105,15 +105,15 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
     label: emnt.full_name,
     email: emnt.email,
   }));
-  const callPurposeList = callPurposes.map((emnt) => ({
+  const callPurposeList = callPurposes?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
-  const callStatusList = callStatuses.map((emnt) => ({
+  const callStatusList = callStatuses?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
-  const callTypeList = callTypes.map((emnt) => ({
+  const callTypeList = callTypes?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
@@ -686,7 +686,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                   </label>
                   <Controller
                     name="call_purpose_id"
-                    rules={{ required: "Call purpose is required !" }} // Make the field required
+                    rules={{ required: "Call Purpose is required !" }} // Make the field required
                     control={control}
                     render={({ field }) => (
                       <Select
@@ -730,7 +730,7 @@ const AddCallModal = ({ setCallDetails, callsDetails }) => {
                   </div>
                   <Controller
                     name="call_type_id"
-                    rules={{ required: "Call type is required !" }} // Make the field required
+                    rules={{ required: "Call Type is required !" }} // Make the field required
                     control={control}
                     render={({ field }) => (
                       <Select

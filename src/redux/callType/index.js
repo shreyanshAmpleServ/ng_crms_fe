@@ -1,13 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
-import toast from "react-hot-toast"; // ✅ Toast import
+import toast from "react-hot-toast";
 
 // Fetch All Call Types
 export const fetchCallTypes = createAsyncThunk(
   "callTypes/fetchCallTypes",
-  async (_, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      const response = await apiClient.get("/v1/call-types");
+      const params = {};
+      if (data?.page) params.page = data.page;
+      if (data?.size) params.size = data.size;
+      if (data?.search) params.search = data.search;
+
+      const response = await apiClient.get("/v1/call-types", { params });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -22,7 +27,14 @@ export const addCallType = createAsyncThunk(
   "callTypes/addCallType",
   async (callTypeData, thunkAPI) => {
     try {
-      const response = await apiClient.post("/v1/call-types", callTypeData);
+      const response = await toast.promise(
+        apiClient.post("/v1/call-types", callTypeData),
+        {
+          loading: "Adding call type...",
+          success: (res) => res.data.message || "Call type added successfully",
+          error: "Failed to add call type",
+        }
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -37,14 +49,18 @@ export const updateCallType = createAsyncThunk(
   "callTypes/updateCallType",
   async ({ id, callTypeData }, thunkAPI) => {
     try {
-      const response = await apiClient.put(`/v1/call-types/${id}`, callTypeData);
+      const response = await toast.promise(
+        apiClient.put(`/v1/call-types/${id}`, callTypeData),
+        {
+          loading: "Updating call type...",
+          success: (res) => res.data.message || "Call type updated successfully",
+          error: "Failed to update call type",
+        }
+      );
       return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
-        return thunkAPI.rejectWithValue({
-          status: 404,
-          message: "Not found",
-        });
+        return thunkAPI.rejectWithValue({ status: 404, message: "Not found" });
       }
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to update call type"
@@ -58,7 +74,15 @@ export const deleteCallType = createAsyncThunk(
   "callTypes/deleteCallType",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/call-types/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/call-types/${id}`),
+        {
+          loading: "Deleting call type...",
+          success: (res) => res.data.message || "Call type deleted successfully",
+          error: "Failed to delete call type",
+        }
+      );
+
       return {
         data: { id },
         message: response.data.message || "Call type deleted successfully",
@@ -74,7 +98,7 @@ export const deleteCallType = createAsyncThunk(
 const callTypesSlice = createSlice({
   name: "callTypes",
   initialState: {
-    callTypes: [],
+    callTypes: {}, // ✅ same style as callStatuses
     loading: false,
     error: null,
     success: null,
@@ -109,14 +133,12 @@ const callTypesSlice = createSlice({
       })
       .addCase(addCallType.fulfilled, (state, action) => {
         state.loading = false;
-        state.callTypes = [action.payload.data, ...state.callTypes];
+        state.callTypes.data = [action.payload.data, ...state.callTypes.data];
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Call type added successfully");
       })
       .addCase(addCallType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to add call type");
       })
 
       // Update
@@ -126,21 +148,19 @@ const callTypesSlice = createSlice({
       })
       .addCase(updateCallType.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.callTypes?.findIndex(
-          (status) => status.id === action.payload.data.id
+        const index = state.callTypes.data.findIndex(
+          (type) => type.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.callTypes[index] = action.payload.data;
+          state.callTypes.data[index] = action.payload.data;
         } else {
-          state.callTypes = [action.payload.data, ...state.callTypes];
+          state.callTypes.data.push(action.payload.data);
         }
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Call type updated successfully");
       })
       .addCase(updateCallType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to update call type");
       })
 
       // Delete
@@ -150,16 +170,14 @@ const callTypesSlice = createSlice({
       })
       .addCase(deleteCallType.fulfilled, (state, action) => {
         state.loading = false;
-        state.callTypes = state.callTypes.filter(
-          (status) => status.id !== action.payload.data.id
+        state.callTypes.data = state.callTypes.data.filter(
+          (type) => type.id !== action.payload.data.id
         );
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Call type deleted successfully");
       })
       .addCase(deleteCallType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to delete call type");
       });
   },
 });

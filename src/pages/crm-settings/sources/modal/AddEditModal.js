@@ -110,7 +110,7 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null,onClose 
                   placeholder="Enter  Source Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Source name is required !",
+                    required: "Source Name is required !",
                     minLength: {
                       value: 3,
                       message: "Source name must be at least 3 characters !",

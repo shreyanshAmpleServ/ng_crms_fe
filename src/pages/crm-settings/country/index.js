@@ -22,7 +22,11 @@ import { Helmet } from "react-helmet-async";
 
 const CountriesList = () => {
     const [mode, setMode] = useState("add"); 
-
+      const [paginationData, setPaginationData] = useState();
+       const [selectedCountry, setSelectedCountry] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+        const [searchText, setSearchText] = useState("");
+    const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
     const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
     const allPermissions = permissions?.filter((i)=>i?.module_name === "Country")?.[0]?.permissions
   const user1 = localStorage.getItem("user")
@@ -38,8 +42,10 @@ const CountriesList = () => {
         {
             title: "Sr. No.",
 align: "center",      width: 50,
-            render: (text,record,index) =>index+1 ,
-            // sorter: (a, b) => a.code.localeCompare(b.name),
+render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1,            // sorter: (a, b) => a.code.localeCompare(b.name),
         },
         {
             title: "Country Code",
@@ -121,42 +127,65 @@ align: "center",      width: 50,
         }]:[])
     ];
 
-    React.useEffect(() => {
-        dispatch(fetchCountries()); // Changed to fetchCountries
-    }, [dispatch]);
-    const { countries, loading, error, success } = useSelector(
+     const { countries, loading, error, success } = useSelector(
         (state) => state.countries // Changed to 'countries'
     );
+    React.useEffect(() => {
+        dispatch(fetchCountries({ search: searchText })); // Changed to fetchCountries
+    }, [dispatch,searchText]);
+     React.useEffect(() => {
+        setPaginationData({
+          currentPage: countries?.currentPage,
+          totalPage: countries?.totalPages,
+          totalCount: countries?.totalCount,
+          pageSize: countries?.size,
+        });
+      }, [countries]);
+    
+      const handlePageChange = ({ currentPage, pageSize }) => {
+        setPaginationData((prev) => ({
+          ...prev,
+          currentPage,
+          pageSize,
+        }));
+        dispatch(
+          fetchCountries({
+            search: searchText,
+            page: currentPage,
+            size: pageSize,
+          })
+        );
+      };
+   
 
 
-    const [searchText, setSearchText] = useState("");
-    const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+
 
     const handleSearch = useCallback((e) => {
         setSearchText(e.target.value);
     }, []);
 
     const filteredData = useMemo(() => {
-        let data = countries;
-        if (searchText) {
-            data = data.filter((item) =>
-                columns.some((col) =>
-                    item[col.dataIndex]
-                        ?.toString()
-                        .toLowerCase()
-                        .includes(searchText.toLowerCase())
-                )
-            );
-        }
-        if (sortOrder === "ascending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-            );
-        } else if (sortOrder === "descending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-            );
-        }
+        let data = countries?.data || [];
+        // if (searchText) {
+        //     data = data.filter((item) =>
+        //         columns.some((col) =>
+        //             item[col.dataIndex]
+        //                 ?.toString()
+        //                 .toLowerCase()
+        //                 .includes(searchText.toLowerCase())
+        //         )
+        //     );
+        // }
+        // if (sortOrder === "ascending") {
+        //     data = [...data].sort((a, b) =>
+        //         moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        //     );
+        // } else if (sortOrder === "descending") {
+        //     data = [...data].sort((a, b) =>
+        //         moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        //     );
+        // }
         return data;
     }, [searchText, countries, columns, sortOrder]);
 
@@ -165,8 +194,7 @@ align: "center",      width: 50,
         setShowDeleteModal(true);
     };
 
-    const [selectedCountry, setSelectedCountry] = useState(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+   
     const deleteData = () => {
         if (selectedCountry) {
             dispatch(deleteCountry(selectedCountry.id)); // Changed to deleteCountry
@@ -246,6 +274,8 @@ align: "center",      width: 50,
                                         columns={columns}
                                         loading={loading}
                                         isView={isView}
+                                          paginationData={paginationData}
+                    onPageChange={handlePageChange}
                                     />
                                 </div>
                             </div>

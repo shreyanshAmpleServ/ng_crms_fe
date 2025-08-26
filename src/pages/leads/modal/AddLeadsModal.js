@@ -201,7 +201,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
       )
       .filter(Boolean) || [];
 
-  const countryList = countries.map((emnt) => ({
+  const countryList = countries?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.code + emnt.name,
   }));
@@ -701,7 +701,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                           placeholder="Enter Mobile"
                           className={`form-control ${errors.mobile ? "is-invalid" : ""}`}
                           {...register("mobile", {
-                            required: "Mobile number is required!",
+                            required: "Mobile Number is required!",
                             minLength: {
                               value: 9,
                               message: "Mobile must be at least 9 digits!",
@@ -742,7 +742,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                             ); // only digits
                           }}
                           {...register("phone", {
-                            required: "Phone number is required!",
+                            required: "Phone Number is required!",
                             minLength: {
                               value: 9,
                               message: "Phone must be at least 9 digits!",

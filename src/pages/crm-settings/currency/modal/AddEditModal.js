@@ -123,15 +123,15 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null,onClose 
                   placeholder="Enter Currency Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Currency name is required !",
+                    required: "Currency Name is required !",
                     minLength: {
                       value: 3,
-                      message: "Currency name must be at least 3 characters !",
+                      message: "Currency Name must be at least 3 characters !",
                     },
                     validate: (value) => {
                       const trimmed = value.trim();
                       if (trimmed.length === 0)
-                        return "Currency name cannot be empty or spaces only !";
+                        return "Currency Name cannot be empty or spaces only !";
                       if (trimmed.length < 3)
                         return "Must be at least 3 characters !";
                       return true;
@@ -154,19 +154,19 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null,onClose 
                   placeholder="Enter Currency Code "
                   className={`form-control ${errors.code ? "is-invalid" : ""}`}
                   {...register("code", {
-                    required: "Currency code is required !",
+                    required: "Currency Code is required !",
                     minLength: {
                       value: 2,
-                      message: "Currency code must be at least 2 characters !",
+                      message: "Currency Code must be at least 2 characters !",
                     },
                     maxLength: {
                       value: 5,
-                      message: "Currency code cannot exceed 5 characters !",
+                      message: "Currency Code cannot exceed 5 characters !",
                     },
                     validate: (value) => {
                       const trimmed = value.trim();
                       if (trimmed.length === 0)
-                        return "Currency code cannot be empty or spaces only !";
+                        return "Currency Code cannot be empty or spaces only !";
                       if (trimmed.length < 2)
                         return "Must be at least 2 characters !";
                       return true;
