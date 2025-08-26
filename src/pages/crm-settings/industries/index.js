@@ -25,7 +25,8 @@ import { Helmet } from "react-helmet-async";
 const IndustryList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
    const [paginationData, setPaginationData] = useState();
- 
+   const [searchText, setSearchText] = useState("");
+   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Industry")?.[0]?.permissions
  const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
@@ -120,8 +121,8 @@ align: "center",      width: 50,
   );
 
   React.useEffect(() => {
-    dispatch(fetchIndustries());
-  }, [dispatch]);
+    dispatch(fetchIndustries({ search: searchText }));
+  }, [dispatch,searchText]);
 
   React.useEffect(() => {
       setPaginationData({
@@ -147,8 +148,7 @@ align: "center",      width: 50,
       );
     };
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+ 
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -156,25 +156,25 @@ align: "center",      width: 50,
 
   const filteredData = useMemo(() => {
     let data = industries?.data ||[];
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-      );
-    }
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase())
+    //     )
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+    //   );
+    // }
     return data;
   }, [searchText, industries, columns, sortOrder]);
 
