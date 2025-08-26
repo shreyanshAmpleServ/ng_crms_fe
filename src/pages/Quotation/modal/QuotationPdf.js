@@ -521,6 +521,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
         .download-btn {
           background: #28a745 !important;
           border-color: #28a745 !important;
+          color:white !important;
           display: flex;
           align-items: center;
           gap: 0.5rem;

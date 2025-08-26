@@ -58,9 +58,9 @@ align: "center",      width: 50,
             sorter: (a, b) => a.code.localeCompare(b.code),
         },
         {
-            title: "Default",
+            title: "Is Default",
             dataIndex: "is_default",
-            render: (text) => <span>{text}</span>,
+            render: (text) => <span>{text ==  "Y" ? "Yes" : "No" }</span>,
             sorter: (a, b) => a.is_default.localeCompare(b.is_default),
         },
         {
