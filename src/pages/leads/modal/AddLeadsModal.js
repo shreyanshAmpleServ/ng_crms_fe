@@ -193,7 +193,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
   );
 
   const currencyLists =
-    currencies
+    currencies?.data
       ?.map((i) =>
         i?.is_active === "Y"
           ? { label: `${i?.code} - ${i?.name}`, value: i?.code }

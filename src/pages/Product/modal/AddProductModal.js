@@ -146,7 +146,7 @@ const AddProductModal = ({ product, setProduct }) => {
     value: emnt.id,
     label: emnt.name + " ( " + emnt.rate + "% )",
   }));
-  const CategoryList = productCategories.map((emnt) => ({
+  const CategoryList = productCategories?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));

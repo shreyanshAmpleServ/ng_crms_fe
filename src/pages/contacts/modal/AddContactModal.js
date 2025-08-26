@@ -175,7 +175,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
   const { currencies } = useSelector((state) => state.currency);
 
   const currencyLists =
-    currencies
+    currencies?.data
       ?.map((i) =>
         i?.is_active === "Y"
           ? { label: `${i?.code} - ${i?.name}`, value: i?.code }
@@ -754,7 +754,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           control={control}
                           // rules={{ required: "Source is required !" }} // Validation rule
                           render={({ field }) => {
-                            const selectedSource = sources?.find(
+                            const selectedSource = sources?.data?.find(
                               (source) => source.id === field.value
                             );
                             return (
@@ -791,7 +791,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
                           control={control}
                           // rules={{ required: "industry is required !" }} // Validation rule
                           render={({ field }) => {
-                            const selectedIndustry = industries?.find(
+                            const selectedIndustry = industries?.data?.find(
                               (industry) => industry.id === field.value
                             );
                             return (

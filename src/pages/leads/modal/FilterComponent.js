@@ -27,7 +27,7 @@ const FilterComponent = ({ applyFilters }) => {
     },[])
 const { lostReasons } = useSelector((state) => state.lostReasons);
 
-const status = lostReasons?.data?.map((i)=>({label:i?.name,value:i?.id}))
+const status = lostReasons?.data?.map((i)=>({label:i?.name,value:i?.id})) || []
 
   const handleFilter = () => {
     const filters = {
@@ -119,7 +119,7 @@ const status = lostReasons?.data?.map((i)=>({label:i?.name,value:i?.id}))
               >
                 <div className="filter-content-list">
                   <ul>
-                    {status.map((statusObj, index) => {
+                    {status?.map((statusObj, index) => {
                       const { value, label } = statusObj; // Extract the key-value pair
                       return (
                         <li key={index}>
