@@ -103,11 +103,11 @@ const AddEditModal = ({ mode = "add", initialData = null }) => {
                   placeholder="Enter  Manufacturer Name "
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Manufacturer name is required !",
+                    required: "Manufacturer Name is required !",
                     minLength: {
                       value: 3,
                       message:
-                        "Manufacturer name must be at least 3 characters !",
+                        "Manufacturer Name must be at least 3 characters !",
                     },
                   })}
                 />
