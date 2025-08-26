@@ -114,6 +114,7 @@ const CampaignsList = () => {
   const columns = [
     {
       title: "Sr. No.",
+align: "center",
       width: 70,
       render: (text, record, index) => (
         <div className="text-center">

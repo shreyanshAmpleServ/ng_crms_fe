@@ -53,7 +53,8 @@ const DealList = () => {
   
   const columns = [
     {
-      title: "Sr. No.",      
+      title: "Sr. No.",
+align: "center",      
       width: 50,
       render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
       // sorter: (a, b) => a.code.localeCompare(b.name),

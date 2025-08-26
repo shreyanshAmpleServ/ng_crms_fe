@@ -49,7 +49,8 @@ const Cases = () => {
 
   const columns = [
     {
-      title: "Sr. No.",  
+      title: "Sr. No.",
+align: "center",  
       dataIndex:"Sr. No.",        
       width: 50,
       render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,

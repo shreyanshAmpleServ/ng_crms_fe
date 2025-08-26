@@ -37,7 +37,8 @@ const IndustryList = () => {
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "Sr. No.",      width: 50,
+      title: "Sr. No.",
+align: "center",      width: 50,
        render: (text,record,index) =>(<div className = "text=center">{(paginationData?.currentPage - 1 ) * paginationData?.pageSize + index + 1}</div>),
       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
