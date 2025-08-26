@@ -107,7 +107,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
   const { countries } = useSelector((state) => state.countries);
   const { mappedStates } = useSelector((state) => state.mappedStates);
 
-  const countryList = countries.map((emnt) => ({
+  const countryList = countries?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.code + emnt.name,
   }));
@@ -405,7 +405,7 @@ const AddVendorModal = ({ vendor, setVendor }) => {
                   placeholder="Enter Phone"
                   className="form-control"
                   {...register("phone", {
-                    required: "Phone number is required !",
+                    required: "Phone Nmber is required !",
                     minLength: {
                       value: 9,
                       message: "Mobile must be at least 9 digits"

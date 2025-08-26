@@ -389,7 +389,7 @@ const ManageTaxModal = ({ tax, setTax }) => {
             rules={{
               required: "Valid To is required!",
               validate: (value) =>
-                !validFrom || !value || dayjs(value).isAfter(dayjs(validFrom)) || "Valid To must be after Valid From",
+                !validFrom || !value || dayjs(value).isAfter(dayjs(validFrom)) || '"Valid To" Date must greater than "Valid From" Date',
             }}
             render={({ field }) => (
               <DatePicker

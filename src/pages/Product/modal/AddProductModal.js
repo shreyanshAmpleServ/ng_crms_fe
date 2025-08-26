@@ -142,7 +142,7 @@ const AddProductModal = ({ product, setProduct }) => {
     value: emnt.id,
     label: emnt.name,
   }));
-  const TaxList = taxs.map((emnt) => ({
+  const TaxList = taxs?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name + " ( " + emnt.rate + "% )",
   }));
@@ -352,7 +352,7 @@ const AddProductModal = ({ product, setProduct }) => {
                   type="text"
                   placeholder="Enter Code"
                   className="form-control"
-                  {...register("code", { required: "code is required !" })}
+                  {...register("code", { required: "Code is required !" })}
                 />
                 {errors.code && (
                   <small className="text-danger">{errors.code.message}</small>
@@ -508,7 +508,7 @@ const AddProductModal = ({ product, setProduct }) => {
                   placeholder="Enter Unit Price "
                   className="form-control"
                   {...register("unit_price", {
-                    required: "unit_price is required !",
+                    required: "Unit Price is required !",
                   })}
                 />
                 {errors.unit_price && (

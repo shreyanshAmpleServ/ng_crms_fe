@@ -240,27 +240,23 @@ align: "center",
   }, [filteredData]);
 
  const exportToPDF = useCallback(() => {
-  const doc = new jsPDF();
+  const doc = new jsPDF("l", "pt", "a4"); // landscape better for tables
   const pageWidth = doc.internal.pageSize.getWidth();
 
   // Title
-  doc.text("Exported Case", 14, 10);
+  doc.setFontSize(12);
+  doc.text("Exported Case", 14, 20);
 
-  // Table Head
-  // const tableHead = [
-  //   columns.map(col => col.title !== "Actions" ? col.title : "")
-  // ];
   const tableColumns = columns.filter(col => col.title !== "Actions");
-
   const tableHead = [tableColumns.map(col => col.title)];
-  // Table Body
-  const tableBody = filteredData.map((row ,index) =>
+
+  const tableBody = filteredData.map((row, index) =>
     tableColumns.map(col => {
       switch (col.dataIndex) {
         case "Sr. No.":
           return (paginationData?.currentPage - 1) * paginationData?.pageSize +
-          index +
-          1 || "";
+            index +
+            1 || "";
         case "case_product":
           return row.case_product?.name || "";
         case "cases_user_owner":
@@ -275,47 +271,37 @@ align: "center",
     })
   );
 
-  // Render Table
+  // Render Table Compact
   doc.autoTable({
     head: tableHead,
     body: tableBody,
-    startY: 20,
-
+    startY: 40,
     styles: {
-      fontSize: 7,
-      cellPadding: 1,
-      overflow: 'linebreak'
-    },
-
-    headStyles: {
-      fillColor: [41, 128, 185], // blue header
-      textColor: 255,
       fontSize: 8,
+      cellPadding: 2,
+      overflow: 'hidden',
+      lineWidth: 0.1,
+      halign: 'center',
+      valign: 'middle'
+    },
+    headStyles: {
+      fillColor: [41, 128, 185],
+      textColor: 255,
+      fontSize: 9,
       halign: 'center'
     },
-
     bodyStyles: {
       halign: 'center',
       valign: 'middle'
     },
-
     theme: 'grid',
-    tableWidth: 'auto',
-    pageBreak: 'auto',
-    halign: 'center',
-
-    didDrawPage: (data) => {
-      const tableWidth = data.table.width;
-      if (tableWidth > pageWidth) {
-        const scale = pageWidth / tableWidth;
-        doc.internal.scaleFactor = doc.internal.scaleFactor / scale;
-      }
-    },
+    tableWidth: 'wrap', // wrap to fit content
+    pageBreak: 'auto'
   });
 
-  // Save PDF
   doc.save("Cases.pdf");
 }, [filteredData, columns]);
+
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

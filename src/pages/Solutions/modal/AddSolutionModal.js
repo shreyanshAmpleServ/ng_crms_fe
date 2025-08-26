@@ -297,7 +297,7 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                   placeholder="Enter Question"
                   className="form-control"
                   {...register("question", {
-                    required: "Case type is required !",
+                    required: "Question is required !",
                   })}
                 />
                 {errors.question && (
@@ -318,7 +318,7 @@ const AddSolutionModal = ({ solution, setSolution }) => {
                   placeholder="Enter Answer"
                   className="form-control"
                   {...register("answer", {
-                    required: "Case priority is required !",
+                    required: "Answer is required !",
                   })}
                 />
                 {errors.answer && (

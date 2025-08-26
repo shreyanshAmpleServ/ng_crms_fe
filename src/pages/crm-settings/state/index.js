@@ -45,8 +45,7 @@ const StatesList = () => {
     
     const columns = [
         {
-            title: "Sr. No.",
-align: "center",      width: 50,
+            title: "Sr. No.",      width: 50,
             render: (text,record,index) =>(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1 ,
             // sorter: (a, b) => a.code.localeCompare(b.name),
         },
@@ -139,7 +138,7 @@ align: "center",      width: 50,
     console.log("Error : ",mappedStates,loading,error,success)
 
     React.useEffect(() => {
-        dispatch(fetchCountries()); // Changed to fetchCountries
+        dispatch(fetchCountries()); 
     }, [dispatch] );
 
     React.useEffect(() => {
@@ -163,10 +162,10 @@ align: "center",      width: 50,
           dispatch(fetchMappedStates({search:searchText , country_code: countryId, page: currentPage, size: pageSize })); 
         };
 
-        const { countries} = useSelector(
-            (state) => state.countries // Changed to 'countries'
-        );
-        const countryList = [{name:"All",value:""},...countries]
+        // const { countries} = useSelector(
+        //     (state) => state.countries // Changed to 'countries'
+        // );
+        // const countryList = [{name:"All",value:""},...countries?.data]
 
     const handleSearch = useCallback((e) => {
         setSearchText(e.target.value);

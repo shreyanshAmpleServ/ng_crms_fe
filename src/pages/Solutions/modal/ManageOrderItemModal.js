@@ -88,7 +88,7 @@ const ManageOrderItemModal = ({ itemNumber, setItemNumber}) => {
     value: emnt.id,
     label: emnt.name,
   }));
-  const TaxList = taxs.map((emnt) => ({
+  const TaxList = taxs?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name + " (" + emnt.rate + "%)",
     tax:emnt.rate

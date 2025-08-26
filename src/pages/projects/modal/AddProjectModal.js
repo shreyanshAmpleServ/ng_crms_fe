@@ -102,7 +102,7 @@ const AddProjectModal = () => {
                 type="text"
                 placeholder="Enter Project Name "
                 className="form-control"
-                {...register("name", { required: "Project name is required!" })}
+                {...register("name", { required: "Project Name is required!" })}
               />
               {errors.name && (
                 <small className="text-danger">{errors.name.message}</small>

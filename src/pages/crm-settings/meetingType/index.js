@@ -21,7 +21,9 @@ import { Helmet } from "react-helmet-async";
 
 const MeetingTypes = () => {
   const [mode, setMode] = useState("add"); 
-
+    const [paginationData, setPaginationData] = useState();
+    const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Meeting Types")?.[0]?.permissions
  const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
@@ -36,8 +38,10 @@ const MeetingTypes = () => {
       title: "Sr. No.",
 align: "center",   
       width: 50,
-      render: (text,record,index) =>index+1 ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
+render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1,      // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
       title: "Meeting Type ",
@@ -126,37 +130,59 @@ align: "center",
   );
 
   React.useEffect(() => {
-    dispatch(fetchMeetingTypes());
-  }, [dispatch]);
+    dispatch(fetchMeetingTypes({ search: searchText }));
+  }, [dispatch, searchText]);
+  React.useEffect(() => {
+      setPaginationData({
+        currentPage: meetingTypes?.currentPage,
+        totalPage: meetingTypes?.totalPages,
+        totalCount: meetingTypes?.totalCount,
+        pageSize: meetingTypes?.size,
+      });
+    }, [meetingTypes]);
+  
+    const handlePageChange = ({ currentPage, pageSize }) => {
+      setPaginationData((prev) => ({
+        ...prev,
+        currentPage,
+        pageSize,
+      }));
+      dispatch(
+        fetchMeetingTypes({
+          search: searchText,
+          page: currentPage,
+          size: pageSize,
+        })
+      );
+    };
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = meetingTypes;
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
-      );
-    }
+    let data = meetingTypes?.data || [];
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase()),
+    //     ),
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+    //   );
+    // }
     return data;
   }, [searchText, meetingTypes, columns, sortOrder]);
 
@@ -254,6 +280,9 @@ align: "center",
                     columns={columns}
                     loading={loading}
                     isView = {isView}
+                     paginationData={paginationData}
+                    onPageChange={handlePageChange}
+
                   />
                 </div>
               </div>

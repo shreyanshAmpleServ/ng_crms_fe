@@ -1,13 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
-import toast from "react-hot-toast"; // ✅ Add toast
+import toast from "react-hot-toast";
 
 // Fetch All Call Statuses
 export const fetchCallStatuses = createAsyncThunk(
   "callStatuses/fetchCallStatuses",
-  async (_, thunkAPI) => {
+  async (data, thunkAPI) => {
     try {
-      const response = await apiClient.get("/v1/call-statuses");
+      const params = {};
+      if (data?.page) params.page = data.page;
+      if (data?.size) params.size = data.size;
+      if (data?.search) params.search = data.search;
+      if (data?.is_active !== undefined) params.is_active = data.is_active;
+
+      const response = await apiClient.get("/v1/call-statuses", { params });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -22,7 +28,14 @@ export const addCallStatus = createAsyncThunk(
   "callStatuses/addCallStatus",
   async (callStatusData, thunkAPI) => {
     try {
-      const response = await apiClient.post("/v1/call-statuses", callStatusData);
+      const response = await toast.promise(
+        apiClient.post("/v1/call-statuses", callStatusData),
+        {
+          loading: "Adding call status...",
+          success: (res) => res.data.message || "Call status added successfully",
+          error: "Failed to add call status",
+        }
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -37,7 +50,14 @@ export const updateCallStatus = createAsyncThunk(
   "callStatuses/updateCallStatus",
   async ({ id, callStatusData }, thunkAPI) => {
     try {
-      const response = await apiClient.put(`/v1/call-statuses/${id}`, callStatusData);
+      const response = await toast.promise(
+        apiClient.put(`/v1/call-statuses/${id}`, callStatusData),
+        {
+          loading: "Updating call status...",
+          success: (res) => res.data.message || "Call status updated successfully",
+          error: "Failed to update call status",
+        }
+      );
       return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
@@ -58,7 +78,15 @@ export const deleteCallStatus = createAsyncThunk(
   "callStatuses/deleteCallStatus",
   async (id, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/v1/call-statuses/${id}`);
+      const response = await toast.promise(
+        apiClient.delete(`/v1/call-statuses/${id}`),
+        {
+          loading: "Deleting call status...",
+          success: (res) => res.data.message || "Call status deleted successfully",
+          error: "Failed to delete call status",
+        }
+      );
+
       return {
         data: { id },
         message: response.data.message || "Call status deleted successfully",
@@ -74,7 +102,7 @@ export const deleteCallStatus = createAsyncThunk(
 const callStatusesSlice = createSlice({
   name: "callStatuses",
   initialState: {
-    callStatuses: [],
+    callStatuses: {}, // ✅ data array initialize kiya
     loading: false,
     error: null,
     success: null,
@@ -87,6 +115,7 @@ const callStatusesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch
       .addCase(fetchCallStatuses.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -101,61 +130,58 @@ const callStatusesSlice = createSlice({
         toast.error(action.payload.message || "Failed to fetch call statuses");
       })
 
+      // Add
       .addCase(addCallStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(addCallStatus.fulfilled, (state, action) => {
         state.loading = false;
-        state.callStatuses = [action.payload.data, ...state.callStatuses];
+        state.callStatuses.data = [action.payload.data, ...state.callStatuses.data];
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Call status added successfully");
       })
       .addCase(addCallStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to add call status");
       })
 
+      // Update
       .addCase(updateCallStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateCallStatus.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.callStatuses?.findIndex(
-          (status) => status.id === action.payload.data.id
+        const index = state.callStatuses.data.findIndex(
+          (data) => data.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.callStatuses[index] = action.payload.data;
+          state.callStatuses.data[index] = action.payload.data;
         } else {
-          state.callStatuses = [action.payload.data, ...state.callStatuses];
+          state.callStatuses.data.push(action.payload.data);
         }
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Call status updated successfully");
       })
       .addCase(updateCallStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to update call status");
       })
 
+      // Delete
       .addCase(deleteCallStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteCallStatus.fulfilled, (state, action) => {
         state.loading = false;
-        state.callStatuses = state.callStatuses.filter(
-          (status) => status.id !== action.payload.data.id
+        state.callStatuses.data = state.callStatuses.data.filter(
+          (data) => data.id !== action.payload.data.id
         );
         state.success = action.payload.message;
-        toast.success(action.payload.message || "Call status deleted successfully");
       })
       .addCase(deleteCallStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-        toast.error(action.payload.message || "Failed to delete call status");
       });
   },
 });

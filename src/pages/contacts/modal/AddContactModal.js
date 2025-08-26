@@ -183,7 +183,7 @@ const AddContactModal = ({ contact, setSelectedContact }) => {
       )
       .filter(Boolean) || [];
 
-  const countryList = countries.map((emnt) => ({
+  const countryList = countries?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.code + emnt.name,
   }));

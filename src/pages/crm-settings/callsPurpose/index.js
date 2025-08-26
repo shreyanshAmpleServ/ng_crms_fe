@@ -22,7 +22,11 @@ import { deleteCallPurpose, fetchCallPurposes } from "../../../redux/callPurpose
 import { Helmet } from "react-helmet-async";
 
 const CallPurposeList = () => {
-  const [mode, setMode] = useState("add"); // 'add' or 'edit'
+  const [mode, setMode] = useState("add");
+    const [paginationData, setPaginationData] = useState();
+    
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const route = all_routes;
 
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
@@ -38,14 +42,16 @@ const isDelete = isAdmin ? true : allPermissions?.delete
     {
       title: "Sr. No.",
 align: "center",      width: 50,
-      render: (text,record,index) =>index+1 ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
+ render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1       // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
       title: "Name",
       dataIndex: "name",
       render: (text, record) => (
-        <div>{record.name}</div>
+        <div style={{width:"10rem"}} className="text-wrap">{record.name || " -- "}</div>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -128,38 +134,61 @@ align: "center",      width: 50,
     (state) => state.callPurposes,
   );
 
-  React.useEffect(() => {
-    dispatch(fetchCallPurposes());
-  }, [dispatch]);
+ 
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+  React.useEffect(() => {
+        dispatch(fetchCallPurposes({ search: searchText }));
+      }, [dispatch,searchText]);
+       React.useEffect(() => {
+          setPaginationData({
+            currentPage: callPurposes?.currentPage,
+            totalPage: callPurposes?.totalPages,
+            totalCount: callPurposes?.totalCount,
+            pageSize: callPurposes?.size,
+          });
+        }, [callPurposes]);
+      
+        const handlePageChange = ({ currentPage, pageSize }) => {
+          setPaginationData((prev) => ({
+            ...prev,
+            currentPage,
+            pageSize,
+          }));
+          dispatch(
+            fetchCallPurposes({
+              search: searchText,
+              page: currentPage,
+              size: pageSize,
+            })
+          );
+        };
+
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = callPurposes;
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
-      );
-    }
+    let data = callPurposes?.data || [];
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase()),
+    //     ),
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+    //   );
+    // }
     return data;
   }, [searchText, callPurposes, columns, sortOrder]);
 
@@ -177,7 +206,7 @@ align: "center",      width: 50,
       setShowDeleteModal(false);
     }
   };
-
+console.log("Purpose : ",filteredData,callPurposes)
   return (
     <div className="page-wrapper">
       <Helmet>
@@ -250,6 +279,8 @@ align: "center",      width: 50,
                     columns={columns}
                     loading={loading}
                     isView = {isView}
+                       paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

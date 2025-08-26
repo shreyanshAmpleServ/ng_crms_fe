@@ -11,7 +11,7 @@ const FilterComponent = ({ applyFilters }) => {
   const [selectedStatus, setSelectedStatus] = useState(null); // Change to a single status
 
   const { callStatuses } = useSelector((state) => state.callStatuses);
-  const callStatusList = callStatuses.map((emnt) => ({
+  const callStatusList = callStatuses?.data?.map((emnt) => ({
     value: emnt.id,
     label: emnt.name,
   }));
@@ -173,7 +173,7 @@ const FilterComponent = ({ applyFilters }) => {
               >
                 <div className="filter-content-list">
                   <ul>
-                    {callStatusList.map((statusObj, index) => {
+                    {callStatusList?.data?.map((statusObj, index) => {
                       const { value, label } = statusObj; // Extract the key-value pair
                       return (
                         <li key={index}>

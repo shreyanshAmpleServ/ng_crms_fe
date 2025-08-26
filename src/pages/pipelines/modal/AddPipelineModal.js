@@ -120,7 +120,7 @@ const AddPipelineModal = () => {
               placeholder="Enter Pipeline Name"
               className="form-control"
               {...register("name", {
-                required: "Pipeline name is required !",
+                required: "Pipeline Name is required !",
               })}
             />
             {errors.name && (

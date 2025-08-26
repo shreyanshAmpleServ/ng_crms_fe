@@ -138,14 +138,14 @@ const AddEditModal = ({
                   placeholder="Enter Lead Status "
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Lost reason is required !",
+                    required: "Lead Status is required !",
                     minLength: {
                       value: 3,
                       message: "Lost reason must be at least 3 characters !",
                     },
                   })}
                 />
-                {errors.reason && (
+                {errors.name && (
                   <small className="text-danger">{errors.name.message}</small>
                 )}
               </div>
@@ -162,7 +162,7 @@ const AddEditModal = ({
                     required: "Order is required !",
                   })}
                 />
-                {errors.reason && (
+                {errors.order && (
                   <small className="text-danger">{errors.order.message}</small>
                 )}
               </div>

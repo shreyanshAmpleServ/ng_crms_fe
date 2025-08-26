@@ -2,16 +2,25 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../utils/axiosConfig";
 import toast from "react-hot-toast"; // ✅ Toast import
 
-// Fetch All Call Purposes
+
+
+// Fetch All Call Purposes (with pagination, search, filters)
 export const fetchCallPurposes = createAsyncThunk(
   "callPurposes/fetchCallPurposes",
-  async (_, thunkAPI) => {
+  async (data = {}, thunkAPI) => {
     try {
-      const response = await apiClient.get("/v1/call-purposes");
+      const params = {};
+
+      if (data?.page) params.page = data.page;
+      if (data?.size) params.size = data.size;
+      if (data?.search) params.search = data.search;
+      if (data?.is_active !== undefined) params.is_active = data.is_active;
+
+      const response = await apiClient.get("/v1/call-purposes", { params });
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch call purposes"
+        error.response?.data || { message: "Failed to fetch call purposes" }
       );
     }
   }
@@ -26,7 +35,7 @@ export const addCallPurpose = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to add call purpose"
+        error.response?.data || { message: "Failed to add call purpose" }
       );
     }
   }
@@ -47,7 +56,7 @@ export const updateCallPurpose = createAsyncThunk(
         });
       }
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to update call purpose"
+        error.response?.data || { message: "Failed to update call purpose" }
       );
     }
   }
@@ -65,16 +74,18 @@ export const deleteCallPurpose = createAsyncThunk(
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to delete call purpose"
+        error.response?.data || { message: "Failed to delete call purpose" }
       );
     }
   }
 );
 
+
+
 const callPurposesSlice = createSlice({
   name: "callPurposes",
   initialState: {
-    callPurposes: [],
+    callPurposes: {},
     loading: false,
     error: null,
     success: null,
@@ -95,6 +106,7 @@ const callPurposesSlice = createSlice({
       .addCase(fetchCallPurposes.fulfilled, (state, action) => {
         state.loading = false;
         state.callPurposes = action.payload.data;
+        // toast.success("Call purposes fetched successfully");
       })
       .addCase(fetchCallPurposes.rejected, (state, action) => {
         state.loading = false;
@@ -109,7 +121,7 @@ const callPurposesSlice = createSlice({
       })
       .addCase(addCallPurpose.fulfilled, (state, action) => {
         state.loading = false;
-        state.callPurposes = [action.payload.data, ...state.callPurposes];
+        state.callPurposes.data = [action.payload.data, ...state.callPurposes.data];
         state.success = action.payload.message;
         toast.success(action.payload.message || "Call purpose added successfully");
       })
@@ -126,13 +138,13 @@ const callPurposesSlice = createSlice({
       })
       .addCase(updateCallPurpose.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.callPurposes?.findIndex(
-          (status) => status.id === action.payload.data.id
+        const index = state.callPurposes.data.findIndex(
+          (data) => data.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.callPurposes[index] = action.payload.data;
+          state.callPurposes.data[index] = action.payload.data;
         } else {
-          state.callPurposes = [action.payload.data, ...state.callPurposes];
+          state.callPurposes.data.push(action.payload.data);
         }
         state.success = action.payload.message;
         toast.success(action.payload.message || "Call purpose updated successfully");
@@ -150,8 +162,8 @@ const callPurposesSlice = createSlice({
       })
       .addCase(deleteCallPurpose.fulfilled, (state, action) => {
         state.loading = false;
-        state.callPurposes = state.callPurposes.filter(
-          (status) => status.id !== action.payload.data.id
+        state.callPurposes.data = state.callPurposes.data.filter(
+          (data) => data.id !== action.payload.data.id
         );
         state.success = action.payload.message;
         toast.success(action.payload.message || "Call purpose deleted successfully");

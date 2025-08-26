@@ -24,7 +24,9 @@ import { Helmet } from "react-helmet-async";
 
 const CallStatusList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
- 
+  const [paginationData, setPaginationData] = useState();
+   const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Call")?.[0]?.permissions
  const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user"))?.includes("admin") : null
@@ -36,17 +38,18 @@ const CallStatusList = () => {
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "Sr. No.",
-align: "center",      width: 50,
-      render: (text,record,index) =>index+1 ,
-      // sorter: (a, b) => a.code.localeCompare(b.name),
+      title: "Sr. No.",      width: 50,
+ render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1      // sorter: (a, b) => a.code.localeCompare(b.name),
   },
     {
       title: "Name",
       dataIndex: "name",
       width:150,
       render: (text, record) => (
-        <div>{record.name}</div>
+        <div style={{width:"10rem"}} className="text-wrap">{record.name || " -- "}</div>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -55,7 +58,7 @@ align: "center",      width: 50,
       dataIndex: "description",
       width:500,
       render: (text, record) => (
-        <div style={{ whiteSpace: "wrap", wordBreak: "break-word" }}>
+        <div style={{width:"28rem", whiteSpace: "wrap", wordBreak: "break-word" }}>
         {text || " -- "}
       </div>
         // <div className="text-wrap" style={{maxWidth:"22rem"}} >{record.description || " -- "}</div>
@@ -134,37 +137,59 @@ align: "center",      width: 50,
   );
 
   React.useEffect(() => {
-    dispatch(fetchCallStatuses());
-  }, [dispatch]);
+    dispatch(fetchCallStatuses({ search: searchText }));
+  }, [dispatch,searchText]);
+   React.useEffect(() => {
+      setPaginationData({
+        currentPage: callStatuses?.currentPage,
+        totalPage: callStatuses?.totalPages,
+        totalCount: callStatuses?.totalCount,
+        pageSize: callStatuses?.size,
+      });
+    }, [callStatuses]);
+  
+    const handlePageChange = ({ currentPage, pageSize }) => {
+      setPaginationData((prev) => ({
+        ...prev,
+        currentPage,
+        pageSize,
+      }));
+      dispatch(
+        fetchCallStatuses({
+          search: searchText,
+          page: currentPage,
+          size: pageSize,
+        })
+      );
+    };
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
   }, []);
 
   const filteredData = useMemo(() => {
-    let data = callStatuses;
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase()),
-        ),
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
-      );
-    }
+    let data = callStatuses?.data || [];
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase()),
+    //     ),
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1,
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1,
+    //   );
+    // }
     return data;
   }, [searchText, callStatuses, columns, sortOrder]);
 
@@ -256,6 +281,8 @@ align: "center",      width: 50,
                     columns={columns}
                     loading={loading}
                     isView={isView}
+                      paginationData={paginationData}
+                    onPageChange={handlePageChange}
                   />
                 </div>
               </div>

@@ -489,7 +489,7 @@ const AddProductModal = ({ order, setOrder }) => {
                       placeholder="Enter Contact Person"
                       className="form-control"
                       {...register("cont_person", {
-                        required: "Contact person to is required !",
+                        required: "Contact Person to is required !",
                       })}
                     />
                     {errors.cont_person && (
@@ -510,7 +510,7 @@ const AddProductModal = ({ order, setOrder }) => {
                       placeholder="Enter Bill To"
                       className="form-control"
                       {...register("billto", {
-                        required: "Bill to is required !",
+                        required: "Bill To is required !",
                       })}
                     />
                     {errors.billto && (
@@ -531,7 +531,7 @@ const AddProductModal = ({ order, setOrder }) => {
                       placeholder="Enter Ship To"
                       className="form-control"
                       {...register("shipto", {
-                        required: "Ship to is required !",
+                        required: "Ship To is required !",
                       })}
                     />
                     {errors.shipto && (

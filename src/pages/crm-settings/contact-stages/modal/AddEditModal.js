@@ -120,7 +120,7 @@ const onSubmit = (data) => {
                   placeholder="Enter Contact Stage Name"
                   className={`form-control ${errors.name ? "is-invalid" : ""}`}
                   {...register("name", {
-                    required: "Contact stage name is required !",
+                    required: "Contact Stage Name is required !",
                     minLength: {
                       value: 3,
                       message:
