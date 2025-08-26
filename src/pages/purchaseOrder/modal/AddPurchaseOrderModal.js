@@ -87,7 +87,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
       cont_person: "",
       address: "",
       currency: null,
-      due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      due_date:  new Date(),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -123,7 +123,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
         currency: order?.currency || null,
         due_date:
           dayjs(new Date(order?.due_date)) ||
-          dayjs(new Date()).format("DD-MM-YYYY"),
+           new Date(),
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -170,7 +170,7 @@ const AddPurchaseOrderModal = ({ order, setOrder }) => {
         cont_person: "",
         address: "",
         currency: null,
-        due_date: dayjs(new Date()).format("DD-MM-YYYY"),
+        due_date:  new Date(),
         total_bef_tax: 0,
         disc_prcnt: 0,
         tax_total: 0,

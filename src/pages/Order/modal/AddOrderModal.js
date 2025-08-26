@@ -94,7 +94,7 @@ const AddProductModal = ({ order, setOrder }) => {
       cont_person: "",
       address: "",
       currency: null,
-      due_date:  new Date(),
+      due_date: new Date(),
       total_bef_tax: 0,
       disc_prcnt: 0,
       tax_total: 0,
@@ -128,9 +128,7 @@ const AddProductModal = ({ order, setOrder }) => {
         cont_person: order?.cont_person || "",
         address: order?.address || "",
         currency: order?.currency || null,
-        due_date:
-          dayjs(new Date(order?.due_date)) ||
-           new Date(),
+        due_date: dayjs(new Date(order?.due_date)) || new Date(),
         total_bef_tax: order?.total_bef_tax || 0,
         disc_prcnt: order?.disc_prcnt || 0,
         tax_total: order?.tax_total || 0,
@@ -177,7 +175,7 @@ const AddProductModal = ({ order, setOrder }) => {
         cont_person: "",
         address: "",
         currency: null,
-        due_date:  new Date(),
+        due_date: new Date(),
         total_bef_tax: 0,
         disc_prcnt: 0,
         tax_total: 0,
@@ -280,7 +278,10 @@ const AddProductModal = ({ order, setOrder }) => {
       ) {
         let value = data[key];
         if (key === "due_date") {
-          value =  moment(data.due_date).startOf("day").format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z"
+          value =
+            moment(data.due_date)
+              .startOf("day")
+              .format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z";
           // value = dayjs(data.due_date, "DD-MM-YYYY").toISOString();
         }
         if (key === "apr_date" && value instanceof Date) {
@@ -631,10 +632,11 @@ const AddProductModal = ({ order, setOrder }) => {
                             // format="DD-MM-YYYY"
                             // onChange={(date, dateString) => {
                             //   field.onChange(dateString);
-                                    value={field.value ? dayjs(field.value) : null}
-                                                         format="DD-MM-YYYY"
-                                                         onChange={(date) => field.onChange(date ? date.toDate() : null)}
-                           
+                            value={field.value ? dayjs(field.value) : null}
+                            format="DD-MM-YYYY"
+                            onChange={(date) =>
+                              field.onChange(date ? date.toDate() : null)
+                            }
                           />
                         )}
                       />
@@ -824,7 +826,10 @@ const AddProductModal = ({ order, setOrder }) => {
                 {/* Description */}
                 <div className="col-md-12 mb-3">
                   <div className="mb-0">
-                  <label className="col-form-label">Remarks <span className="text-danger">(max 255 characters)</span></label>
+                    <label className="col-form-label">
+                      Remarks{" "}
+                      <span className="text-danger">(max 255 characters)</span>
+                    </label>
                     <textarea
                       className="form-control"
                       placeholder="Enter Remarks"
@@ -832,8 +837,12 @@ const AddProductModal = ({ order, setOrder }) => {
                       {...register("remarks", {
                         validate: (value) => {
                           const wordCount = value.trim().split(/\s+/).length;
-                          return wordCount <= 200 || "Remarks must not exceed 200 words.";
-                        }})}
+                          return (
+                            wordCount <= 200 ||
+                            "Remarks must not exceed 200 words."
+                          );
+                        },
+                      })}
                     />
                     {errors.remarks && (
                       <small className="text-danger">
