@@ -24,6 +24,8 @@ import { Helmet } from "react-helmet-async";
 const ProductCategory = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
   const [paginationData, setPaginationData] = useState();
+  const [searchText, setSearchText] = useState("");
+  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
 
   const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
   const allPermissions = permissions?.filter(
@@ -131,8 +133,8 @@ align: "center",
   );
 
   React.useEffect(() => {
-    dispatch(fetchProductCategory());
-  }, [dispatch]);
+    dispatch(fetchProductCategory({ search: searchText }));
+  }, [dispatch,searchText]);
   React.useEffect(() => {
     setPaginationData({
       currentPage: productCategories?.currentPage,
@@ -156,8 +158,6 @@ align: "center",
       })
     );
   };
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -165,25 +165,25 @@ align: "center",
 
   const filteredData = useMemo(() => {
     let data = productCategories?.data || [];
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-      );
-    }
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase())
+    //     )
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+    //   );
+    // }
     return data;
   }, [searchText, productCategories, columns, sortOrder]);
 

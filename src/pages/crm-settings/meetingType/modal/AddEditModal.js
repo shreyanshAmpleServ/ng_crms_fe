@@ -115,20 +115,20 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose
               {/* Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Name <span className="text-danger">*</span>
+                  Meeting Type <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter Meeting Type Name"
+                  placeholder="Enter Meeting Type"
                   className={`form-control ${
                     errors.name ? "is-invalid" : ""
                   }`}
                   {...register("name", {
-                    required: "Name is required!",
+                    required: "Meeting Type is required!",
                     minLength: {
                       value: 3,
                       message:
-                        "Name must be at least 3 characters!",
+                        "Meeting Type must be at least 3 characters!",
                     },
                   })}
                 />
