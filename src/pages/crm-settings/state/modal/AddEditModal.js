@@ -142,7 +142,7 @@ useEffect(() => {
                       options={CountriesList}
                       placeholder="Select..."
 
-                      isDisabled={!CountriesList.length} // Disable if no stages are available
+                      isDisabled={!CountriesList?.length} // Disable if no stages are available
                       classNamePrefix="react-select"
                       className="select2"
                       onChange={(selectedOption) =>
