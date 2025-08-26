@@ -66,6 +66,7 @@ const LeadList = () => {
   const columns = [
     {
       title: "Sr. No.",
+align: "center",
       width: 50,
       render: (text, record, index) => (
         <div className="text=center">

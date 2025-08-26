@@ -45,7 +45,8 @@ const StatesList = () => {
     
     const columns = [
         {
-            title: "Sr. No.",      width: 50,
+            title: "Sr. No.",
+align: "center",      width: 50,
             render: (text,record,index) =>(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1 ,
             // sorter: (a, b) => a.code.localeCompare(b.name),
         },

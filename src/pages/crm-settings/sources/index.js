@@ -38,7 +38,8 @@ const SourceList = () => {
 
   const columns = [
     {
-      title: "Sr. No.",   
+      title: "Sr. No.",
+align: "center",   
          width: 50,
       render: (text,record,index) =>   (paginationData?.currentPage - 1) * paginationData?.pageSize +
       index +

@@ -33,7 +33,8 @@ const MeetingTypes = () => {
   const dispatch = useDispatch();
   const columns = [
     {
-      title: "Sr. No.",   
+      title: "Sr. No.",
+align: "center",   
       width: 50,
       render: (text,record,index) =>index+1 ,
       // sorter: (a, b) => a.code.localeCompare(b.name),
