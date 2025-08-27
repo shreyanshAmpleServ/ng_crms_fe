@@ -15,7 +15,9 @@ a {
 .hover-opacity-100:hover {
   opacity: 1 !important;
 }
-
+.ant-picker-input >input {
+  font-size: 12.5px !important;
+}
 /* Apply globally or scoped with class */
 .ant-table-cell {
   padding: 5.5px 8px !important; /* adjust as needed */
