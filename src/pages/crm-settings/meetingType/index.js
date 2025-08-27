@@ -47,7 +47,7 @@ render: (text, record, index) =>
       title: "Meeting Type ",
       dataIndex: "name",
       render: (text, record) => (
-        <div style={{width:"12rem"}} className="text-wrap"> {record.name}</div>
+        <div style={{width:"10rem"}} className="text-wrap"> {record.name}</div>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },

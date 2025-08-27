@@ -25,6 +25,8 @@ const ContactStagesList = () => {
   const [mode, setMode] = useState("add"); // 'add' or 'edit'
      const [paginationData, setPaginationData] = useState();
   
+     const [searchText, setSearchText] = useState("");
+     const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
   const allPermissions = permissions?.filter((i)=>i?.module_name === "Contact Stage")?.[0]?.permissions
  const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
@@ -121,8 +123,8 @@ align: "center",      width: 50,
   );
 
   React.useEffect(() => {
-    dispatch(fetchContactStages());
-  }, [dispatch]);
+    dispatch(fetchContactStages({ search: searchText }));
+  }, [dispatch,searchText]);
 
 
    React.useEffect(() => {
@@ -149,8 +151,6 @@ align: "center",      width: 50,
         );
       };
 
-  const [searchText, setSearchText] = useState("");
-  const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -158,25 +158,25 @@ align: "center",      width: 50,
 
   const filteredData = useMemo(() => {
     let data = contactStages?.data || [];
-    if (searchText) {
-      data = data.filter((item) =>
-        columns.some((col) =>
-          item[col.dataIndex]
-            ?.toString()
-            .toLowerCase()
-            .includes(searchText.toLowerCase())
-        )
-      );
-    }
-    if (sortOrder === "ascending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-      );
-    } else if (sortOrder === "descending") {
-      data = [...data].sort((a, b) =>
-        moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-      );
-    }
+    // if (searchText) {
+    //   data = data.filter((item) =>
+    //     columns.some((col) =>
+    //       item[col.dataIndex]
+    //         ?.toString()
+    //         .toLowerCase()
+    //         .includes(searchText.toLowerCase())
+    //     )
+    //   );
+    // }
+    // if (sortOrder === "ascending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+    //   );
+    // } else if (sortOrder === "descending") {
+    //   data = [...data].sort((a, b) =>
+    //     moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+    //   );
+    // }
     return data;
   }, [searchText, contactStages, columns, sortOrder]);
 

@@ -23,7 +23,8 @@ import { Helmet } from "react-helmet-async";
 const CurrencyList = () => {
     const [mode, setMode] = useState("add"); // 'add' or 'edit'
       const [paginationData, setPaginationData] = useState();
-    
+      const [searchText, setSearchText] = useState("");
+      const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
     const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
     const allPermissions = permissions?.filter((i)=>i?.module_name === "Currency")?.[0]?.permissions
   const user1 = localStorage.getItem("user")
@@ -57,9 +58,9 @@ align: "center",      width: 50,
             sorter: (a, b) => a.code.localeCompare(b.code),
         },
         {
-            title: "Default",
+            title: "Is Default",
             dataIndex: "is_default",
-            render: (text) => <span>{text}</span>,
+            render: (text) => <span>{text ==  "Y" ? "Yes" : "No" }</span>,
             sorter: (a, b) => a.is_default.localeCompare(b.is_default),
         },
         {
@@ -132,8 +133,8 @@ align: "center",      width: 50,
     );
 
     React.useEffect(() => {
-        dispatch(fetchCurrencies());
-    }, [dispatch]);
+        dispatch(fetchCurrencies({ search: searchText }));
+    }, [dispatch,searchText]);
 
      React.useEffect(() => {
           setPaginationData({
@@ -159,8 +160,7 @@ align: "center",      width: 50,
           );
         };
 
-    const [searchText, setSearchText] = useState("");
-    const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
+
 
     const handleSearch = useCallback((e) => {
         setSearchText(e.target.value);
@@ -168,25 +168,25 @@ align: "center",      width: 50,
 
     const filteredData = useMemo(() => {
         let data = currencies?.data || [];
-        if (searchText) {
-            data = data.filter((item) =>
-                columns.some((col) =>
-                    item[col.dataIndex]
-                        ?.toString()
-                        .toLowerCase()
-                        .includes(searchText.toLowerCase())
-                )
-            );
-        }
-        if (sortOrder === "ascending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
-            );
-        } else if (sortOrder === "descending") {
-            data = [...data].sort((a, b) =>
-                moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
-            );
-        }
+        // if (searchText) {
+        //     data = data.filter((item) =>
+        //         columns.some((col) =>
+        //             item[col.dataIndex]
+        //                 ?.toString()
+        //                 .toLowerCase()
+        //                 .includes(searchText.toLowerCase())
+        //         )
+        //     );
+        // }
+        // if (sortOrder === "ascending") {
+        //     data = [...data].sort((a, b) =>
+        //         moment(a.createdDate).isBefore(moment(b.createdDate)) ? -1 : 1
+        //     );
+        // } else if (sortOrder === "descending") {
+        //     data = [...data].sort((a, b) =>
+        //         moment(a.createdDate).isBefore(moment(b.createdDate)) ? 1 : -1
+        //     );
+        // }
         return data;
     }, [searchText, currencies, columns, sortOrder]);
 

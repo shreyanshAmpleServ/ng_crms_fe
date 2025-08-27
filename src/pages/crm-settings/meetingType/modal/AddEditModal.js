@@ -115,7 +115,7 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose
               {/* Name */}
               <div className="mb-3">
                 <label className="col-form-label">
-                  Name <span className="text-danger">*</span>
+                  Meeting Type <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
@@ -128,7 +128,7 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose
                     minLength: {
                       value: 3,
                       message:
-                        "Name must be at least 3 characters!",
+                        "Meeting Type must be at least 3 characters!",
                     },
                   })}
                 />

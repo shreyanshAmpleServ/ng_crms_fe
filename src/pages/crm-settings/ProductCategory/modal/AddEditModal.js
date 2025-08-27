@@ -124,7 +124,7 @@ const AddEditModal = ({ mode = "add",setInitialData, initialData = null, onClose
                     minLength: {
                       value: 3,
                       message:
-                        "Category name must be at least 3 characters!",
+                        "Category Name must be at least 3 characters!",
                     },
                   })}
                 />

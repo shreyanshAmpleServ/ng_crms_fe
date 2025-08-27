@@ -52,8 +52,8 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
       name: "",
       status: "",
       type: "",
-      start_date: dayjs(new Date()).format("DD-MM-YYYY"),
-      end_date: dayjs(new Date()).format("DD-MM-YYYY"),
+      start_date:new Date(),
+      end_date:new Date(),
 
       exp_revenue: "",
       camp_cost: "",
@@ -75,11 +75,11 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
           type: campaign?.type || null,
           start_date:
             dayjs(new Date(campaign?.start_date)) ||
-            dayjs(new Date()).format("DD-MM-YYYY"),
+           new Date(),
 
           end_date:
             dayjs(new Date(campaign?.end_date)) ||
-            dayjs(new Date()).format("DD-MM-YYYY"),
+           new Date(),
 
           exp_revenue: campaign?.exp_revenue || "",
           camp_cost: campaign?.camp_cost || "",
@@ -103,8 +103,8 @@ const ActivitiesModal = ({ setCampaign, campaign }) => {
           name: "",
           status: "",
           type: null,
-          start_date: dayjs(new Date()).format("DD-MM-YYYY"),
-          end_date: dayjs(new Date()).format("DD-MM-YYYY"),
+          start_date:new Date(),
+          end_date:new Date(),
           exp_revenue: "",
           camp_cost: "",
           owner_id: null,
