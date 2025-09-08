@@ -154,13 +154,14 @@ const sourcesSlice = createSlice({
       })
       .addCase(updateSource.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.sources.findIndex(
+        const index = state.sources.data.findIndex(
           (source) => source.id === action.payload.data.id
         );
         if (index !== -1) {
           state.sources[index] = action.payload.data;
         } else {
-          state.sources = [action.payload.data, ...state.sources];
+          state.sources = { ...state.sources,
+          data: [action.payload.data, ...state.sources.data]}
         }
         state.success = action.payload.message;
         toast.success(action.payload.message || "Source updated successfully");

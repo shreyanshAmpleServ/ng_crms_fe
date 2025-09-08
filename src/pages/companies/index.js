@@ -29,8 +29,8 @@ import ViewIconsToggle from "../../components/datatable/ViewIconsToggle";
 import { all_routes } from "../../routes/all_routes.js";
 
 const CompanyList = () => {
-    const route = all_routes;
-  const [view, setView] = useState("list"); 
+  const route = all_routes;
+  const [view, setView] = useState("list");
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
@@ -42,32 +42,47 @@ const CompanyList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [paginationData , setPaginationData] = useState()
-  const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Companies")?.[0]?.permissions
- const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const [paginationData, setPaginationData] = useState();
+  const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Companies"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("user")
+    ? atob(localStorage.getItem("user")).includes("admin")
+    : null;
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
       title: "Sr. No.",
-align: "center",      
+      align: "center",
       width: 50,
-      render: (text,record,index) =>(<div className="text-center">{(paginationData?.currentPage - 1) * paginationData?.pageSize + index + 1}</div>)  ,
-  },
+      render: (text, record, index) => (
+        <div className="text-center">
+          {(paginationData?.currentPage - 1) * paginationData?.pageSize +
+            index +
+            1}
+        </div>
+      ),
+    },
     {
       title: "Company Name",
       dataIndex: "name",
-      width:200,
+      width: 200,
       render: (text, record) => (
-        <Link   style={{
-          maxWidth: "3rem",      // Maximum width the column can grow
-          whiteSpace: "normal",   // Allow wrapping
-          wordBreak: "break-word",
-        }} to={`/crms/companies/${record.id}`}>{record.name}</Link>
+        <Link
+          style={{
+            maxWidth: "3rem", // Maximum width the column can grow
+            whiteSpace: "normal", // Allow wrapping
+            wordBreak: "break-word",
+          }}
+          to={`/crms/companies/${record.id}`}
+        >
+          {record.name}
+        </Link>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -87,7 +102,11 @@ align: "center",
       dataIndex: "website",
       render: (text) =>
         text ? (
-          <a href={/^https?:\/\//.test(text) ? text : `https://${text}`} target="_blank" rel="noopener noreferrer">
+          <a
+            href={/^https?:\/\//.test(text) ? text : `https://${text}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {text}
           </a>
         ) : (
@@ -115,69 +134,89 @@ align: "center",
       dataIndex: "businessType",
       sorter: (a, b) => a.businessType.localeCompare(b.businessType),
     },
-   ...((isUpdate || isDelete) ?[{
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_edit_company"
-              onClick={() => setSelectedCompany(record)}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteCompany(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-           {isView && <Link className="dropdown-item" to={`${route?.companies}/${record?.id}`}>
-              <i className="ti ti-eye text-blue-light"></i> Preview
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#offcanvas_edit_company"
+                      onClick={() => setSelectedCompany(record)}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteCompany(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                  {isView && (
+                    <Link
+                      className="dropdown-item"
+                      to={`${route?.companies}/${record?.id}`}
+                    >
+                      <i className="ti ti-eye text-blue-light"></i> Preview
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
   const navigate = useNavigate();
   const { companies, loading, error, success } = useSelector(
-    (state) => state.companies,
+    (state) => state.companies
   );
 
   React.useEffect(() => {
-    dispatch(fetchCompanies({search:searchText , ...selectedDateRange}));
-  }, [dispatch,searchText , selectedDateRange]);
+    dispatch(fetchCompanies({ search: searchText, ...selectedDateRange }));
+  }, [dispatch, searchText, selectedDateRange]);
 
-React.useEffect(()=>{
+  React.useEffect(() => {
     setPaginationData({
-      currentPage:companies?.currentPage,
-      totalPage:companies?.totalPages,
-      totalCount:companies?.totalCount,
-      pageSize : companies?.size
-    })
-  },[companies])
+      currentPage: companies?.currentPage,
+      totalPage: companies?.totalPages,
+      totalCount: companies?.totalCount,
+      pageSize: companies?.size,
+    });
+  }, [companies]);
 
   const handlePageChange = ({ currentPage, pageSize }) => {
     setPaginationData((prev) => ({
       ...prev,
       currentPage,
-      pageSize
+      pageSize,
     }));
-    dispatch(fetchCompanies({search:searchText , ...selectedDateRange, page: currentPage, size: pageSize })); 
+    dispatch(
+      fetchCompanies({
+        search: searchText,
+        ...selectedDateRange,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
   };
 
   // Memoized handlers
@@ -229,77 +268,74 @@ React.useEffect(()=>{
     XLSX.writeFile(workbook, "companies.xlsx");
   }, [filteredData]);
 
- const exportToPDF = useCallback(() => {
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
+  const exportToPDF = useCallback(() => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-  const title = "Exported Companies";
-  doc.setFontSize(16);
-  const textWidth = doc.getTextWidth(title);
-  const x = (pageWidth - textWidth) / 2;
-  doc.text(title, x, 15);
+    const title = "Exported Companies";
+    doc.setFontSize(16);
+    const textWidth = doc.getTextWidth(title);
+    const x = (pageWidth - textWidth) / 2;
+    doc.text(title, x, 15);
 
-  // Filter out the "Actions" column
-  const tableColumns = columns.filter(col => col.title !== "Actions");
+    // Filter out the "Actions" column
+    const tableColumns = columns.filter((col) => col.title !== "Actions");
 
-  // Prepare the table header
-  const head = [tableColumns.map(col => col.title)];
+    // Prepare the table header
+    const head = [tableColumns.map((col) => col.title)];
 
-  // Prepare the table body with Sr. No. and data
-  const body = filteredData.map((row, index) =>
-    tableColumns.map(col => {
-      if (col.title === "Sr. No.") {
-        // Compute Sr. No. based on pagination
-        return (
-          ((paginationData?.currentPage - 1) || 0) *
-            (paginationData?.pageSize || 0) +
-          index +
-          1
-        );
-      }
+    // Prepare the table body with Sr. No. and data
+    const body = filteredData.map((row, index) =>
+      tableColumns.map((col) => {
+        if (col.title === "Sr. No.") {
+          // Compute Sr. No. based on pagination
+          return (
+            (paginationData?.currentPage - 1 || 0) *
+              (paginationData?.pageSize || 0) +
+            index +
+            1
+          );
+        }
 
-      const val = row[col.dataIndex];
+        const val = row[col.dataIndex];
 
-      // Optionally handle nested objects
-      if (val && typeof val === "object") {
-        return val.name || val.code || JSON.stringify(val);
-      }
+        // Optionally handle nested objects
+        if (val && typeof val === "object") {
+          return val.name || val.code || JSON.stringify(val);
+        }
 
-      return val ?? "-";
-    })
-  );
+        return val ?? "-";
+      })
+    );
 
-  // Render the table
-  doc.autoTable({
-    head,
-    body,
-    startY: 25,
-    styles: {
-      fontSize: 7,
-      cellPadding: 1,
-      overflow: "linebreak",
-    },
-    headStyles: {
-      fillColor: [41, 128, 185],
-      textColor: 255,
-      fontSize: 8,
-      halign: "center",
-    },
-    bodyStyles: {
-      fontSize: 7,
-      halign: "center",
-      valign: "middle",
-    },
-    theme: "grid",
-    tableWidth: "auto",
-    pageBreak: "auto",
-  });
+    // Render the table
+    doc.autoTable({
+      head,
+      body,
+      startY: 25,
+      styles: {
+        fontSize: 7,
+        cellPadding: 1,
+        overflow: "linebreak",
+      },
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255,
+        fontSize: 8,
+        halign: "center",
+      },
+      bodyStyles: {
+        fontSize: 7,
+        halign: "center",
+        valign: "middle",
+      },
+      theme: "grid",
+      tableWidth: "auto",
+      pageBreak: "auto",
+    });
 
-  doc.save("companies.pdf");
-}, [filteredData, columns, paginationData]);
-
-
-
+    doc.save("companies.pdf");
+  }, [filteredData, columns, paginationData]);
 
   const handleDeleteCompany = (company) => {
     setSelectedCompany(company);
@@ -312,91 +348,91 @@ React.useEffect(()=>{
       setShowDeleteModal(false); // Close the modal
     }
   };
-  return (<>
-    <Helmet>
-    <title>DCC CRMS - Companies</title>
-    <meta name="Companies" content="This is Companies page of DCC CRMS." />
-  </Helmet>
-    <div className="page-wrapper">
-      <div className="content">
-        {error && (
-          <FlashMessage
-            // type="error"
-            // message={error}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
-        {success && (
-          <FlashMessage
-            // type="success"
-            // message={success}
-            onClose={() => dispatch(clearMessages())}
-          />
-        )}
+  return (
+    <>
+      <Helmet>
+        <title>DCC CRMS - Companies</title>
+        <meta name="Companies" content="This is Companies page of DCC CRMS." />
+      </Helmet>
+      <div className="page-wrapper">
+        <div className="content">
+          {error && (
+            <FlashMessage
+              // type="error"
+              // message={error}
+              onClose={() => dispatch(clearMessages())}
+            />
+          )}
+          {success && (
+            <FlashMessage
+              // type="success"
+              // message={success}
+              onClose={() => dispatch(clearMessages())}
+            />
+          )}
 
-        <div className="row">
-          <div className="col-md-12">
-            {/* Page Header */}
-            <div className="page-header d-none">
-              <div className="row align-items-center">
-                <div className="col-8">
-                  <h4 className="page-title">
-                    Companies
-                    <span className="count-title">
-                      {companies?.data?.length || 0}
-                    </span>
-                  </h4>
-                </div>
-                <div className="col-4 text-end">
-                  <div className="head-icons">
-                    <CollapseHeader />
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* /Page Header */}
-            <div className="card ">
-              <div className="card-header">
-                {/* Search */}
+          <div className="row">
+            <div className="col-md-12">
+              {/* Page Header */}
+              <div className="page-header d-none">
                 <div className="row align-items-center">
-                  <SearchBar
-                    searchText={searchText}
-                    handleSearch={handleSearch}
-                    label="Search Companies"
-                  />
-
-                  <div className="col-sm-8">
-                    {/* Export Start & Add Button */}
-                    <ExportData
-                      exportToPDF={exportToPDF}
-                      exportToExcel={exportToExcel}
-                      label="Add"
-                      isCreate={isCreate}
-                      id="offcanvas_add_company"
-                      
-                    />
-                    {/* Export End & Add Button  */}
+                  <div className="col-8">
+                    <h4 className="page-title">
+                      Companies
+                      <span className="count-title">
+                        {companies?.data?.length || 0}
+                      </span>
+                    </h4>
+                  </div>
+                  <div className="col-4 text-end">
+                    <div className="head-icons">
+                      <CollapseHeader />
+                    </div>
                   </div>
                 </div>
-                {/* /Search */}
               </div>
+              {/* /Page Header */}
+              <div className="card ">
+                <div className="card-header">
+                  {/* Search */}
+                  <div className="row align-items-center">
+                    <SearchBar
+                      searchText={searchText}
+                      handleSearch={handleSearch}
+                      label="Search Companies"
+                    />
 
-              <div className="card-body">
-                {/* Filter */}
-                <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
-                  <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    {/* <SortDropdown
+                    <div className="col-sm-8">
+                      {/* Export Start & Add Button */}
+                      <ExportData
+                        exportToPDF={exportToPDF}
+                        exportToExcel={exportToExcel}
+                        label="Add"
+                        isCreate={isCreate}
+                        id="offcanvas_add_company"
+                      />
+                      {/* Export End & Add Button  */}
+                    </div>
+                  </div>
+                  {/* /Search */}
+                </div>
+
+                <div className="card-body">
+                  {/* Filter */}
+                  <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-2">
+                    <div className="d-flex align-items-center flex-wrap row-gap-2">
+                      {/* <SortDropdown
                       sortOrder={sortOrder}
                       setSortOrder={setSortOrder}
                     /> */}
-                    <DateRangePickerComponent
-                      selectedDateRange={selectedDateRange}
-                      setSelectedDateRange={setSelectedDateRange}
-                    />
-                  </div>
-                  <div className="d-flex align-items-center flex-wrap row-gap-2">
-                    {/* <ManageColumnsDropdown /> */}
-                    {/* <FilterComponent
+                      <DateRangePickerComponent
+                        selectedDateRange={selectedDateRange}
+                        setSelectedDateRange={setSelectedDateRange}
+                      />
+                    </div>
+                    <div className="d-flex align-items-center flex-wrap row-gap-2">
+                      {/* <ManageColumnsDropdown /> */}
+                      {/* <FilterComponent
                       countryList={countryList}
                       applyFilters={({ countries, status }) => {
                         setFilteredCountries(countries);
@@ -404,50 +440,54 @@ React.useEffect(()=>{
                       }}
                     /> */}
 
-                    <ViewIconsToggle view={view} setView={setView} />
+                      <ViewIconsToggle view={view} setView={setView} />
+                    </div>
                   </div>
-                </div>
 
-                {/* /Filter */}   
-                {/* Company List */}
+                  {/* /Filter */}
+                  {/* Company List */}
 
-                {isView ?<div className="table-responsive custom-table">
-                  {view === "list" ? (
-                    <Table
-                      dataSource={filteredData}
-                      columns={columns}
-                      loading={loading}
-                      paginationData={paginationData}
-                      onPageChange={handlePageChange} 
-                    />
+                  {isView ? (
+                    <div className="table-responsive custom-table">
+                      {view === "list" ? (
+                        <Table
+                          dataSource={filteredData}
+                          columns={columns}
+                          loading={loading}
+                          paginationData={paginationData}
+                          onPageChange={handlePageChange}
+                        />
+                      ) : (
+                        <CompanyGrid data={companies} handlePageChange={handlePageChange} />
+                      )}
+                    </div>
                   ) : (
-                    <CompanyGrid data={filteredData} />
+                    <UnauthorizedImage />
                   )}
-                </div>: <UnauthorizedImage />}
-                <div className="row align-items-center">
-                  <div className="col-md-6">
-                    <div className="datatable-length" />
+                  <div className="row align-items-center">
+                    <div className="col-md-6">
+                      <div className="datatable-length" />
+                    </div>
+                    <div className="col-md-6">
+                      <div className="datatable-paginate" />
+                    </div>
                   </div>
-                  <div className="col-md-6">
-                    <div className="datatable-paginate" />
-                  </div>
+                  {/* /Company List */}
                 </div>
-                {/* /Company List */}
               </div>
             </div>
           </div>
         </div>
+        <AddCompanyModal />
+        <EditCompanyModal company={selectedCompany} />
+        <DeleteAlert
+          label="Company"
+          showModal={showDeleteModal}
+          setShowModal={setShowDeleteModal}
+          selectedCompany={selectedCompany}
+          onDelete={deleteData}
+        />
       </div>
-      <AddCompanyModal />
-      <EditCompanyModal company={selectedCompany} />
-      <DeleteAlert
-        label="Company"
-        showModal={showDeleteModal}
-        setShowModal={setShowDeleteModal}
-        selectedCompany={selectedCompany}
-        onDelete={deleteData}
-      />
-    </div>
     </>
   );
 };

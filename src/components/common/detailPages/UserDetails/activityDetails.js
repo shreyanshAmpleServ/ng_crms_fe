@@ -26,14 +26,18 @@ export const ActivityDetailOfUser = ({
   const [orderBy, setOrderBy] = useState("Ascending");
   const [isAssignTo, setIsAssignedTo] = useState(true);
   const [clickedIndex,setClickedIndex] = useState()
+  const [isCall,setIsCall] = useState(false)
   const [loadType,setLoadType] = useState()
   const dispatch = useDispatch();
   const {id:lead_id}=useParams()
-  // useEffect(async() => {
- 
-  // },[dispatch])
+
+  const { users } = useSelector((state) => state.users);
+  const { activitiesGrouped, loading, error } = useSelector(
+    (state) => state.activities
+  );
+
   useEffect(() => {
-    dispatch(fetchUsers());
+  !users?.data &&   dispatch(fetchUsers());
     (lead_id||deal_id || contact_id || company_id || vendor_id || owner_id || project_id) && dispatch(fetchGroupedActivities({
         search: "",
         deal_id,
@@ -46,7 +50,7 @@ export const ActivityDetailOfUser = ({
         lead_id,
         sortBy: sortById,
       }));
-  }, [dispatch, isAssignTo,vendor_id,owner_id,project_id, orderBy,deal_id,company_id,contact_id, sortById]);
+  }, [dispatch,users, isAssignTo,vendor_id,owner_id,project_id, orderBy,deal_id,company_id,contact_id, sortById]);
 
   const options2 = [
     { value: 3, label: "High" },
@@ -54,10 +58,7 @@ export const ActivityDetailOfUser = ({
     { value: 1, label: "Low" },
   ];
 
-  const { users } = useSelector((state) => state.users);
-  const { activitiesGrouped, loading, error } = useSelector(
-    (state) => state.activities
-  );
+
   const updateActivity = async (activity, key, value) => {
     const finalData = {
       title: activity?.title || "",
@@ -120,7 +121,8 @@ export const ActivityDetailOfUser = ({
                 />
               </div>
 <Link className="btn text-white btn-primary" to="#"  data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvas_add_activities">
+              data-bs-target="#offcanvas_add_activities" 
+              onClick={()=>setIsCall(true)}>
 <i className="ti text-white ti-plus me-1"></i>
 Create
 </Link>
@@ -530,7 +532,7 @@ Create
           </div>
        
         </div>
-        <ActivitiesModal leadId={lead_id} setActivity={()=>{}} activity={null}/>
+        <ActivitiesModal isCall={isCall} leadId={lead_id} setActivity={()=>{}} activity={null}/>
       </div>
     </>
   );

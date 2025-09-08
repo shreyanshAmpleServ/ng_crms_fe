@@ -98,7 +98,7 @@ const LeadsDetail = () => {
                 />
                 {/* /Breadcrumbs */}
                 {/* Lead Card */}
-                <div className="card">
+                <div className="card mb-3">
                   <div className="card-body pb-2">
                     <div className="d-flex align-items-start justify-content-between flex-wrap">
                       <div className="d-flex align-items-center mb-2">

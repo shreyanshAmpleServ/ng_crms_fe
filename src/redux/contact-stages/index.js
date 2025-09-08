@@ -134,7 +134,6 @@ const contactStagesSlice = createSlice({
       })
       .addCase(addContactStage.fulfilled, (state, action) => {
         state.loading = false;
-    state.loading = false;
         // state.contactStages = [action.payload.data, ...state.contactStages];
         state.contactStages = {...state.contactStages , data: [ action.payload.data ,...state.contactStages.data]};
         state.success = action.payload.message;

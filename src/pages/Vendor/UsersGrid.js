@@ -11,7 +11,7 @@ const UsersGrid = ({ data }) => {
 
   const [selectedUser, setSelectedUser] = useState(null); // For modal context
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Delete confirmation
-  const [visibleItems, setVisibleItems] = useState(3); // Default number of users visible
+  const [visibleItems, setVisibleItems] = useState(10); // Default number of users visible
   const [loading, setLoading] = useState(false); // State for Load More button
 
   // Handles showing the delete modal for a user

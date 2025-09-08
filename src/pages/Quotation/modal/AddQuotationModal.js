@@ -452,7 +452,7 @@ const AddQuotationModal = ({ order, setOrder }) => {
           <button
             type="button"
             onClick={toggleActivities}
-            className={` d-flex align-items-center justify-content-center border rounded shadow-lg  fw-semibold transition-all duration-300 ${
+            className={` d-flex align-items-center justify-content-center border rounded shadow-sm  fw-semibold transition-all duration-300 ${
               showActivities 
                 // ? ' ' 
                 // : 'btn-primary bg-primary-gradient'

@@ -23,29 +23,34 @@ import AddButton from "../../../components/datatable/AddButton";
 import { Helmet } from "react-helmet-async";
 
 const SourceList = () => {
-  const [mode, setMode] = useState("add"); 
+  const [mode, setMode] = useState("add");
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
   const [paginationData, setPaginationData] = useState();
-  const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Sources")?.[0]?.permissions
- const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Sources"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("user")
+    ? atob(localStorage.getItem("user")).includes("admin")
+    : null;
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const columns = [
     {
       title: "Sr. No.",
-align: "center",   
-         width: 50,
-      render: (text,record,index) =>   (paginationData?.currentPage - 1) * paginationData?.pageSize +
-      index +
-      1, 
+      align: "center",
+      width: 50,
+      render: (text, record, index) =>
+        (paginationData?.currentPage - 1) * paginationData?.pageSize +
+        index +
+        1,
       // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+    },
     {
       title: "Source Name",
       dataIndex: "name",
@@ -79,77 +84,84 @@ align: "center",
       ),
       sorter: (a, b) => (a.is_active ?? "Y").localeCompare(b.is_active ?? "Y"),
     },
-   ...((isUpdate || isDelete) ?[ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_source_modal"
-              onClick={() => {
-                setSelectedSource(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteSource(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]: [])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_source_modal"
+                      onClick={() => {
+                        setSelectedSource(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteSource(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const navigate = useNavigate();
   const { sources, loading, error, success } = useSelector(
-    (state) => state.sources,
+    (state) => state.sources
   );
 
   React.useEffect(() => {
     dispatch(fetchSources({ search: searchText }));
-  }, [dispatch,searchText]);
-    React.useEffect(() => {
-        setPaginationData({
-          currentPage: sources?.currentPage,
-          totalPage: sources?.totalPages,
-          totalCount: sources?.totalCount,
-          pageSize: sources?.size,
-        });
-      }, [sources]);
-    
-      const handlePageChange = ({ currentPage, pageSize }) => {
-        setPaginationData((prev) => ({
-          ...prev,
-          currentPage,
-          pageSize,
-        }));
-        dispatch(
-          fetchSources({
-            search: searchText,
-            page: currentPage,
-            size: pageSize,
-          })
-        );
-      };
-  
+  }, [dispatch, searchText]);
+  React.useEffect(() => {
+    setPaginationData({
+      currentPage: sources?.currentPage,
+      totalPage: sources?.totalPages,
+      totalCount: sources?.totalCount,
+      pageSize: sources?.size,
+    });
+  }, [sources]);
+
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchSources({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -196,10 +208,10 @@ align: "center",
 
   return (
     <div className="page-wrapper">
-       <Helmet>
-         <title>DCC CRMS - Source</title>
-         <meta name="Sources" content="This is Sources page of DCC CRMS." />
-       </Helmet>
+      <Helmet>
+        <title>DCC CRMS - Source</title>
+        <meta name="Sources" content="This is Sources page of DCC CRMS." />
+      </Helmet>
       <div className="content">
         {error && (
           <FlashMessage
@@ -223,7 +235,9 @@ align: "center",
                 <div className="col-8">
                   <h4 className="page-title">
                     Sources
-                    <span className="count-title">{sources?.totalCount || 0}</span>
+                    <span className="count-title">
+                      {sources?.totalCount || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -241,13 +255,15 @@ align: "center",
                     handleSearch={handleSearch}
                     label="Search Sources"
                   />
-                 {isCreate && <div className="col-sm-8">
-                    <AddButton
-                      label="Add"
-                      id="add_edit_source_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add"
+                        id="add_edit_source_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -276,7 +292,11 @@ align: "center",
         </div>
       </div>
 
-      <AddEditModal mode={mode} setInitialData={setSelectedSource} initialData={selectedSource} />
+      <AddEditModal
+        mode={mode}
+        setInitialData={setSelectedSource}
+        initialData={selectedSource}
+      />
       <DeleteAlert
         label="Source"
         showModal={showDeleteModal}

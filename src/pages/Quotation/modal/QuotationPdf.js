@@ -47,6 +47,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [optionalItem, setOptionalItem] = useState([]);
     const [savedSignature, setSavedSignature] = useState(null);
+    const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -57,6 +58,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
   const {
     quotationDetail: order,
     loading,
+    loadingComment,
     error,
     success,
   } = useSelector((state) => state.quotations);
@@ -141,6 +143,8 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
   const { toPDF, targetRef } = usePDF({
     filename: `${order?.quotation_code}.pdf`,
     page: { margin: Margin.MEDIUM },
+    onStart: () => setIsDownloadingPDF(true),    // Set downloading state
+    onComplete: () => setIsDownloadingPDF(false), // Reset downloading state
   });
 
   // Fixed handleSubmit with useCallback to prevent recreation
@@ -197,7 +201,25 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
   const handleCommentChange = useCallback((e) => {
     setComment(e.target.value);
   }, []);
-
+ // Modified PDF download handler
+ const handleDownloadPDF = async () => {
+  setIsDownloadingPDF(true);
+  try {
+    // Add a small delay to ensure state is updated before PDF generation
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await toPDF();
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+  } finally {
+    // Add delay before resetting to ensure PDF is fully generated
+    setTimeout(() => {
+      setIsDownloadingPDF(false);
+    }, 1000);
+  }
+};
+useEffect(()=>{
+  order?.customer_sign && setSavedSignature(order?.customer_sign)
+},[order?.customer_sign])
   return (
     <>
       {loading ? (
@@ -212,9 +234,13 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
               </span>
             </div>
             <div className="header-actions">
-              <Button className="download-btn" variant="solid" onClick={toPDF}>
+              {/* <Button className="download-btn" variant="solid" onClick={toPDF}>
                 <i className="ti ti-download" />
                 Download
+              </Button> */}
+              <Button className="download-btn" variant="solid" onClick={handleDownloadPDF}>
+                <i className="ti ti-download" />
+                {isDownloadingPDF ? 'Generating PDF...' : 'Download'}
               </Button>
             </div>
           </div>
@@ -428,7 +454,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                     ))}
                   </div>
                 ))}
-
+<img src={savedSignature} />
               {/* Comments Section */}
               <div className="comments-section">
                 <div className="comments-header">
@@ -437,7 +463,10 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                 <PublicDocumentComments id={newId} order={order} />
                 {/* Comment Form */}
                 <form onSubmit={handleSubmit} className="comment-form mx-auto">
-                  <div className="comment-input-wrapper">
+                 {!isDownloadingPDF && <div   style={{ 
+    display: isDownloadingPDF ? 'none' : 'block',
+    visibility: isDownloadingPDF ? 'hidden' : 'visible' 
+  }} className="comment-input-wrapper">
                     <textarea
                       required
                       rows={6}
@@ -453,21 +482,38 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
                         {comment.length}/500
                       </div>
                     </div>
-                  </div>
+                  </div>}
 
-                  <div className="form-actions">
+                  <div className={`form-actions ${isDownloadingPDF ? "justify-content-end" : "justify-content-between"}`}>
  <DigitalSignature details={order} savedSignature={savedSignature} setSavedSignature={setSavedSignature} onSave={uploadSigns}/>
 
-                    <button
+                  {!isDownloadingPDF &&   <button
                       type="submit"
+                      loading={loadingComment}
+                      style={{ 
+                        display: isDownloadingPDF ? 'none' : 'block',
+                        visibility: isDownloadingPDF ? 'hidden' : 'visible' 
+                      }}
                       className="send-button"
                       disabled={!comment.trim() || isSubmitting}
                     >
                       <span className="button-text">
                         {isSubmitting ? "Sending..." : "Send Comment"}
+                        {loadingComment && (
+                <div
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                  }}
+                  className="spinner-border ml-2 text-light"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              )}
                       </span>
                       <IoSend className="send-icon" />
-                    </button>
+                    </button>}
                   </div>
                 </form>
               </div>
@@ -961,76 +1007,7 @@ const PreviewQuotation = ({ setOrder, formatNumber }) => {
           }
         }
 
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-          .preview-quotation-container {
-            background: #1a1a1a;
-            border-color: #404040;
-          }
 
-          .preview-header {
-            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-            border-bottom-color: #404040;
-          }
-
-          .header-title h4,
-          .title-text,
-          .date-value,
-          .calc-value,
-          .cell-content,
-          .address-content {
-            color: #e2e8f0;
-          }
-
-          .address-block,
-          .calculation-list,
-          .terms-content,
-          .other-item {
-            background: #2d3748;
-          }
-
-          .items-table {
-            background: #2d3748;
-          }
-
-          .items-table td {
-            border-bottom-color: #4a5568;
-          }
-
-          .items-table tbody tr:hover {
-            background-color: #374151;
-          }
-
-          .comment-textarea {
-            background-color: #2d3748;
-            border-color: #4a5568;
-            color: #f7fafc;
-          }
-
-          .comment-textarea:focus {
-            background-color: #374151;
-            border-color: #667eea;
-          }
-
-          .comment-textarea::placeholder {
-            color: #a0aec0;
-          }
-
-          .character-count {
-            color: #cbd5e0;
-          }
-
-          .terms-header,
-          .other-items-header {
-            background: #374151;
-            color: #e2e8f0;
-          }
-
-          .comments-header {
-            background: rgba(251, 191, 36, 0.2);
-            color: #e2e8f0;
-          }
-        }
       `}</style>
     </>
   );

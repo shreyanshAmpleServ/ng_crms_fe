@@ -5,9 +5,7 @@ import { Link } from "react-router-dom";
 import CollapseHeader from "../../../components/common/collapse-header";
 import Table from "../../../components/common/dataTable/index";
 import FlashMessage from "../../../components/common/modals/FlashMessage";
-import {
-  clearMessages
-} from "../../../redux/calls"; // Redux actions and reducers for call statuses
+import { clearMessages } from "../../../redux/calls"; // Redux actions and reducers for call statuses
 import DeleteAlert from "./alert/DeleteAlert";
 import AddEditModal from "./modal/AddEditModal";
 
@@ -16,38 +14,48 @@ import moment from "moment";
 import AddButton from "../../../components/datatable/AddButton";
 import SearchBar from "../../../components/datatable/SearchBar";
 import SortDropdown from "../../../components/datatable/SortDropDown";
-import { deleteMeetingType, fetchMeetingTypes } from "../../../redux/meetingType";
+import {
+  deleteMeetingType,
+  fetchMeetingTypes,
+} from "../../../redux/meetingType";
 import { Helmet } from "react-helmet-async";
 
 const MeetingTypes = () => {
-  const [mode, setMode] = useState("add"); 
-    const [paginationData, setPaginationData] = useState();
-    const [searchText, setSearchText] = useState("");
+  const [mode, setMode] = useState("add");
+  const [paginationData, setPaginationData] = useState();
+  const [searchText, setSearchText] = useState("");
   const [sortOrder, setSortOrder] = useState("ascending"); // Sorting
-  const permissions =JSON?.parse(localStorage.getItem("crmspermissions"))
-  const allPermissions = permissions?.filter((i)=>i?.module_name === "Meeting Types")?.[0]?.permissions
- const isAdmin = localStorage.getItem("user") ? atob(localStorage.getItem("user")).includes("admin") : null
-  const isView = isAdmin || allPermissions?.view
-  const isCreate = isAdmin || allPermissions?.create
-  const isUpdate = isAdmin || allPermissions?.update
-  const isDelete = isAdmin || allPermissions?.delete
+  const permissions = JSON?.parse(localStorage.getItem("crmspermissions"));
+  const allPermissions = permissions?.filter(
+    (i) => i?.module_name === "Meeting Types"
+  )?.[0]?.permissions;
+  const isAdmin = localStorage.getItem("user")
+    ? atob(localStorage.getItem("user")).includes("admin")
+    : null;
+  const isView = isAdmin || allPermissions?.view;
+  const isCreate = isAdmin || allPermissions?.create;
+  const isUpdate = isAdmin || allPermissions?.update;
+  const isDelete = isAdmin || allPermissions?.delete;
 
   const dispatch = useDispatch();
   const columns = [
     {
       title: "Sr. No.",
-align: "center",   
+      align: "center",
       width: 50,
-render: (text, record, index) =>
+      render: (text, record, index) =>
         (paginationData?.currentPage - 1) * paginationData?.pageSize +
         index +
-        1,      // sorter: (a, b) => a.code.localeCompare(b.name),
-  },
+        1, // sorter: (a, b) => a.code.localeCompare(b.name),
+    },
     {
       title: "Meeting Type ",
       dataIndex: "name",
       render: (text, record) => (
-        <div style={{width:"10rem"}} className="text-wrap"> {record.name}</div>
+        <div style={{ width: "10rem" }} className="text-wrap">
+          {" "}
+          {record.name}
+        </div>
       ),
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
@@ -55,7 +63,9 @@ render: (text, record, index) =>
       title: "Description",
       dataIndex: "description",
       render: (text, record) => (
-        <div style={{width:"15rem"}} className="text-wrap">{record.description || " -- "}</div>
+        <div style={{ width: "15rem" }} className="text-wrap">
+          {record.description || " -- "}
+        </div>
       ),
       sorter: (a, b) => a.description.localeCompare(b.description),
     },
@@ -86,77 +96,83 @@ render: (text, record, index) =>
       ),
       sorter: (a, b) => a.is_active.localeCompare(b.is_active),
     },
-   ...((isUpdate || isDelete ) ? [ {
-      title: "Actions",
-      dataIndex: "actions",
-      render: (text, record) => (
-        <div className="dropdown table-action">
-          <Link
-            to="#"
-            className="action-icon"
-            data-bs-toggle="dropdown"
-            aria-expanded="true"
-          >
-            <i className="fa fa-ellipsis-v"></i>
-          </Link>
-          <div className="dropdown-menu dropdown-menu-right">
-           {isUpdate && <Link
-              className="dropdown-item edit-popup"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#add_edit_meeting_type_modal"
-              onClick={() => {
-                setSelectedCallStatus(record);
-                setMode("edit");
-              }}
-            >
-              <i className="ti ti-edit text-blue"></i> Edit
-            </Link>}
-          {isDelete &&  <Link
-              className="dropdown-item"
-              to="#"
-              onClick={() => handleDeleteCallStatus(record)}
-            >
-              <i className="ti ti-trash text-danger"></i> Delete
-            </Link>}
-          </div>
-        </div>
-      ),
-    }]:[])
+    ...(isUpdate || isDelete
+      ? [
+          {
+            title: "Actions",
+            dataIndex: "actions",
+            render: (text, record) => (
+              <div className="dropdown table-action">
+                <Link
+                  to="#"
+                  className="action-icon"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="true"
+                >
+                  <i className="fa fa-ellipsis-v"></i>
+                </Link>
+                <div className="dropdown-menu dropdown-menu-right">
+                  {isUpdate && (
+                    <Link
+                      className="dropdown-item edit-popup"
+                      to="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#add_edit_meeting_type_modal"
+                      onClick={() => {
+                        setSelectedCallStatus(record);
+                        setMode("edit");
+                      }}
+                    >
+                      <i className="ti ti-edit text-blue"></i> Edit
+                    </Link>
+                  )}
+                  {isDelete && (
+                    <Link
+                      className="dropdown-item"
+                      to="#"
+                      onClick={() => handleDeleteCallStatus(record)}
+                    >
+                      <i className="ti ti-trash text-danger"></i> Delete
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const { meetingTypes, loading, error, success } = useSelector(
-    (state) => state.meetingTypes,
+    (state) => state.meetingTypes
   );
 
   React.useEffect(() => {
     dispatch(fetchMeetingTypes({ search: searchText }));
   }, [dispatch, searchText]);
   React.useEffect(() => {
-      setPaginationData({
-        currentPage: meetingTypes?.currentPage,
-        totalPage: meetingTypes?.totalPages,
-        totalCount: meetingTypes?.totalCount,
-        pageSize: meetingTypes?.size,
-      });
-    }, [meetingTypes]);
-  
-    const handlePageChange = ({ currentPage, pageSize }) => {
-      setPaginationData((prev) => ({
-        ...prev,
-        currentPage,
-        pageSize,
-      }));
-      dispatch(
-        fetchMeetingTypes({
-          search: searchText,
-          page: currentPage,
-          size: pageSize,
-        })
-      );
-    };
+    setPaginationData({
+      currentPage: meetingTypes?.currentPage,
+      totalPage: meetingTypes?.totalPages,
+      totalCount: meetingTypes?.totalCount,
+      pageSize: meetingTypes?.size,
+    });
+  }, [meetingTypes]);
 
-
+  const handlePageChange = ({ currentPage, pageSize }) => {
+    setPaginationData((prev) => ({
+      ...prev,
+      currentPage,
+      pageSize,
+    }));
+    dispatch(
+      fetchMeetingTypes({
+        search: searchText,
+        page: currentPage,
+        size: pageSize,
+      })
+    );
+  };
 
   const handleSearch = useCallback((e) => {
     setSearchText(e.target.value);
@@ -203,16 +219,19 @@ render: (text, record, index) =>
     // console.log("Message", error, success)
     if (error || success) {
       const timer = setTimeout(() => {
-        dispatch(clearMessages())
-      }, 2000)
+        dispatch(clearMessages());
+      }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [error, success])
+  }, [error, success]);
   return (
     <div className="page-wrapper">
       <Helmet>
         <title>DCC CRMS - Meeting Type</title>
-        <meta name="Meeting Types" content="This is Meeting Types page of DCC CRMS." />
+        <meta
+          name="Meeting Types"
+          content="This is Meeting Types page of DCC CRMS."
+        />
       </Helmet>
       <div className="content">
         {error && (
@@ -237,7 +256,9 @@ render: (text, record, index) =>
                 <div className="col-8">
                   <h4 className="page-title">
                     Meeting Types
-                    <span className="count-title">{meetingTypes?.length || 0}</span>
+                    <span className="count-title">
+                      {meetingTypes?.length || 0}
+                    </span>
                   </h4>
                 </div>
                 <div className="col-4 text-end">
@@ -255,13 +276,15 @@ render: (text, record, index) =>
                     handleSearch={handleSearch}
                     label="Search Meeting Types"
                   />
-                {isCreate &&  <div className="col-sm-8">
-                    <AddButton
-                      label="Add"
-                      id="add_edit_meeting_type_modal"
-                      setMode={() => setMode("add")}
-                    />
-                  </div>}
+                  {isCreate && (
+                    <div className="col-sm-8">
+                      <AddButton
+                        label="Add"
+                        id="add_edit_meeting_type_modal"
+                        setMode={() => setMode("add")}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="card-body">
@@ -279,10 +302,9 @@ render: (text, record, index) =>
                     dataSource={filteredData}
                     columns={columns}
                     loading={loading}
-                    isView = {isView}
-                     paginationData={paginationData}
+                    isView={isView}
+                    paginationData={paginationData}
                     onPageChange={handlePageChange}
-
                   />
                 </div>
               </div>
@@ -291,7 +313,11 @@ render: (text, record, index) =>
         </div>
       </div>
 
-      <AddEditModal mode={mode} setInitialData={setSelectedCallStatus} initialData={selectedCallStatus} />
+      <AddEditModal
+        mode={mode}
+        setInitialData={setSelectedCallStatus}
+        initialData={selectedCallStatus}
+      />
       <DeleteAlert
         label="Meeting Type"
         showModal={showDeleteModal}

@@ -24,7 +24,7 @@
         }
     }
     .head-icons {
-        margin-bottom: 10px;
+        margin-bottom: 0px;
         @include respond-below(custom991) {
            display: none;
         }

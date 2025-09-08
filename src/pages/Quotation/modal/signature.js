@@ -1,113 +1,171 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
-import { uploadSignature } from '../../../redux/quotation';
-import moment from 'moment';
+import React, { useRef, useState, useCallback, useEffect } from "react";
+import { uploadSignature } from "../../../redux/quotation";
+import moment from "moment";
+
+const containerStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  padding: "8px",
+  border: "1px solid #dee2e6",
+  borderRadius: "6px",
+  backgroundColor: "#ffffff",
+  fontFamily: "Arial, Helvetica, sans-serif",
+  fontSize: "12px",
+  color: "#212529",
+  maxWidth: "350px",
+  margin: "0 auto",
+};
+
+const imageStyle = {
+  maxHeight: "60px",
+  maxWidth: "100%",
+  width: "200px",
+  height: "auto",
+  // backgroundColor: '#ffffff',
+  // border: '1px solid #e9ecef',
+  borderRadius: "4px",
+  padding: "4px",
+  objectFit: "contain",
+  display: "block",
+};
+
+const labelStyle = {
+  fontWeight: "bold",
+  fontSize: "11px",
+  color: "#495057",
+  marginTop: "6px",
+  marginBottom: "2px",
+};
+
+const dateStyle = {
+  fontSize: "10px",
+  color: "#6c757d",
+  fontStyle: "italic",
+};
 
 // Mock SignatureCanvas component for demo purposes
-const SignatureCanvas = React.forwardRef(({ penColor, backgroundColor, canvasProps, onBegin, onEnd, velocityFilterWeight, minWidth, maxWidth, throttle, disabled }, ref) => {
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [paths, setPaths] = useState([]);
-  const [currentPath, setCurrentPath] = useState([]);
-
-  React.useImperativeHandle(ref, () => ({
-    clear: () => {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      setPaths([]);
-      setCurrentPath([]);
+const SignatureCanvas = React.forwardRef(
+  (
+    {
+      penColor,
+      backgroundColor,
+      canvasProps,
+      onBegin,
+      onEnd,
+      velocityFilterWeight,
+      minWidth,
+      maxWidth,
+      throttle,
+      disabled,
     },
-    isEmpty: () => paths.length === 0 && currentPath.length === 0,
-    getTrimmedCanvas: () => canvasRef.current,
-    toData: () => paths,
-    fromData: (data) => {
-      setPaths(data);
-      redraw();
-    }
-  }));
+    ref
+  ) => {
+    const canvasRef = useRef(null);
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [paths, setPaths] = useState([]);
+    const [currentPath, setCurrentPath] = useState([]);
 
-  const redraw = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Set background
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw all paths
-    ctx.strokeStyle = penColor;
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-    
-    [...paths, currentPath].forEach(path => {
-      if (path.length > 1) {
-        ctx.beginPath();
-        ctx.moveTo(path[0].x, path[0].y);
-        path.forEach(point => ctx.lineTo(point.x, point.y));
-        ctx.stroke();
-      }
-    });
-  };
+    React.useImperativeHandle(ref, () => ({
+      clear: () => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        setPaths([]);
+        setCurrentPath([]);
+      },
+      isEmpty: () => paths.length === 0 && currentPath.length === 0,
+      getTrimmedCanvas: () => canvasRef.current,
+      toData: () => paths,
+      fromData: (data) => {
+        setPaths(data);
+        redraw();
+      },
+    }));
 
-  useEffect(() => {
-    redraw();
-  }, [paths, currentPath, penColor, backgroundColor]);
+    const redraw = () => {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const getMousePos = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      // Set background
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw all paths
+      ctx.strokeStyle = penColor;
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+
+      [...paths, currentPath].forEach((path) => {
+        if (path.length > 1) {
+          ctx.beginPath();
+          ctx.moveTo(path[0].x, path[0].y);
+          path.forEach((point) => ctx.lineTo(point.x, point.y));
+          ctx.stroke();
+        }
+      });
     };
-  };
 
-  const handleMouseDown = (e) => {
-    if (disabled) return;
-    setIsDrawing(true);
-    const pos = getMousePos(e);
-    setCurrentPath([pos]);
-    onBegin && onBegin();
-  };
+    useEffect(() => {
+      redraw();
+    }, [paths, currentPath, penColor, backgroundColor]);
 
-  const handleMouseMove = (e) => {
-    if (!isDrawing || disabled) return;
-    const pos = getMousePos(e);
-    setCurrentPath(prev => [...prev, pos]);
-  };
+    const getMousePos = (e) => {
+      const rect = canvasRef.current.getBoundingClientRect();
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    };
 
-  const handleMouseUp = () => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
-    setPaths(prev => [...prev, currentPath]);
-    setCurrentPath([]);
-    onEnd && onEnd();
-  };
+    const handleMouseDown = (e) => {
+      if (disabled) return;
+      setIsDrawing(true);
+      const pos = getMousePos(e);
+      setCurrentPath([pos]);
+      onBegin && onBegin();
+    };
 
-  return (
-    <canvas
-      ref={canvasRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      {...canvasProps}
-      style={{
-        ...canvasProps.style,
-        background: backgroundColor,
-        border: '2px solid #e9ecef',
-        borderRadius: '8px'
-      }}
-    />
-  );
-});
+    const handleMouseMove = (e) => {
+      if (!isDrawing || disabled) return;
+      const pos = getMousePos(e);
+      setCurrentPath((prev) => [...prev, pos]);
+    };
+
+    const handleMouseUp = () => {
+      if (!isDrawing) return;
+      setIsDrawing(false);
+      setPaths((prev) => [...prev, currentPath]);
+      setCurrentPath([]);
+      onEnd && onEnd();
+    };
+
+    return (
+      <canvas
+        ref={canvasRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        {...canvasProps}
+        style={{
+          ...canvasProps.style,
+          background: backgroundColor,
+          border: "2px solid #e9ecef",
+          borderRadius: "8px",
+        }}
+      />
+    );
+  }
+);
 
 const DigitalSignature = ({
   width = 600,
   height = 300,
   details,
-  penColor = '#000000',
-  backgroundColor = '#ffffff',
+  penColor = "#000000",
+  backgroundColor = "#ffffff",
   onSave,
   onClear = () => {},
   disabled = false,
@@ -116,9 +174,10 @@ const DigitalSignature = ({
   buttonText = "Add Signature",
   showSignatureButton = true,
   initiallyOpen = false,
-  savedSignature, setSavedSignature,
+  savedSignature,
+  setSavedSignature,
 }) => {
-    console.log("Singnature : ",savedSignature)
+  console.log("Singnature : ", savedSignature);
   const sigCanvas = useRef({});
   const [isEmpty, setIsEmpty] = useState(true);
   const [strokeColor, setStrokeColor] = useState(penColor);
@@ -141,35 +200,36 @@ const DigitalSignature = ({
   // Save the signature as image
   const save = useCallback(async () => {
     if (sigCanvas.current.isEmpty()) {
-      alert('Please provide a signature first.');
+      alert("Please provide a signature first.");
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-  
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const canvas = sigCanvas.current.getTrimmedCanvas();
-  
+
       canvas.toBlob((blob) => {
         if (blob) {
-          const file = new File([blob], `signature-${Date.now()}.png`, { type: "image/png" });
-  
+          const file = new File([blob], `signature-${Date.now()}.png`, {
+            type: "image/png",
+          });
+
           // Store the file (instead of base64 string)
           setSavedSignature(file);
-  
+
           // Close modal
           setIsModalOpen(false);
-  
+
           // Callback with file
           onSave(file);
         }
       }, "image/png");
-
     } catch (error) {
-      console.error('Error saving signature:', error);
+      console.error("Error saving signature:", error);
     } finally {
       setIsLoading(false);
     }
@@ -188,13 +248,13 @@ const DigitalSignature = ({
   // Download signature as image
   const downloadSignature = useCallback(() => {
     if (sigCanvas.current.isEmpty()) {
-      alert('Please provide a signature first.');
+      alert("Please provide a signature first.");
       return;
     }
-    
+
     const canvas = sigCanvas.current.getTrimmedCanvas();
-    const dataURL = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
+    const dataURL = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
     link.download = `signature-${Date.now()}.png`;
     link.href = dataURL;
     link.click();
@@ -389,151 +449,263 @@ const DigitalSignature = ({
                 onClick={toggleModal}
                 disabled={disabled}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="me-2" style={{display: 'inline'}}>
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="me-2"
+                  style={{ display: "inline" }}
+                >
+                  <path
+                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                    fill="currentColor"
+                  />
                 </svg>
                 {buttonText}
               </button>
             ) : (
-        <button
-                type="button"
-                className="btn signature-trigger-btn text-white"
-                onClick={toggleModal}
-                disabled={disabled}
-              >
-                {/* <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="me-2" style={{display: 'inline'}}>
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                </svg> */}
-                <i style={{fontSize:"20px"}} className="ti ti-signature"></i>    
-                            View Signature
-              </button>
+              // <button
+              //         type="button"
+              //         className="btn signature-trigger-btn text-white"
+              //         onClick={toggleModal}
+              //         disabled={disabled}
+              //       >
+              //         <i style={{fontSize:"20px"}} className="ti ti-signature"></i>
+              //                     View Signature
+              //       </button>
+              <div style={containerStyle} onClick={toggleModal}>
+                <img
+                  src={savedSignature || details?.customer_sign}
+                  alt="Customer Digital Signature"
+                  style={imageStyle}
+                />
+                <div style={labelStyle}>Digital Signature</div>
+                {details.customer_sign_date && (
+                  <div style={dateStyle}>
+                    Signed:{" "}
+                    {moment(details.customer_sign_date).format(
+                      "DD/MM/YYYY HH:mm"
+                    )}
+                  </div>
+                )}
+              </div>
+              //     <>  <img
+              //   src={details?.customer_sign}
+              //   alt="Digital Signature"
+              //   className="signature-preview-image"
+              //   style={{maxHeight: '100px'}}
+              // />
+              // <br className='text-black' />
+              // <div className='d-flex flex-col'>
+              // <div>Singnature</div>
+              // {  "Uploaded at :"+ moment(details?.customer_sign_date).calendar()}
+              // </div>
+              // </>
             )}
           </div>
         )}
 
         {/* Bootstrap Modal */}
         {isModalOpen && (
-          <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)'}}>
-            <div className="modal-dialog modal-lg modal-dialog-centered" style={{maxWidth:"600px",}}>
-        <div className="modal-content">
+          <div
+            className="modal show d-block"
+            tabIndex="-1"
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          >
+            <div
+              className="modal-dialog modal-lg modal-dialog-centered"
+              style={{ maxWidth: "600px" }}
+            >
+              <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title fw-bold">{title}</h5>
-                  <button 
-                    type="button" 
-                    className="btn-close" 
+                  <button
+                    type="button"
+                    className="btn-close"
                     onClick={toggleModal}
                     disabled={isLoading}
                   ></button>
                 </div>
-                
-                <div className="modal-body p-4">
-                { ( !details?.customer_sign) ? <>
-                  {/* Signature Canvas */}
-                  <div className="text-center mb-4">
-                    <div className="signature-canvas-container">
-                      <SignatureCanvas
-                        ref={sigCanvas}
-                        penColor={strokeColor}
-                        backgroundColor={bgColor}
-                        canvasProps={{
-                          width: Math.min(width, 550),
-                          height: Math.min(height, 250),
-                          className: 'signature-canvas'
-                        }}
-                        onBegin={handleBegin}
-                        onEnd={handleEnd}
-                        velocityFilterWeight={0.7}
-                        minWidth={1}
-                        maxWidth={3}
-                        throttle={16}
-                        disabled={disabled || isLoading}
-                      />
-                    </div>
-                  </div>
 
-                  {/* Action Buttons */}
-                  <div className="row g-2 mb-3">
-                    <div className="col-6 col-md-3">
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary w-100 btn-action"
-                        onClick={clear}
-                        disabled={disabled || isEmpty || isLoading}
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="me-1">
-                          <polyline points="3,6 5,6 21,6" stroke="currentColor" strokeWidth="2"/>
-                          <path d="M19,6V20a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6" stroke="currentColor" strokeWidth="2" fill="none"/>
-                        </svg>
-                        Clear
-                      </button>
-                    </div>
-                    <div className="col-6 col-md-3">
-                      <button
-                        type="button"
-                        className="btn btn-outline-warning w-100 btn-action"
-                        onClick={undo}
-                        disabled={disabled || isEmpty || isLoading}
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="me-1">
-                          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" strokeWidth="2" fill="none"/>
-                          <polyline points="3,3 3,8 8,8" stroke="currentColor" strokeWidth="2" fill="none"/>
-                        </svg>
-                        Undo
-                      </button>
-                    </div>
-                    <div className="col-6 col-md-3">
-                      <button
-                        type="button"
-                        className="btn btn-outline-info w-100 btn-action"
-                        onClick={downloadSignature}
-                        disabled={disabled || isEmpty || isLoading}
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="me-1">
-                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" strokeWidth="2" fill="none"/>
-                          <polyline points="7,10 12,15 17,10" stroke="currentColor" strokeWidth="2" fill="none"/>
-                          <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" strokeWidth="2"/>
-                        </svg>
-                        Download
-                      </button>
-                    </div>
-                    <div className="col-6 col-md-3">
-                      <button
-                        type="button"
-                        className="btn btn-primary-custom w-100 btn-action"
-                        onClick={save}
-                        disabled={disabled || isEmpty || isLoading}
-                      >
-                        {isLoading ? (
-                          <div className="loading-spinner me-2"></div>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="me-1">
-                            <polyline points="20,6 9,17 4,12" stroke="currentColor" strokeWidth="2" fill="none"/>
-                          </svg>
-                        )}
-                        {isLoading ? 'Saving...' : 'Save'}
-                      </button>
-                    </div>
-                  </div>
-                  </>
-                   :    <div className="signature-preview-card fade-in" style={{maxWidth: '600px'}}>
-                   <div className="d-flex flex-column align-items-center">
-                     <div className="mb-3">
-                       {/* <img 
+                <div className="modal-body p-4">
+                  {!details?.customer_sign ? (
+                    <>
+                      {/* Signature Canvas */}
+                      <div className="text-center mb-4">
+                        <div className="signature-canvas-container">
+                          <SignatureCanvas
+                            ref={sigCanvas}
+                            penColor={strokeColor}
+                            backgroundColor={bgColor}
+                            canvasProps={{
+                              width: Math.min(width, 550),
+                              height: Math.min(height, 250),
+                              className: "signature-canvas",
+                            }}
+                            onBegin={handleBegin}
+                            onEnd={handleEnd}
+                            velocityFilterWeight={0.7}
+                            minWidth={1}
+                            maxWidth={3}
+                            throttle={16}
+                            disabled={disabled || isLoading}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="row g-2 mb-3">
+                        <div className="col-6 col-md-3">
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary w-100 btn-action"
+                            onClick={clear}
+                            disabled={disabled || isEmpty || isLoading}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              className="me-1"
+                            >
+                              <polyline
+                                points="3,6 5,6 21,6"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                              <path
+                                d="M19,6V20a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                fill="none"
+                              />
+                            </svg>
+                            Clear
+                          </button>
+                        </div>
+                        <div className="col-6 col-md-3">
+                          <button
+                            type="button"
+                            className="btn btn-outline-warning w-100 btn-action"
+                            onClick={undo}
+                            disabled={disabled || isEmpty || isLoading}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              className="me-1"
+                            >
+                              <path
+                                d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                fill="none"
+                              />
+                              <polyline
+                                points="3,3 3,8 8,8"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                fill="none"
+                              />
+                            </svg>
+                            Undo
+                          </button>
+                        </div>
+                        <div className="col-6 col-md-3">
+                          <button
+                            type="button"
+                            className="btn btn-outline-info w-100 btn-action"
+                            onClick={downloadSignature}
+                            disabled={disabled || isEmpty || isLoading}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              className="me-1"
+                            >
+                              <path
+                                d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                fill="none"
+                              />
+                              <polyline
+                                points="7,10 12,15 17,10"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                fill="none"
+                              />
+                              <line
+                                x1="12"
+                                y1="15"
+                                x2="12"
+                                y2="3"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                            </svg>
+                            Download
+                          </button>
+                        </div>
+                        <div className="col-6 col-md-3">
+                          <button
+                            type="button"
+                            className="btn btn-primary-custom w-100 btn-action"
+                            onClick={save}
+                            disabled={disabled || isEmpty || isLoading}
+                          >
+                            {isLoading ? (
+                              <div className="loading-spinner me-2"></div>
+                            ) : (
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                className="me-1"
+                              >
+                                <polyline
+                                  points="20,6 9,17 4,12"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  fill="none"
+                                />
+                              </svg>
+                            )}
+                            {isLoading ? "Saving..." : "Save"}
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div
+                      className="signature-preview-card fade-in"
+                      style={{ maxWidth: "600px" }}
+                    >
+                      <div className="d-flex flex-column align-items-center">
+                        <div className="mb-3">
+                          {/* <img 
                          src={savedSignature} 
                          alt="Digital Signature" 
                          className="signature-preview-image"
                          style={{maxHeight: '100px'}}
                        /> */}
-                       {details?.customer_sign && (
-  <img
-    src={details?.customer_sign}
-    alt="Digital Signature"
-    className="signature-preview-image"
-    style={{maxHeight: '100px'}}
-  />
-)}
-                     </div>
-                     {/* <div className="d-flex gap-2">
+                          {details?.customer_sign && (
+                            <img
+                              src={details?.customer_sign}
+                              alt="Digital Signature"
+                              className="signature-preview-image"
+                              style={{ maxHeight: "100px" }}
+                            />
+                          )}
+                        </div>
+                        {/* <div className="d-flex gap-2">
                        <button
                          type="button"
                          className="btn btn-outline-primary btn-sm btn-action"
@@ -559,33 +731,67 @@ const DigitalSignature = ({
                          Remove
                        </button>
                      </div> */}
-                   </div>
-                 </div>}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Status */}
-                  <div className={`signature-status ${!isEmpty ? 'status-success' : ''}`}>
+                  <div
+                    className={`signature-status ${!isEmpty ? "status-success" : ""}`}
+                  >
                     {isEmpty ? (
                       <span className="text-muted">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="me-2" style={{display: 'inline'}}>
-                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
-                          <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          className="me-2"
+                          style={{ display: "inline" }}
+                        >
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            fill="none"
+                          />
+                          <path
+                            d="M12 6v6l4 2"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            fill="none"
+                          />
                         </svg>
-                       {!details?.customer_sign ?  "Please sign in the area above " : 
-                       "Uploaded at :"+ moment(details?.customer_sign_date).calendar()}
+                        {!details?.customer_sign
+                          ? "Please sign in the area above "
+                          : "Uploaded at :" +
+                            moment(details?.customer_sign_date).calendar()}
                       </span>
                     ) : (
                       <span className="fw-semibold">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="me-2" style={{display: 'inline'}}>
-                          <polyline points="20,6 9,17 4,12" stroke="currentColor" strokeWidth="2" fill="none"/>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          className="me-2"
+                          style={{ display: "inline" }}
+                        >
+                          <polyline
+                            points="20,6 9,17 4,12"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            fill="none"
+                          />
                         </svg>
                         Signature captured successfully!
                       </span>
                     )}
                   </div>
                 </div>
-
               </div>
-               
             </div>
           </div>
         )}

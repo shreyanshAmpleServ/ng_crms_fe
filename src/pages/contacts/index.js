@@ -162,7 +162,7 @@ const ContactDetails = () => {
                   </div>
                 </div>
               </div>
-              <div className="card">
+              <div className="card mb-3">
                 <div className="card-body pb-2">
                   <div className="d-flex align-items-center justify-content-between flex-wrap">
                     <div className="d-flex align-items-center mb-2">
@@ -413,7 +413,7 @@ const ContactDetails = () => {
             </div>
             {/* /Contact Sidebar */}
             {/* Contact Details */}
-            <div className="col-xl-9">
+            <div className="col-xl-9 ps-1">
               <div className="card mb-3">
                 <div className="card-body pb-0 pt-2">
                   {/* {contactStatus && (

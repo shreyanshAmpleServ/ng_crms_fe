@@ -338,6 +338,7 @@ const quotationSlice = createSlice({
     comments:[],
     quotationCode:null,
     loading: false,
+    loadingComment: false,
     error: false,
     success: false,
   },
@@ -400,17 +401,17 @@ const quotationSlice = createSlice({
         state.error = action.payload.message;
       })
       .addCase(sendComments.pending, (state) => {
-        state.loading = true;
+        state.loadingComment = true;
         state.error = null;
       })
       .addCase(sendComments.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingComment = false;
         // state.quotations = [action.payload.data, ...state.quotations];
         state.comments = {...state.comments , data: [ action.payload.data ,...state?.comments?.data]};
         state.success = action.payload.message;
       })
       .addCase(sendComments.rejected, (state, action) => {
-        state.loading = false;
+        state.loadingComment = false;
         state.error = action.payload.message;
       })
       .addCase(uploadSignature.pending, (state) => {

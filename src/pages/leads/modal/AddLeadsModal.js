@@ -398,64 +398,67 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                       </div>
                     </div> */}
 
-<div className="col-md-12">
-  <div className="mb-3">
-    <div className="profile-upload">
-      <div className="profile-upload-img" style={{ position: "relative" }}>
-        {selectedLogo ? (
-          <>
-            <img
-              src={URL.createObjectURL(selectedLogo)}
-              className="preview w-100 h-100 object-fit-cover"
-            />
-            <button
-              type="button"
-              className="profile-remove"
-              style={{
-                position: "absolute",
-                top: "-10px",
-                right: "-13px",
-                border: "none",
-                background: "white",
-                borderRadius: "50%",
-                cursor: "pointer",
-                padding: "2px 5px",
-              }}
-              onClick={() => setSelectedLogo(null)}
-            >
-              <i className="ti ti-x" />
-            </button>
-          </>
-        ) : selectedLead && selectedLead.company_icon ? (
-          <img
-            src={selectedLead.company_icon}
-            className="preview w-100 h-100 object-fit-cover"
-          />
-        ) : (
-          <span
-            className="flex items-center justify-center w-full h-full text-gray-400"
-            style={{ fontSize: "3rem" }}
-          >
-            <CiImageOn />
-          </span>
-        )}
-      </div>
+                    <div className="col-md-12">
+                      <div className="mb-3">
+                        <div className="profile-upload">
+                          <div
+                            className="profile-upload-img"
+                            style={{ position: "relative" }}
+                          >
+                            {selectedLogo ? (
+                              <>
+                                <img
+                                  src={URL.createObjectURL(selectedLogo)}
+                                  className="preview w-100 h-100 object-fit-cover"
+                                />
+                                <button
+                                  type="button"
+                                  className="profile-remove"
+                                  style={{
+                                    position: "absolute",
+                                    top: "-10px",
+                                    right: "-13px",
+                                    border: "none",
+                                    background: "white",
+                                    borderRadius: "50%",
+                                    cursor: "pointer",
+                                    padding: "2px 5px",
+                                  }}
+                                  onClick={() => setSelectedLogo(null)}
+                                >
+                                  <i className="ti ti-x" />
+                                </button>
+                              </>
+                            ) : selectedLead && selectedLead.company_icon ? (
+                              <img
+                                src={selectedLead.company_icon}
+                                className="preview w-100 h-100 object-fit-cover"
+                              />
+                            ) : (
+                              <span
+                                className="flex items-center justify-center w-full h-full text-gray-400"
+                                style={{ fontSize: "3rem" }}
+                              >
+                                <CiImageOn />
+                              </span>
+                            )}
+                          </div>
 
-      <div className="profile-upload-content">
-        <label className="profile-upload-btn">
-          <i className="ti ti-file-broken" /> Upload File
-          <input
-            type="file"
-            className="input-img"
-            accept="image/*"
-            onChange={handleLogoChange}
-          />
-        </label>
-        <p>JPG, GIF or PNG. Max size of 800K</p>
-      </div>
-    </div>
-  </div>
-</div>
+                          <div className="profile-upload-content">
+                            <label className="profile-upload-btn">
+                              <i className="ti ti-file-broken" /> Upload File
+                              <input
+                                type="file"
+                                className="input-img"
+                                accept="image/*"
+                                onChange={handleLogoChange}
+                              />
+                            </label>
+                            <p>JPG, GIF or PNG. Max size of 800K</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     <div className="col-md-6">
                       <div className="mb-3">
@@ -791,9 +794,9 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                      <div className="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center justify-content-between">
                           <label className="col-form-label">
-                          Source <span className="text-danger">*</span>
+                            Source <span className="text-danger">*</span>
                           </label>
                           <div>
                             <Link
@@ -837,9 +840,9 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                       <div className="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center justify-content-between">
                           <label className="col-form-label">
-                          Industry <span className="text-danger">*</span>
+                            Industry <span className="text-danger">*</span>
                           </label>
                           <div>
                             <Link
@@ -882,9 +885,9 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                     </div>
                     <div className="col-md-6">
                       <div className="mb-3">
-                      <div className="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center justify-content-between">
                           <label className="col-form-label">
-                          Lead status <span className="text-danger">*</span>
+                            Lead status <span className="text-danger">*</span>
                           </label>
                           <div>
                             <Link
@@ -1042,7 +1045,7 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                       <div className="mb-3">
                         <div className="d-flex align-items-center justify-content-between">
                           <label className="col-form-label">
-                          Currency <span className="text-danger">*</span>
+                            Currency <span className="text-danger">*</span>
                           </label>
                           <div>
                             <Link
@@ -1103,16 +1106,27 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
 
                     <div className="col-md-12">
                       <div className="mb-0">
-                        <label className="col-form-label">Description  <span className="text-danger">(max 255 characters)</span></label>
+                        <label className="col-form-label">
+                          Description{" "}
+                          <span className="text-danger">
+                            (max 255 characters)
+                          </span>
+                        </label>
                         <textarea
                           className="form-control"
                           placeholder="Enter Description"
                           rows={5}
                           {...register("description", {
                             validate: (value) => {
-                              const wordCount = value.trim().split(/\s+/).length;
-                              return wordCount <= 200 || "Description must not exceed 200 words.";
-                            }})}
+                              const wordCount = value
+                                .trim()
+                                .split(/\s+/).length;
+                              return (
+                                wordCount <= 200 ||
+                                "Description must not exceed 200 words."
+                              );
+                            },
+                          })}
                         />
                         {errors.description && (
                           <small className="text-danger">
@@ -1428,35 +1442,34 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
                 </div>
               </div>
             </div>
-            {
-            !selectedLead &&  <div className="col-md-6 my-3 d-flex align-items-center">
-            <div className="status-toggle small-toggle-btn d-flex align-items-center">
-              <span className="me-2 label-text">Is Contact?</span>
-              <Controller
-                name="is_contact"
-                control={control}
-                render={({ field }) => (
-                  <>
-                    <input
-                      type="checkbox"
-                      id="isContact" // Add the ID here
-                      className="check"
-                      {...field}
-                      checked={field.value}
-                    />
-                    <label
-                      htmlFor="isContact" // Ensure this matches the input ID
-                      className="checktoggle"
-                    >
-                      Is Contact?
-                    </label>
-                  </>
-                )}
-              />
-            </div>
-          </div>
-            }
-           
+            {!selectedLead && (
+              <div className="col-md-6 my-3 d-flex align-items-center">
+                <div className="status-toggle small-toggle-btn d-flex align-items-center">
+                  <span className="me-2 label-text">Is Contact?</span>
+                  <Controller
+                    name="is_contact"
+                    control={control}
+                    render={({ field }) => (
+                      <>
+                        <input
+                          type="checkbox"
+                          id="isContact" // Add the ID here
+                          className="check"
+                          {...field}
+                          checked={field.value}
+                        />
+                        <label
+                          htmlFor="isContact" // Ensure this matches the input ID
+                          className="checktoggle"
+                        >
+                          Is Contact?
+                        </label>
+                      </>
+                    )}
+                  />
+                </div>
+              </div>
+            )}
             {/* /Social Profile */} {/* Access */}
             {/* <div className="accordion-item border-top rounded mb-3">
               <div className="accordion-header">
@@ -1551,9 +1564,9 @@ const AddLeadModal = ({ setSelectedLead, selectedLead }) => {
       </div>
 
       <AddEditModal mode="add" initialData={null} />
-      <AddEditModalIndustry  mode="add" initialData={null}/>
-      <AddEditModalCurrency  mode="add" initialData={null}/>
-      <AddEditModalStatus  mode="add" initialData={null}/>
+      <AddEditModalIndustry mode="add" initialData={null} />
+      <AddEditModalCurrency mode="add" initialData={null} />
+      <AddEditModalStatus mode="add" initialData={null} />
     </div>
   );
 };

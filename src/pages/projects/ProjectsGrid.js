@@ -15,7 +15,7 @@ const ProjectsGrid = ({ data }) => {
 
   const [selectedProject, setSelectedProject] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(3);
+  const [visibleItems, setVisibleItems] = useState(10);
   const [loading, setLoading] = useState(false);
 
   const handleDeleteProject = (project) => {

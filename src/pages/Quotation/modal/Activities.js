@@ -524,42 +524,7 @@ export const AllActivities = ({
           }
         }
 
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-          .activities-container {
-            background: #1a1a1a;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-          }
-
-          .main-tabs-wrapper {
-            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-            border-bottom-color: #404040;
-          }
-
-          .main-tab-button {
-            color: #b0b0b0;
-          }
-
-          .main-tab-button:hover {
-            color: #e0e0e0;
-            background: rgba(255, 255, 255, 0.1);
-          }
-
-          .main-tab-button.active {
-            background: #1a1a1a;
-            color: #4da3ff;
-          }
-
-          .sub-tabs-container {
-            background: #1a1a1a;
-            border-color: #404040;
-          }
-
-          .sub-tabs {
-            background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
-            border-bottom-color: #404040;
-          }
-        }
+     
       `}</style>
     </>
   );

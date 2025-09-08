@@ -13,7 +13,7 @@ const PipelineGrid = ({ data }) => {
   const navigate = useNavigate();
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(3); // Default visible items
+  const [visibleItems, setVisibleItems] = useState(10); // Default visible items
   const [loading, setLoading] = useState(false); // New state for loading
 
   const handleDeleteCompany = (company) => {

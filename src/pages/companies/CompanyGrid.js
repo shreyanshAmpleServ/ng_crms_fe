@@ -7,13 +7,13 @@ import { all_routes } from "../../routes/all_routes";
 import DeleteAlert from "./alert/DeleteAlert";
 import EditCompanyModal from "./modal/EditCompanyModal";
 
-const ContactGrid = ({ data }) => {
+const ContactGrid = ({ data ,handlePageChange}) => {
   const route = all_routes;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [visibleItems, setVisibleItems] = useState(6); // Default visible items
+  const [visibleItems, setVisibleItems] = useState(10); // Default visible items
   const [loading, setLoading] = useState(false); // New state for loading
 
   const handleDeleteCompany = (company) => {
@@ -32,20 +32,29 @@ const ContactGrid = ({ data }) => {
   const handleLoadMore = () => {
     setLoading(true); // Set loading state to true when loading more items
     setTimeout(() => {
+      handlePageChange({currentPage: data?.currentPage+1})
       setVisibleItems((prev) => prev + 3); // Increase visible items by 3
+      setLoading(false); // Set loading state to false after the items are loaded
+    }, 1000); // Simulate a loading delay of 1 second
+  };
+  const handleLoadLess = () => {
+    setLoading(true); // Set loading state to true when loading more items
+    setTimeout(() => {
+      handlePageChange({currentPage: data?.currentPage-1})
+      // setVisibleItems((prev) => prev + 3); // Increase visible items by 3
       setLoading(false); // Set loading state to false after the items are loaded
     }, 1000); // Simulate a loading delay of 1 second
   };
 
   return (
     <>
-      <div className="row">
-        {data.slice(0, visibleItems).map((company, index) => (
+      <div className="row p-2">
+        {data?.data?.slice(0, visibleItems).map((company, index) => (
           <div
             className="col-xxl-3 col-xl-4 col-md-6"
             key={company.id || index}
           >
-            <div className="card border" style={{ height: "250px" }}>
+            <div className="card border mb-3" style={{ height: "250px" }}>
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div className="d-flex align-items-center">
@@ -162,7 +171,7 @@ const ContactGrid = ({ data }) => {
         ))}
       </div>
 
-      {visibleItems < data.length && ( // Show Load More button only if there are more items
+      { data.totalPages !== data.currentPage && ( // Show Load More button only if there are more items
         <div className="load-btn text-center pb-4">
           <button onClick={handleLoadMore} className="btn btn-primary">
             {loading ? (
@@ -171,7 +180,21 @@ const ContactGrid = ({ data }) => {
                 <i className="ti ti-loader" />
               </>
             ) : (
-              "Load More Contacts"
+              "Load More Companies"
+            )}
+          </button>
+        </div>
+      )}
+      { data.currentPage !== 1 && ( // Show Load More button only if there are more items
+        <div className="load-btn text-center pb-4">
+          <button onClick={handleLoadLess} className="btn btn-primary">
+            {loading ? (
+              <>
+                Loading...
+                <i className="ti ti-loader" />
+              </>
+            ) : (
+              "Load Less Companies"
             )}
           </button>
         </div>

@@ -84,12 +84,71 @@ export default function GmailSection({
   }
   if (loading)
     return <p onClick={openGmailAuthPopup}><div className="p-3">
-  <div className="placeholder-glow mt-3">
-    {/* <Skeleton paragraph={{ rows: 4 }} /> */}
-    <Skeleton  className="placeholder rounded col-12 mb-2" style={{ height: "30px" }} />
-    <Skeleton  className="placeholder rounded col-12 mb-2" style={{ height: "30px" }} />
-    <Skeleton  className="placeholder rounded col-12 mb-2" style={{ height: "30px" }} />
-  </div>
+     <div 
+        className="p-3" 
+        style={{ 
+          cursor: gmailCheck?.connected ? 'default' : 'pointer' 
+        }}
+        onClick={!gmailCheck?.connected ? openGmailAuthPopup : undefined}
+      >
+        <div className="d-flex align-items-center mb-3">
+          <div 
+            className="spinner-border spinner-border-sm text-primary me-2" 
+            role="status"
+          >
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <span className="text-muted">Checking Gmail status...</span>
+        </div>
+        
+        {/* Custom skeleton with light colors */}
+        <div className="mt-3">
+          <div 
+            className="rounded mb-2" 
+            style={{ 
+              height: "30px", 
+              backgroundColor: "#f8f9fa",
+              background: "linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%)",
+              backgroundSize: "200% 100%",
+              animation: "shimmer 1.5s infinite"
+            }} 
+          />
+          <div 
+            className="rounded mb-2" 
+            style={{ 
+              height: "30px", 
+              width: "80%",
+              backgroundColor: "#f8f9fa",
+              background: "linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%)",
+              backgroundSize: "200% 100%",
+              animation: "shimmer 1.5s infinite"
+            }} 
+          />
+          <div 
+            className="rounded mb-2" 
+            style={{ 
+              height: "30px", 
+              width: "60%",
+              backgroundColor: "#f8f9fa",
+              background: "linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%)",
+              backgroundSize: "200% 100%",
+              animation: "shimmer 1.5s infinite"
+            }} 
+          />
+        </div>
+
+        {/* Add shimmer animation CSS */}
+        <style jsx>{`
+          @keyframes shimmer {
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
+          }
+        `}</style>
+      </div>
 </div></p>;
   if (error) return <p>❌ Error: {error}</p>;
 
@@ -121,7 +180,10 @@ export default function GmailSection({
                   {" "}
                   Subject: {item?.messages?.[0]?.subject}
                 </span>{" "}
-                <span className="ml-2">({item.messages.length} messages)</span>
+                {/* <span className="ml-2">({item.messages.length} messages)</span> */}
+                <span className="ms-2 badge bg-secondary">
+                  {item.messages.length} message{item.messages.length !== 1 ? 's' : ''}
+                </span>
               </button>
             </h2>
             <div

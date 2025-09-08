@@ -29,7 +29,7 @@ import { fetchLeads } from "../../../redux/leads";
 import { fetchUsers } from "../../../redux/manage-user";
 import { fetchProjects } from "../../../redux/projects";
 
-const ActivitiesModal = ({ setActivity, activity,leadId=undefined }) => {
+const ActivitiesModal = ({ isCall,setActivity, activity,leadId=undefined }) => {
   const [searchValue, setSearchValue] = useState("");
   const [searchProjectValue, setSearchProjectValue] = useState("");
   const [selectedType, setSelectedType] = useState();
@@ -160,12 +160,12 @@ const ActivitiesModal = ({ setActivity, activity,leadId=undefined }) => {
 
   const { loading } = useSelector((state) => state?.activities);
   React.useEffect(() => {
-    dispatch(fetchCompanies());
-    dispatch(fetchDeals());
-    dispatch(fetchLeads());
-    dispatch(fetchActivityTypes());
-    dispatch(fetchUsers());
-  }, [dispatch]);
+    isCall && dispatch(fetchCompanies());
+    isCall && dispatch(fetchDeals());
+    isCall && dispatch(fetchLeads());
+    isCall && dispatch(fetchActivityTypes());
+    isCall && dispatch(fetchUsers());
+  }, [isCall]);
 
   const { companies } = useSelector((state) => state.companies);
   const { deals } = useSelector((state) => state.deals);

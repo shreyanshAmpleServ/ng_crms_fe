@@ -8,7 +8,7 @@ import FilesDetails from "./UserDetails/FilesDetails";
 const Actvities = ({ type,id,name, leadStatus = null, dealPipline = null }) => {
 
   return (
-    <div className="col-xl-9">
+    <div className="col-xl-9 ps-1">
       <div className="card mb-3">
         <div className="card-body pb-0 pt-2">
           {leadStatus && <h4 className="fw-semibold mb-3">Lead Status</h4>}
