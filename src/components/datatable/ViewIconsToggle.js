@@ -15,7 +15,7 @@ const ViewIconsToggle = ({ view,isActivity=false, setView }) => {
       </Link>
       <Link
         to="#"
-        className={view === "grid" ? "active" : ""}
+        // className={view === "grid" ? "active" : ""}
         onClick={() => {isActivity ?   setView("grid") : setView("grid")}}
       >
         <i className="ti ti-grid-dots" />
@@ -24,9 +24,9 @@ const ViewIconsToggle = ({ view,isActivity=false, setView }) => {
   );
 };
 
-ViewIconsToggle.propTypes = {
-  view: PropTypes.string.isRequired, // Current view state, either 'list' or 'grid'
-  setView: PropTypes.func.isRequired, // Function to update the view state
-};
+// ViewIconsToggle.propTypes = {
+//   view: PropTypes.string.isRequired, // Current view state, either 'list' or 'grid'
+//   setView: PropTypes.func.isRequired, // Function to update the view state
+// };
 
 export default ViewIconsToggle;

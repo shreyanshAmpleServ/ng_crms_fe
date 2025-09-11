@@ -153,7 +153,7 @@ const taxsSlice = createSlice({
           (data) => data.id === action.payload.data.id
         );
         if (index !== -1) {
-          state.taxs[index] = action.payload.data;
+          state.taxs.data[index] = action.payload.data;
         } else {
           state.taxs = [action.payload.data, ...state.taxs];
         }

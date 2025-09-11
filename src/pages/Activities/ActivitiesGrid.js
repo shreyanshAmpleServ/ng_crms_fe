@@ -6,16 +6,15 @@ import ActivitiesModal from "./modal/ActivitiesModal";
 const ActivitiesGrid = ({ data }) => {
   const [selectedContact, setSelectedContact] = useState();
 
-  
   return (
     <>
       <div className="d-flex flex-wrap">
-        {data.map((activity, index) => (
+        {data &&  data?.map((activity, index) => (
           <div
             className={`col-xxl-4 col-xl-4 col-md-6 ${
               index % 3 === 1 ? "px-xl-1 py-xl-2 p-md-2" : "p-xl-2 p-md-2"
             }`}
-            key={activity.id || index}
+            key={activity?.id || index}
           >
             <div className="card border p-3 mb-3">
               {/* Header */}
@@ -23,7 +22,7 @@ const ActivitiesGrid = ({ data }) => {
                 <div className="d-flex align-items-center">
                   {activity?.owner?.profile_img ? (
                     <img
-                      src={activity.owner.profile_img}
+                      src={activity?.owner?.profile_img}
                       alt="Owner"
                       className="rounded-circle border shadow-sm me-3"
                       style={{
@@ -42,7 +41,7 @@ const ActivitiesGrid = ({ data }) => {
                   )}
 
                   <div>
-                    <h6 className="mb-0">{activity.title || "Untitled Activity"}</h6>
+                    <h6 className="mb-0">{activity?.title || "Untitled Activity"}</h6>
                     <span
                       className={`badge ${
                         activity.activity_type?.name === "Calls"
@@ -96,7 +95,7 @@ const ActivitiesGrid = ({ data }) => {
               <div className="row g-2">
                 <InfoRow
                   label="Owner:"
-                  value={activity?.owner || "No Owner"}
+                  value={activity?.owner?.full_name  || "No Owner"}
                 />
                 <InfoRow
                   label="Due date:"
@@ -154,14 +153,14 @@ const ActivitiesGrid = ({ data }) => {
               </div>
 
               {/* Tags */}
-              {activity.tags && (
+              {activity?.tags && (
                 <div className="mt-3 d-flex flex-wrap gap-1">
-                  {activity.tags.split(",").map((tag, i) => (
+                  {activity?.tags?.split(",").map((tag, i) => (
                     <span
                       key={i}
                       className="badge bg-light text-dark border"
                     >
-                      {tag.trim()}
+                      {tag?.trim()}
                     </span>
                   ))}
                 </div>
